@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="4" class="userinfo">
         <el-dropdown trigger="hover">
-          <span class="el-dropdown-link userinfo-inner">{{sysUserName}}</span>
+          <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}</span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -83,14 +83,15 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import * as user from '../api/user'
+  import * as type from '../store/user/type'
 
   export default {
     data () {
       return {
         sysName: 'DM/OS',
-        collapsed: false,
-        sysUserName: 'admin'
+        collapsed: false
       }
     },
     methods: {
@@ -105,11 +106,16 @@
       },
       //  退出登录
       logout: function () {
-        user.logout()
-          .then(data => {
-            localStorage.removeItem('token')
-            this.$router.push('login')
-          })
+        this.$confirm('确认退出吗?', '提示', {
+        }).then(() => {
+          user.logout()
+            .then(data => {
+              localStorage.removeItem('token')
+              this.$router.push('login')
+            })
+        }).catch(() => {
+
+        })
       },
       //  折叠导航栏
       collapse: function () {
@@ -120,7 +126,15 @@
       }
     },
     mounted () {
-      // TODO: 获取用户信息?
+      // 获取用户信息
+      this.$store.dispatch(type.FETCH_ABOUTME)
+    },
+    computed: {
+      ...mapState({
+        aboutMe (state) {
+          return state.user.aboutme
+        }
+      })
     }
   }
 </script>
