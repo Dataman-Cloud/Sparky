@@ -18,6 +18,7 @@ export default new Router({
       path: '/',
       component: Home,
       name: '导航一',
+      redirect: {path: '/todo1'},
       iconCls: 'el-icon-message', // 图标样式class
       children: [
         { path: '/todo1', name: 'TODO1' },
@@ -29,11 +30,17 @@ export default new Router({
       path: '/',
       component: Home,
       name: '导航二',
+      redirect: {path: '/todo4'},
       iconCls: 'fa fa-id-card-o',
       children: [
         { path: '/todo4', name: 'TODO4' },
-        { path: '/page5', name: 'TODO5' }
+        { path: '/todo5', name: 'TODO5' }
       ]
+    },
+    {
+      path: '*',
+      hidden: true,
+      redirect: { path: 'todo1' }
     }
   ]
 })

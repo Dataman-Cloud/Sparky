@@ -10,3 +10,7 @@ export function login (data) {
 export function logout () {
   return axios.post(`v1/logout`)
 }
+
+export function aboutme () {
+  return axios.get(`v1/aboutme`)
+}
