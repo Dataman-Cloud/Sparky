@@ -49,40 +49,41 @@
               </ul>
             </template>
             <template v-else>
-              <li class="el-submenu">
-                <div class="el-submenu__title el-menu-item"
-                     style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;"
-                     :class="$route.path==item.children[0].path?'is-active':''"
-                     @click="$router.push(item.children[0].path)">
-                  <i :class="item.iconCls"></i>
-                </div>
-              </li>
-            </template>
+          <li class="el-submenu">
+            <div class="el-submenu__title el-menu-item"
+                 style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;"
+                 :class="$route.path==item.children[0].path?'is-active':''"
+                 @click="$router.push(item.children[0].path)">
+              <i :class="item.iconCls"></i>
+            </div>
           </li>
-        </ul>
-      </aside>
-      <section class="content-container">
-        <div class="grid-content bg-purple-light">
-          <el-col :span="24" class="breadcrumb-container">
-            <strong class="title">{{$route.name}}</strong>
-            <el-breadcrumb separator="/" class="breadcrumb-inner">
-              <el-breadcrumb-item v-for="item in $route.matched">
-                {{ item.name }}
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </el-col>
-          <el-col :span="24" class="content-wrapper">
-            <transition name="fade" mode="out-in">
-              <router-view></router-view>
-            </transition>
-          </el-col>
-        </div>
-      </section>
+</template>
+</li>
+</ul>
+</aside>
+<section class="content-container">
+  <div class="grid-content bg-purple-light">
+    <el-col :span="24" class="breadcrumb-container">
+      <strong class="title">{{$route.name}}</strong>
+      <el-breadcrumb separator="/" class="breadcrumb-inner">
+        <el-breadcrumb-item v-for="item in $route.matched">
+          {{ item.name }}
+        </el-breadcrumb-item>
+      </el-breadcrumb>
     </el-col>
-  </el-row>
+    <el-col :span="24" class="content-wrapper">
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
+    </el-col>
+  </div>
+</section>
+</el-col>
+</el-row>
 </template>
 
 <script>
+  import store from '../store'
   import {mapState} from 'vuex'
   import * as user from '../api/user'
   import * as type from '../store/user/type'
@@ -93,6 +94,12 @@
         sysName: 'DM/OS',
         collapsed: false
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      store.dispatch(type.FETCH_ABOUTME)
+        .then(() => {
+          next()
+        })
     },
     methods: {
       onSubmit () {
@@ -106,12 +113,11 @@
       },
       //  退出登录
       logout: function () {
-        this.$confirm('确认退出吗?', '提示', {
-        }).then(() => {
+        this.$confirm('确认退出吗?', '提示', {}).then(() => {
           user.logout()
             .then(data => {
               localStorage.removeItem('token')
-              this.$router.push('login')
+              this.$router.push('/login')
             })
         }).catch(() => {
 
@@ -126,8 +132,6 @@
       }
     },
     mounted () {
-      // 获取用户信息
-      this.$store.dispatch(type.FETCH_ABOUTME)
     },
     computed: {
       ...mapState({

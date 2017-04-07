@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
+import AppList from '@/views/app/list/List'
 
 Vue.use(Router)
 
@@ -17,11 +18,11 @@ export default new Router({
     {
       path: '/',
       component: Home,
-      name: '导航一',
-      redirect: {path: '/todo1'},
+      name: '应用',
+      redirect: {path: '/app/myApps'},
       iconCls: 'el-icon-message', // 图标样式class
       children: [
-        { path: '/todo1', name: 'TODO1' },
+        { path: '/app/myApps', name: '我的应用', component: AppList },
         { path: '/todo2', name: 'TODO2' },
         { path: '/todo3', name: 'TODO3' }
       ]
@@ -40,7 +41,7 @@ export default new Router({
     {
       path: '*',
       hidden: true,
-      redirect: { path: 'todo1' }
+      redirect: { path: 'app/myApps' }
     }
   ]
 })
