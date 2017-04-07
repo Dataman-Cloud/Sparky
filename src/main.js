@@ -7,10 +7,12 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
+import vueMoment from 'vue-moment'
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
+Vue.use(vueMoment)
 
 /* eslint-disable no-new */
 new Vue({

@@ -43,7 +43,7 @@
           .then(data => {
             this.logining = false
             localStorage.setItem('token', data.data)
-            this.$router.push({path: 'todo1'})
+            this.$router.push({path: 'app/myApps'})
           }, rej => {
             this.logining = false
           })
