@@ -11,3 +11,15 @@ export function listMyApps (accountName, accountId) {
   }
   return axios.get(`v2/apps`, {params: params})
 }
+
+export function listGroupApps (curGroupName, curGroupId) {
+  let params = {
+    fields: `runAs==${curGroupName.toLowerCase()}`,
+    labels: `${LABEL_PREFIX}_GROUP_ID==${curGroupId}`
+  }
+  return axios.get(`v2/apps`, {params: params})
+}
+
+export function listAllApps () {
+  return axios.get(`v2/apps`)
+}

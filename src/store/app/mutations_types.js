@@ -1,0 +1,6 @@
+export const FETCH_TABLE_APPS = 'FETCH_TABLE_APPS'
+export const FETCH_MY_APPS = 'myApps'
+export const FETCH_GROUP_APPS = 'groupApps'
+export const FETCH_SELECT_APPS = 'selectApps'
+export const FETCH_CLUSTER_APPS = 'clusterApps'
+export const FETCH_ALL_APPS = 'allApps'
