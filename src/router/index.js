@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import AppList from '@/views/app/list/List'
+import * as appType from '@/store/app/mutations_types'
 
 Vue.use(Router)
 
@@ -22,9 +23,28 @@ export default new Router({
       redirect: {path: '/app/myApps'},
       iconCls: 'el-icon-message', // 图标样式class
       children: [
-        { path: '/app/myApps', name: '我的应用', component: AppList },
-        { path: '/todo2', name: 'TODO2' },
-        { path: '/todo3', name: 'TODO3' }
+        {
+          path: '/app/myApps',
+          name: '我的应用',
+          component: AppList,
+          meta: {
+            type: appType.FETCH_MY_APPS
+          }
+        },
+        { path: '/app/groupApps',
+          name: '组的应用',
+          component: AppList,
+          meta: {
+            type: appType.FETCH_MY_APPS
+          }
+        },
+        { path: '/app/allApps',
+          name: '全部应用',
+          component: AppList,
+          meta: {
+            type: appType.FETCH_ALL_APPS
+          }
+        }
       ]
     },
     {
@@ -41,7 +61,7 @@ export default new Router({
     {
       path: '*',
       hidden: true,
-      redirect: { path: 'app/myApps' }
+      redirect: { path: '/app/myApps' }
     }
   ]
 })
