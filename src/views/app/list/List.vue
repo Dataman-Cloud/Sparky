@@ -68,12 +68,14 @@
         },
         page: 1,
         listLoading: false,
-        prefix: LABEL_PREFIX
+        prefix: LABEL_PREFIX,
+        interval: null
       }
     },
     watch: {
       // 当使用路由参数时，例如从 /user/foo 导航到 user/bar，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。
       $route (to) {
+        this.page = 1
         this.listLoading = true
         this.listApp()
           .then(data => {
@@ -119,8 +121,10 @@
         .then(() => {
           this.listLoading = false
         })
-        .catch(() => {
-        })
+      this.interval = setInterval(() => this.listApp(), 5000)
+    },
+    beforeDestroy: function () {
+      clearInterval(this.interval)
     }
   }
 </script>
