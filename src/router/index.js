@@ -3,7 +3,9 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import AppList from '@/views/app/list/List'
+import ImageList from '@/views/image/list/List'
 import * as appType from '@/store/app/mutations_types'
+import * as imageType from '@/store/image/mutations_types'
 
 Vue.use(Router)
 
@@ -17,28 +19,28 @@ export default new Router({
       hidden: true
     },
     {
-      path: '/',
+      path: '/app',
       component: Home,
       name: '应用',
-      redirect: {path: '/app/myApps'},
+      redirect: {name: '我的应用'},
       iconCls: 'el-icon-message', // 图标样式class
       children: [
         {
-          path: '/app/myApps',
+          path: 'list/myApps',
           name: '我的应用',
           component: AppList,
           meta: {
             type: appType.FETCH_MY_APPS
           }
         },
-        { path: '/app/groupApps',
+        { path: 'list/groupApps',
           name: '组的应用',
           component: AppList,
           meta: {
             type: appType.FETCH_MY_APPS
           }
         },
-        { path: '/app/allApps',
+        { path: 'list/allApps',
           name: '全部应用',
           component: AppList,
           meta: {
@@ -48,20 +50,32 @@ export default new Router({
       ]
     },
     {
-      path: '/',
+      path: '/mirror',
       component: Home,
-      name: '导航二',
-      redirect: {path: '/todo4'},
+      name: '镜像',
+      redirect: {name: '组镜像'},
       iconCls: 'fa fa-id-card-o',
       children: [
-        { path: '/todo4', name: 'TODO4' },
-        { path: '/todo5', name: 'TODO5' }
+        { path: 'list/groupImages',
+          name: '组镜像',
+          component: ImageList,
+          meta: {
+            type: imageType.FETCH_GROUP_IMAGES
+          }
+        },
+        { path: 'list/publicImages',
+          name: '公共镜像',
+          component: ImageList,
+          meta: {
+            type: imageType.FETCH_PUBLIC_IMAGES
+          }
+        }
       ]
     },
     {
       path: '*',
       hidden: true,
-      redirect: { path: '/app/myApps' }
+      redirect: { name: '我的应用' }
     }
   ]
 })

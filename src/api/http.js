@@ -3,11 +3,12 @@
  */
 import axios from 'axios'
 import router from '../router'
+import { DEFAULT_BASE_URL } from '@/config'
 import {Notification} from 'element-ui'
 
 // axios 配置
 axios.defaults.timeout = 5000
-axios.defaults.baseURL = 'http://localhost:5013/' //  可配置
+axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置
 
 // http request 拦截器
 axios.interceptors.request.use(

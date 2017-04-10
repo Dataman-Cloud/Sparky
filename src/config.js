@@ -1,3 +1,4 @@
+export const DEFAULT_BASE_URL = 'http://localhost:5013'
 export const HASRELOXSTACK = false
 export const HASMULTICLUSTER = false
 export const HASPROXY = false
