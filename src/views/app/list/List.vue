@@ -26,8 +26,8 @@
       <el-table-column prop="" label="所属" width="100" sortable v-if="false">
       </el-table-column>
       <el-table-column prop="labels" label="集群" min-width="150" sortable>
-        <template scope="scope">
-          {{scope.row.labels[`${prefix}_VCLUSTER`]}}
+        <template scope="app">
+          {{app.row.labels[`${prefix}_VCLUSTER`]}}
         </template>
       </el-table-column>
       <el-table-column prop="instances" label="实例" min-width="100" sortable>
@@ -35,8 +35,8 @@
       <el-table-column prop="" label="健康状态" min-width="180" sortable>
       </el-table-column>
       <el-table-column prop="updated" label="更新时间" min-width="150" sortable>
-        <template scope="scope">
-          {{scope.row.updated | moment("YYYY/MM/DD hh:mm:ss")}}
+        <template scope="app">
+          {{app.row.updated | moment("YYYY/MM/DD hh:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="100">
@@ -68,12 +68,14 @@
         },
         page: 1,
         listLoading: false,
-        prefix: LABEL_PREFIX
+        prefix: LABEL_PREFIX,
+        interval: null
       }
     },
     watch: {
       // 当使用路由参数时，例如从 /user/foo 导航到 user/bar，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。
       $route (to) {
+        this.page = 1
         this.listLoading = true
         this.listApp()
           .then(data => {
@@ -110,7 +112,7 @@
           actionType: this.$route.meta.type,
           accountName: this.accountName,
           accountId: this.accountId
-        })
+        }).then(() => { this.listLoading = false })
       }
     },
     mounted () {
@@ -119,8 +121,10 @@
         .then(() => {
           this.listLoading = false
         })
-        .catch(() => {
-        })
+      this.interval = setInterval(() => this.listApp(), 5000)
+    },
+    beforeDestroy: function () {
+      clearInterval(this.interval)
     }
   }
 </script>
