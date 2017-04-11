@@ -39,7 +39,7 @@ export default new Router({
           name: '组的应用',
           component: AppList,
           meta: {
-            type: appType.FETCH_MY_APPS
+            type: appType.FETCH_GROUP_APPS
           }
         },
         { path: 'list/allApps',
