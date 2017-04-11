@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store'
+import { Message } from 'element-ui'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import AppList from '@/views/app/list/List'
@@ -45,6 +47,13 @@ export default new Router({
           component: AppList,
           meta: {
             type: appType.FETCH_ALL_APPS
+          },
+          beforeEnter: (to, from, next) => {
+            if (store.getters.isSuperUser) {
+              next()
+            } else {
+              Message.warning('只有超级管理员可以访问')
+            }
           }
         }
       ]

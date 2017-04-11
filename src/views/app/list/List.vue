@@ -91,6 +91,12 @@
         accountId (state) {
           return state.user.aboutme.id
         },
+        curGroupName (state) {
+          return state.user.aboutme.currentGroupName
+        },
+        curGroupId (state) {
+          return state.user.aboutme.currentGroupId
+        },
         apps (state) {
           return state.app.apps.apps
         },
@@ -111,7 +117,9 @@
         return this.$store.dispatch(type.FETCH_TABLE_APPS, {
           actionType: this.$route.meta.type,
           accountName: this.accountName,
-          accountId: this.accountId
+          accountId: this.accountId,
+          curGroupName: this.curGroupName,
+          curGroupId: this.curGroupId
         }).then(() => { this.listLoading = false })
       }
     },
