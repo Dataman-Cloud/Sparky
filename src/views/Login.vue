@@ -52,7 +52,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" type="text/scss" scoped>
   .login-container {
     /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
     -webkit-border-radius: 5px;
@@ -66,15 +66,15 @@
     border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
 
-  .title {
-    margin: 0px auto 40px auto;
-    text-align: center;
-    color: #505458;
-  }
+    .title {
+      margin: 0px auto 40px auto;
+      text-align: center;
+      color: #505458;
+    }
 
-  .remember {
-    margin: 0px 0px 35px 0px;
-  }
+    .remember {
+      margin: 0px 0px 35px 0px;
+    }
 
   }
 </style>

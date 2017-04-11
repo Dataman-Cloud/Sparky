@@ -17,10 +17,17 @@ const actions = {
   }
 }
 
+const getters = {
+  isSuperUser: state => {
+    return state.aboutme.currentRole === 'superuser'
+  }
+}
+
 export default {
   state: {
     aboutme: {}
   },
+  getters,
   mutations,
   actions
 }

@@ -1,18 +1,25 @@
 <template>
-  <el-row class="container">
-    <el-col :span="24" class="header">
-      <el-col :span="10" class="logo logo-width">
+  <div class="container">
+    <header style="background-color: rgb(32, 160, 255);">
+      <div class="logo logo-width">
         {{sysName}}
-      </el-col>
-      <el-col :span="4" class="userinfo">
-        <el-dropdown trigger="hover">
+      </div>
+      <div class="header-operations">
+        <el-select v-model="selectGroup" placeholder="请选择" class="groupsInfo" @change="switchGroup">
+          <el-option
+            v-for="item in myGroups"
+            :label="item.group.name"
+            :value="item.groupId">
+          </el-option>
+        </el-select>
+        <el-dropdown trigger="hover" class="userinfo">
           <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}</span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-      </el-col>
-    </el-col>
+      </div>
+    </header>
     <el-col :span="24" class="main">
       <aside class="menu-expanded">
         <nav-menu></nav-menu>
@@ -35,7 +42,7 @@
         </div>
       </section>
     </el-col>
-  </el-row>
+  </div>
 </template>
 
 <script>
@@ -52,7 +59,7 @@
     data () {
       return {
         sysName: 'DM/OS',
-        collapsed: false
+        selectGroup: this.$store.state.user.aboutme.currentGroupId
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -73,6 +80,13 @@
         }).catch(() => {
 
         })
+      },
+      switchGroup: function (groupId) {
+        user.switchGroup(groupId)
+          .then(() => {
+            this.$store.dispatch(type.FETCH_ABOUTME)
+            this.$router.push({name: '我的应用'})
+          })
       }
     },
     mounted () {
@@ -81,122 +95,147 @@
       ...mapState({
         aboutMe (state) {
           return state.user.aboutme
+        },
+        myGroups (state) {
+          return state.user.aboutme.accountGroups || []
         }
       })
     }
   }
 </script>
 
-<style scoped lang="scss">
+<style scoped type="text/scss" lang="scss">
   .container {
     position: absolute;
     top: 0px;
     bottom: 0px;
     width: 100%;
 
-  .header {
-    height: 60px;
-    line-height: 60px;
-    background: #20a0ff;
-    color: #fff;
+    header {
+      height: 48px;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      box-sizing: border-box;
+      color: #fff;
 
-  .userinfo {
-    text-align: right;
-    padding-right: 35px;
-    float: right;
+      .header-logo {
+        display: inline-block;
+        vertical-align: middle
+      }
 
-  .userinfo-inner {
-    cursor: pointer;
-    color: #fff;
+      .header-operations {
+        margin: 0;
+        display: inline-block;
+        float: right;
+        padding-right: 30px;
+        height: 100%;
+        align-items: center;
+        display: flex;
+      }
 
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    margin: 10px 0px 10px 10px;
-    float: right;
-  }
+      .groupsInfo {
+        margin-right: 10px;
+      }
 
-  }
-  }
-  .logo {
-    height: 60px;
-    font-size: 22px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-color: rgba(238, 241, 146, 0.3);
-    border-right-width: 1px;
-    border-right-style: solid;
+      .userinfo {
+        color: #fff;
 
-  img {
-    width: 40px;
-    float: left;
-    margin: 10px 10px 10px 18px;
-  }
+        .userinfo-inner {
+          cursor: pointer;
+          color: #fff;
 
-  .txt {
-    color: #fff;
-  }
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            margin: 10px 0px 10px 10px;
+            float: right;
+          }
 
-  }
-  .logo-width {
-    width: 230px;
-  }
+        }
+      }
+      .logo {
+        height: 48px;
+        line-height: 48px;
+        font-size: 22px;
+        border-right-width: 1px;
+        border-right-style: solid;
+        display: inline-block;
+        text-align: center;
+        border-color: white;
 
-  .tools {
-    padding: 0px 23px;
-    width: 14px;
-    height: 60px;
-    line-height: 60px;
-    cursor: pointer;
-  }
+        img {
+          width: 40px;
+          float: left;
+          margin: 10px 10px 10px 18px;
+        }
 
-  }
-  .main {
-    display: flex;
-    position: absolute;
-    top: 60px;
-    bottom: 0px;
-    overflow: hidden;
+        .txt {
+          color: #fff;
+        }
 
-  aside {
-    flex: 0 0 230px;
-    width: 230px;
+      }
+      .logo-width {
+        width: 230px;
+      }
 
-  .el-menu {
-    height: 100%;
-  }
+      .tools {
+        padding: 0px 23px;
+        width: 14px;
+        height: 60px;
+        line-height: 60px;
+        cursor: pointer;
+      }
 
-  }
-  .menu-expanded {
-    flex: 0 0 230px;
-    width: 230px;
-  }
+    }
+    .main {
+      display: flex;
+      position: absolute;
+      top: 48px;
+      bottom: 0px;
+      overflow: hidden;
 
-  .content-container {
-    flex: 1;
-    overflow-y: scroll;
-    padding: 20px;
+      aside {
+        flex: 0 0 230px;
+        width: 230px;
 
-  .breadcrumb-container {
+        .el-menu {
+          height: 100%;
+        }
 
-  .title {
-    width: 200px;
-    float: left;
-    color: #475669;
-  }
+      }
+      .menu-expanded {
+        flex: 0 0 230px;
+        width: 230px;
+      }
 
-  .breadcrumb-inner {
-    float: right;
-  }
+      .content-container {
+        flex: 1;
+        overflow-y: scroll;
+        padding: 20px;
 
-  }
-  .content-wrapper {
-    background-color: #fff;
-    box-sizing: border-box;
-  }
+        .breadcrumb-container {
 
-  }
-  }
+          .title {
+            width: 200px;
+            float: left;
+            color: #475669;
+          }
+
+          .breadcrumb-inner {
+            float: right;
+          }
+
+        }
+        .content-wrapper {
+          background-color: #fff;
+          box-sizing: border-box;
+        }
+
+      }
+    }
   }
 </style>
