@@ -3,7 +3,7 @@
  */
 import axios from 'axios'
 import router from '../router'
-import { DEFAULT_BASE_URL } from '@/config'
+import {DEFAULT_BASE_URL} from '@/config'
 import {Notification} from 'element-ui'
 
 // axios 配置
@@ -34,12 +34,17 @@ axios.interceptors.response.use(
           // 401 清除token信息并跳转到登录页面
           localStorage.removeItem('token')
           router.replace({
-            path: 'login',
+            name: 'Login',
             query: {redirect: router.currentRoute.fullPath}
           })
           break
+        default:
+          Notification({
+            title: '错误信息',
+            message: JSON.stringify(error.response.data.data),
+            type: 'error'
+          })
       }
-      Notification.error(JSON.stringify(error.response.data.data))
     }
     // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
     return Promise.reject(error.response.data)
