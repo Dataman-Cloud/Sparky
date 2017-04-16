@@ -10,7 +10,7 @@
           <el-button type="primary" v-on:click="listApp">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">新增</el-button>
+          <el-button type="primary" v-on:click="newApp">新增</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -121,6 +121,10 @@
           curGroupName: this.curGroupName,
           curGroupId: this.curGroupId
         }).then(() => { this.listLoading = false })
+      },
+      //  跳转到新建app
+      newApp () {
+        this.$router.push('/app/create')
       }
     },
     mounted () {

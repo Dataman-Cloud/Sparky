@@ -9,6 +9,8 @@ import ImageList from '@/views/image/list/List'
 import * as appType from '@/store/app/mutations_types'
 import * as imageType from '@/store/image/mutations_types'
 
+const createApp = r => require.ensure([], () => r(require('../views/app/create-update/create')), 'create')
+
 Vue.use(Router)
 
 export default new Router({
@@ -55,6 +57,11 @@ export default new Router({
               Message.warning('只有超级管理员可以访问')
             }
           }
+        },
+        { path: 'create',
+          name: '创建应用',
+          component: createApp,
+          hidden: true
         }
       ]
     },

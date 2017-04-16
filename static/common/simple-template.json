@@ -1,0 +1,18 @@
+{
+  "appName": "simpletemplate",
+  "cmd": null,
+  "cpus": 0.1,
+  "mem": 128,
+  "disk": 0,
+  "instances": 1,
+  "mode": "replicates",
+  "runAs": "用户名/组名称",
+  "constraints": "equal vcluster 集群名称",
+  "container": {
+    "docker": {
+      "image": "blackicebird/2048:latest",
+      "network": "host"
+    },
+    "type": "DOCKER"
+  }
+}

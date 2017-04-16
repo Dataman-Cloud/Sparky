@@ -23,3 +23,11 @@ export function listGroupApps (curGroupName, curGroupId) {
 export function listAllApps () {
   return axios.get(`v2/apps`)
 }
+
+export function createApp (data) {
+  return axios.post(`v2/apps`, data)
+}
+
+export function getStackExample () {
+  return axios.get(`../../static/common/constants.json`)
+}

@@ -19,6 +19,7 @@
     "vue": "^2.2.2",
     "vue-moment": "^2.0.2",
     "vue-router": "^2.2.0",
+    "vue2-ace-editor": "^0.0.2",
     "vuex": "^2.2.1"
   },
   "devDependencies": {
