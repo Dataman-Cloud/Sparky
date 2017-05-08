@@ -24,7 +24,7 @@
         logining: false,
         loginForm: {
           userName: 'admin',
-          password: 'Admin1234'
+          password: 'Dataman1234'
         },
         rules: {
           userName: [

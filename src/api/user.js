@@ -15,6 +15,6 @@ export function aboutme () {
   return axios.get(`v1/aboutme`)
 }
 
-export function switchGroup (groupId) {
-  return axios.patch(`v1/currentgroup`, {groupId: groupId})
+export function switchGroup (groupID) {
+  return axios.patch(`v1/currentgroup`, {groupID: groupID})
 }

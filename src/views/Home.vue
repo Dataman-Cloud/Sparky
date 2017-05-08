@@ -9,7 +9,10 @@
           <el-option
             v-for="item in myGroups"
             :label="item.group.name"
-            :value="item.groupId">
+            :value="item.groupID">
+
+            <span style="float: left">{{ item.group.name }}</span>
+            <span v-if="item.role.role !== 'superuser'" style="float: right; color: #8492a6; font-size: 13px">{{ item.role.role }}</span>
           </el-option>
         </el-select>
         <el-dropdown trigger="hover" class="userinfo">
@@ -59,7 +62,7 @@
     data () {
       return {
         sysName: 'DM/OS',
-        selectGroup: this.$store.state.user.aboutme.currentGroupId
+        selectGroup: this.$store.state.user.aboutme.currentGroupID
       }
     },
     beforeRouteEnter (to, from, next) {
