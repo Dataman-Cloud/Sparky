@@ -43,7 +43,7 @@
           .then(data => {
             this.logining = false
             localStorage.setItem('token', data.data)
-            this.$router.push({name: '我的应用'})
+            this.$router.push({name: '全部的应用'})
           }, rej => {
             this.logining = false
           })

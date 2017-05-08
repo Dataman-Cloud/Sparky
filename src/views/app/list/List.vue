@@ -85,17 +85,8 @@
     },
     computed: {
       ...mapState({
-        accountName (state) {
-          return state.user.aboutme.userName
-        },
-        accountId (state) {
-          return state.user.aboutme.id
-        },
-        curGroupName (state) {
-          return state.user.aboutme.currentGroupName
-        },
         curGroupId (state) {
-          return state.user.aboutme.currentGroupId
+          return state.user.aboutme.currentGroupID
         },
         apps (state) {
           return state.app.apps.apps
@@ -114,11 +105,7 @@
       },
       //  获取用户列表
       listApp () {
-        return this.$store.dispatch(type.FETCH_TABLE_APPS, {
-          actionType: this.$route.meta.type,
-          accountName: this.accountName,
-          accountId: this.accountId,
-          curGroupName: this.curGroupName,
+        return this.$store.dispatch(type.FETCH_APPS, {
           curGroupId: this.curGroupId
         }).then(() => { this.listLoading = false })
       }
