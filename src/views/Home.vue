@@ -53,7 +53,8 @@
   import store from '../store'
   import {mapState} from 'vuex'
   import * as user from '../api/user'
-  import * as type from '../store/user/type'
+  import * as userType from '../store/user/type'
+  import * as appType from '../store/app/mutations_types'
 
   export default {
     components: {
@@ -66,7 +67,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-      store.dispatch(type.FETCH_ABOUTME)
+      store.dispatch(userType.FETCH_ABOUTME)
         .then(() => {
           next()
         })
@@ -87,8 +88,11 @@
       switchGroup: function (groupId) {
         user.switchGroup(groupId)
           .then(() => {
-            this.$store.dispatch(type.FETCH_ABOUTME)
-            this.$router.push({name: '我的应用'})
+            this.$store.dispatch(userType.FETCH_ABOUTME)
+              .then(() => {
+                this.$store.dispatch(appType.FETCH_APPS, {curGroupId: groupId})
+                  .then(() => this.$router.push({name: '全部的应用'}))
+              })
           })
       }
     },
