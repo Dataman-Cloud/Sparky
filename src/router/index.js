@@ -1,12 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '../store'
-import { Message } from 'element-ui'
 import Login from '@/views/Login'
 import Home from '@/views/Home'
 import AppList from '@/views/app/list/List'
 import ImageList from '@/views/image/list/List'
-import * as appType from '@/store/app/mutations_types'
 import * as imageType from '@/store/image/mutations_types'
 
 Vue.use(Router)
@@ -24,37 +21,13 @@ export default new Router({
       path: '/app',
       component: Home,
       name: '应用',
-      redirect: {name: '我的应用'},
+      redirect: {name: '全部的应用'},
       iconCls: 'el-icon-message', // 图标样式class
       children: [
         {
-          path: 'list/myApps',
-          name: '我的应用',
-          component: AppList,
-          meta: {
-            type: appType.FETCH_MY_APPS
-          }
-        },
-        { path: 'list/groupApps',
-          name: '组的应用',
-          component: AppList,
-          meta: {
-            type: appType.FETCH_GROUP_APPS
-          }
-        },
-        { path: 'list/allApps',
-          name: '全部应用',
-          component: AppList,
-          meta: {
-            type: appType.FETCH_ALL_APPS
-          },
-          beforeEnter: (to, from, next) => {
-            if (store.getters.isSuperUser) {
-              next()
-            } else {
-              Message.warning('只有超级管理员可以访问')
-            }
-          }
+          path: 'list/apps',
+          name: '全部的应用',
+          component: AppList
         }
       ]
     },
