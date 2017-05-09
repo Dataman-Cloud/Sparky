@@ -4,9 +4,9 @@
 import axios from './http'
 
 export function listGroupImages () {
-  return axios.get(`v1/registry/repositories/mine`)
+  return axios.get(`v1/repositories`)
 }
 
 export function listPublicImages () {
-  return axios.get(`v1/registry/repositories/mine`, {params: {keywords: 'library'}})
+  return axios.get(`v1/repositories`, {params: {keywords: 'library'}})
 }
