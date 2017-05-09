@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import user from './user/module'
+import user from './user'
 import app from './app'
 import image from './image'
 

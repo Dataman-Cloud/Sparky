@@ -18,3 +18,7 @@ export function aboutme () {
 export function switchGroup (groupID) {
   return axios.patch(`v1/currentgroup`, {groupID: groupID})
 }
+
+export function users () {
+  return axios.get(`v1/accounts`)
+}
