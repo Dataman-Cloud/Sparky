@@ -5,6 +5,7 @@ import Home from '@/views/Home'
 import AppList from '@/views/app/list/List'
 import ImageList from '@/views/image/list/List'
 import UserList from '@/views/user/list/List'
+import ClusterList from '@/views/resource/cluster/list/List'
 import * as imageType from '@/store/image/mutations_types'
 
 Vue.use(Router)
@@ -52,6 +53,19 @@ export default new Router({
           meta: {
             type: imageType.FETCH_PUBLIC_IMAGES
           }
+        }
+      ]
+    },
+    {
+      path: '/resource',
+      component: Home,
+      name: '资源',
+      redirect: {name: '集群'},
+      iconCls: 'fa fa-cubes',
+      children: [
+        { path: 'cluster/list',
+          name: '集群',
+          component: ClusterList
         }
       ]
     },
