@@ -244,8 +244,7 @@
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showCodeMirror">
           <codemirror
-            :code="showForm"
-            :options="editorOptions">
+            v-model="showForm">
           </codemirror>
         </div>
         <br/><br/>
@@ -265,15 +264,14 @@
   import * as appTypes from '@/store/app/mutations_types'
   import HealthCheck from '@/common/model/HealthCheck'
   import { mapState } from 'vuex'
-  import { codemirror } from 'vue-codemirror'
-  import 'codemirror/keymap/sublime'
+  import Codemirror from '@/components/jsonEditor/index'
   import * as defaultOptions from '@/common/defaultConfig'
   import { Notification } from 'element-ui'
   import { app } from 'utils/app'
   
   export default {
     components: {
-      codemirror
+      Codemirror
     },
     data () {
       return {
@@ -313,7 +311,7 @@
       showForm: {
         get () {
           let F2 = this.transForm()
-          return JSON.stringify(F2, null, 2)
+          return F2
         },
         set (newValue) {
           console.log('***********************' + newValue)
