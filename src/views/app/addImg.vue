@@ -252,7 +252,7 @@
 
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showForm">
-          <codemirror v-model="showForm" :options="editorOptions" class="codemirror">
+          <codemirror v-model="showForm" class="codemirror">
           </codemirror>
         </div>
         <!-- <el-form-item class="jsonText">
@@ -285,12 +285,12 @@
   import HealthCheck from '@/common/model/HealthCheck'
   import { mapState } from 'vuex'
   import * as editorOptions from '@/common/defaultConfig'
-  import { codemirror } from 'vue-codemirror'
+  import Codemirror from '@/components/jsonEditor/index'
   import { Notification } from 'element-ui'
 
   export default {
     components: {
-      codemirror
+      Codemirror
     },
     data () {
       return {
@@ -453,7 +453,7 @@
           if (F1.cmd != null) {
             F2.cmd = this.ruleForm.cmd
           }
-          return JSON.stringify(F2, null, 2)
+          return F2
         },
         set (newValue) {
 //          console.log('***********************' + newValue)
