@@ -7,10 +7,25 @@ import getters from './getters'
 
 const state = {
   aboutme: {},
+  userinfo: null,
+  userEdit: {},
   users: {
     users: [],
     total: 0
-  }
+  },
+  groups: {
+    groups: [],
+    total: 0
+  },
+  usersInGroups: {
+    users: [],
+    total: 0
+  },
+  repos: {
+    repos: [],
+    total: 0
+  },
+  sysResources: []
 }
 
 export default {

@@ -17,6 +17,8 @@
 
 <script>
   import * as user from '../api/user'
+  import { Notification } from 'element-ui'
+  import * as usertype from '../store/user/mutations_types'
 
   export default {
     data () {
@@ -41,12 +43,36 @@
         this.logining = true
         user.login(this.loginForm)
           .then(data => {
-            this.logining = false
-            localStorage.setItem('token', data.data)
-            this.$router.push({name: '全部的应用'})
+/*            this.logining = false
+            localStorage.setItem('token', data.token)
+            this.$router.push({name: '全部的应用'}) */
+            this.showResult(data, '登录', '登录', () => {
+              this.logining = false
+              localStorage.setItem('token', data.token)
+              this.$store.dispatch(usertype.PUT_SYSRESOURCES, data.sysResources)
+              this.$router.push({name: '全部的应用'})
+            })
           }, rej => {
             this.logining = false
           })
+      },
+      showResult (data, success, errorTitle, callback) {
+        success = success || '操作成功'
+        errorTitle = errorTitle || '操作失败'
+        if (data.resultCode === '00') {
+          // 删除成功后重新请求数据
+          // 删除成功提示
+          if (callback) {
+            callback()
+          }
+        } else {
+          Notification({
+            title: errorTitle,
+            message: JSON.stringify(data.message),
+            type: 'error'
+          })
+          this.logining = false
+        }
       }
     }
   }

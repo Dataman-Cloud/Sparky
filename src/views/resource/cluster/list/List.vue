@@ -7,25 +7,43 @@
           <el-input v-model="filters.name" placeholder="集群名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="">查询</el-button>
+          <el-button type="primary" @click="">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="openAddCluster">新增集群</el-button>
         </el-form-item>
       </el-form>
     </el-col>
 
     <!--列表-->
-    <el-table :data="filterClusters" highlight-current-row v-loading="listLoading" style="width: 100%;">
-      <el-table-column prop="clusterLabel" label="名称" min-width="100" sortable>
-      </el-table-column>
-      <el-table-column prop="desc" label="描述" min-width="100" sortable>
-      </el-table-column>
-      <el-table-column prop="groupName" label="组名称" min-width="100" sortable>
-      </el-table-column>
-      <el-table-column prop="updatedAt" label="更新时间" min-width="100" sortable>
-        <template scope="cluster">
-          {{cluster.row.updatedAt | moment("YYYY/MM/DD hh:mm:ss")}}
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-col :span="24">
+      <el-table :data="filterClusters" highlight-current-row v-loading="listLoading">
+        <el-table-column prop="clusterLabel" label="名称" min-width="100" sortable>
+          <template scope="cluster">
+            <router-link :to="{name: '集群信息', query:{clusterId:cluster.row.id}}">
+              {{cluster.row.vClusterLabel }}
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="description" label="描述" min-width="100" sortable>
+        </el-table-column>
+        <el-table-column prop="groupName" label="组名称" min-width="100" sortable>
+        </el-table-column>
+        <el-table-column prop="updatedAt" label="更新时间" min-width="100" sortable>
+          <template scope="cluster">
+            {{cluster.row.updatedAt | moment("YYYY/MM/DD hh:mm:ss")}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="" label="操作" min-width="200" sortable>
+          <template scope="cluster">
+            <el-button type="info" size="small" @click="openBox(cluster.row)">添加主机</el-button>
+            <el-button type="danger" size="small" @click="delCluster(cluster.row)">删除集群</el-button>
+          </template>
+
+        </el-table-column>
+      </el-table>
+    </el-col>
+
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
@@ -33,12 +51,27 @@
                      style="float:right;">
       </el-pagination>
     </el-col>
+
+
+    <el-dialog
+      title="添加主机"
+      :visible.sync="dialogVisible"
+      size="small"
+      :before-close="handleClose">
+      <el-transfer v-model="checkNodeIps" :data="availableNodes" :titles="titles"></el-transfer>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addNode">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </section>
 </template>
 
 <script>
   import {mapState} from 'vuex'
-  import * as type from '../../../../store/resource/mutations_types'
+  import * as type from '@/store/clusters/mutations_types'
+  import * as nodeType from '@/store/node/mutations_types'
 
   export default {
     data () {
@@ -47,20 +80,35 @@
           name: ''
         },
         page: 1,
-        listLoading: false
+        listLoading: false,
+        dialogVisible: false,
+        checkNodeIps: [],
+        availableNodes: [],
+        titles: ['可选主机', '已选择主机'],
+        vClusterId: null
       }
     },
     computed: {
       ...mapState({
-        clusters (state) {
-          return state.resource.cluster.clusters.clusters
+        clusters ({ clusters }) {
+          return clusters.clusters.clusters
         },
-        total (state) {
-          return state.resource.cluster.clusters.total
+        total ({ clusters }) {
+          return clusters.clusters.total
         }
       }),
-      filterClusters: function () {
-        return this.clusters.slice((this.page - 1) * 20, this.page * 20)
+      filterClusters () {
+        if (this.clusters) {
+          // 先写了一个filter， TODO 异步，后端分页
+          if (this.filters && this.filters.name) {
+            return this.clusters.filter((cluster) => {
+              let reg = new RegExp(this.filters.name)
+              return reg.test(cluster.vClusterLabel)
+            })
+          }
+          return this.clusters.slice((this.page - 1) * 20, this.page * 20)
+        }
+        return null
       }
     },
     methods: {
@@ -72,6 +120,51 @@
         return this.$store.dispatch(type.FETCH_CLUSTERS).then(() => {
           this.listLoading = false
         })
+      },
+      // 打开添加集群
+      openAddCluster () {
+        this.$router.push({path: '/resource/cluster/add'})
+      },
+      // 删除集群
+      delCluster (cluster) {
+        this.$store.dispatch(type.DEL_CLUSTER, cluster.id).then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success',
+            onClose: this.listCluster
+          })
+        })
+      },
+      // 打开添加主机
+      openBox (cluster) {
+        this.$store.dispatch(nodeType.FETCH_ALL_NODE).then((data) => {
+          let availableNodeIps = []
+          for (let n of data.data) {
+            if ((!n.clusterLable) && n.nodeRole === 'slave') {
+              availableNodeIps.push({key: n.hostName, lable: n.hostName})
+            }
+          }
+          this.vClusterId = cluster.id
+          this.availableNodes = availableNodeIps
+          this.dialogVisible = true
+        })
+      },
+      // 添加主机
+      addNode () {
+        if (this.checkNodeIps.length === 0) {
+          this.dialogVisible = false
+          return
+        }
+        let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.vClusterId}
+        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
+          this.dialogVisible = false
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+        })
+      },
+      handleClose () {
       }
     },
     mounted () {
@@ -80,7 +173,7 @@
         .then(() => {
           this.listLoading = false
         })
-      this.interval = setInterval(() => this.listCluster(), 5000)
+     //  this.interval = setInterval(() => this.listCluster(), 5000)
     },
     beforeDestroy: function () {
       clearInterval(this.interval)

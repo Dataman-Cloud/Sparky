@@ -1,1 +1,0 @@
-export const FETCH_CLUSTERS = 'FETCH_CLUSTERS'

@@ -9,8 +9,8 @@
           <el-option
             v-for="item in myGroups"
             :label="item.group.name"
-            :value="item.groupID">
-
+            :value="item.groupId"
+            :key="item.groupId">
             <span style="float: left">{{ item.group.name }}</span>
             <span v-if="item.role.role !== 'superuser'" style="float: right; color: #8492a6; font-size: 13px">{{ item.role.role }}</span>
           </el-option>
@@ -32,7 +32,7 @@
           <el-col :span="24" class="breadcrumb-container">
             <strong class="title">{{$route.name}}</strong>
             <el-breadcrumb separator="/" class="breadcrumb-inner">
-              <el-breadcrumb-item v-for="item in $route.matched">
+              <el-breadcrumb-item v-for="item in $route.matched" :to="item" :key="item.name">
                 {{ item.name }}
               </el-breadcrumb-item>
             </el-breadcrumb>
@@ -63,7 +63,7 @@
     data () {
       return {
         sysName: 'DM/OS',
-        selectGroup: this.$store.state.user.aboutme.currentGroupID
+        selectGroup: this.$store.state.user.aboutme.currentGroupId
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -85,14 +85,20 @@
 
         })
       },
-      switchGroup: function (groupId) {
-        user.switchGroup(groupId)
-          .then(() => {
-            this.$store.dispatch(userType.FETCH_ABOUTME)
-              .then(() => {
-                this.$store.dispatch(appType.FETCH_APPS, {curGroupId: groupId})
-                  .then(() => this.$router.push({name: '全部的应用'}))
-              })
+      switchGroup () {
+        user.switchGroup(this.selectGroup)
+          .then(data => {
+            this.$store.dispatch(userType.PUT_SYSRESOURCES, data.sysResources).then(() =>
+              this.$store.dispatch(userType.FETCH_ABOUTME)
+                .then(() => {
+                  console.log(appType + '--------------')
+                  this.$router.push({path: '/app/list/'})
+                  /*
+                   this.$store.dispatch(appType.FETCH_APPS, this.selectGroup)
+                   .then(() => this.$router.push({name: '全部的应用'}))
+                   */
+                })
+            )
           })
       }
     },
@@ -244,5 +250,8 @@
 
       }
     }
+  }
+  .breadcrumb-container{
+    margin-bottom: 20px;
   }
 </style>
