@@ -13,6 +13,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import vueMoment from 'vue-moment'
 import './styles/element-variables.css'
 import './styles/theme/index.css'
+import './styles/element-ui.css' // 覆盖element-ui
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
