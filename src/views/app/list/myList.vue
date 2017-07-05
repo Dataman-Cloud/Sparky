@@ -232,11 +232,9 @@
     computed: {
       activeSelfGroup: {
         get: function () {
-          console.log('****************' + sessionStorage.getItem('activeSelfGroup'))
           return sessionStorage.getItem('activeSelfGroup')
         },
         set: function (name) {
-          console.log('****************' + sessionStorage.getItem('activeSelfGroup') + '============' + name)
           sessionStorage.setItem('activeSelfGroup', name)
         }
       },
@@ -253,7 +251,6 @@
         },
         appgroups (state) {
           let appgroups = state.appgroups.selfGroups
-//          console.log('*********************appgroups=' + JSON.stringify(state))
           for (let item of appgroups) {
             let healthy = 0
             for (let app of item.apps) {
@@ -263,7 +260,6 @@
             }
             item.healthy = healthy
           }
-//          console.log('*********************appgroups=' + JSON.stringify(appgroups))
           return appgroups
         },
         queue (state) {
@@ -274,13 +270,11 @@
         }
       }),
       filterApps: function () {
-//        console.log(this.page)
         return this.apps.slice((this.page - 1) * 20, this.page * 20)
       }
     },
     methods: {
       getHealthyCount (arr) {
-//        console.log('**********************' + JSON.stringify(arr))
         if (arr !== undefined && arr != null && arr.length) {
           let healthy = 0
           for (let app of arr) {
@@ -288,12 +282,10 @@
               healthy += 1
             }
           }
-//          console.log('-==============================' + healthy)
           return healthy + '/' + arr.length
         }
       },
       removeModel (index) {
-//        var noticeMessage = this.$message
         this.$confirm('是否删除应用', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

@@ -38,13 +38,10 @@
       handleSelect: function (a, b) {
       },
       isshow (routeName) {
-        console.log(routeName)
         return this.sysResources.filter(res => res.resourceName === routeName).length > 0
       }
     },
-    mounted () {
-      console.log(this.$router.options.routes)
-    }
+    mounted () {}
   }
 </script>
 

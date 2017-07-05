@@ -156,9 +156,6 @@
               v['isRole'] = true
             }
           }
-          console.log('===-----999-------999999------')
-          console.log(group)
-          console.log(modelList)
           return modelList
         } else {
           return []

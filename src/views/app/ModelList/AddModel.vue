@@ -427,7 +427,6 @@
           return state.model.model.model
         },
         setObjModelJSON (state) {
-          console.log(state.model.model.model)
           let appModel = JSON.parse(state.model.model.model.json)
           // 封装应用模版信息进行显示
           this.ruleForm.id = state.model.model.model.id // id
@@ -665,7 +664,6 @@
         return result
       },
       checkModelRole () { // 检查当前登录用户是否有该模板操作的权限
-        console.log(this.isRole + '2-----------------------')
         /* -- 判断权限 -- */
         // 当前登录用户的当前组信息
         let groups = []
@@ -876,11 +874,9 @@
               appModel.labels['CURRENT_VERSION'] = this.cscForm.version
               appModel.labels['DEPLOY_TIMES'] = '1'
               appModel.labels['PACKAGE_TYPE'] = this.getPackageType
-              console.log(appModel)
               // 创建应用接口
               this.$store.dispatch(appType.ADD_APP, appModel)
                 .then((data) => {
-                  console.log(data)
                   if (data.resultCode === '00') {
                     // 更新状态为完成
                     this.cscForm.success = true
@@ -913,7 +909,6 @@
               this.$store.dispatch(modelType.FETCH_UPDATA_MODEL, {
                 modelInfo: modelInfo
               }).then((data) => {
-                console.log(data)
                 if (data.resultCode === '00') {
                   // 更新成功
                   this.$router.push({path: '/app/list/appsModel'})
@@ -941,7 +936,6 @@
                 })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })

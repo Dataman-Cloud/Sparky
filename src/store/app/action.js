@@ -13,7 +13,6 @@ export default {
       })
   },
   [type.ADD_APP] (context, playload) {
-    // console.log('******************params=' + JSON.stringify(playload))
     return api.add(playload)
       .then(data => {
         return data
@@ -83,8 +82,6 @@ export default {
     })
   },
   [type.UPDATE_APPLIST] (context, playload) {
-    console.log('111-----------------------------------')
-    console.log(playload)
     return api.updateAppList(playload)
   }
 
