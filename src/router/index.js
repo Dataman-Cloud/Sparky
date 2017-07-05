@@ -69,11 +69,6 @@ export default new Router({
           component: myAppList
         },
         {
-          path: 'list/myApps',
-          name: '批量发布',
-          component: myAppList
-        },
-        {
           path: 'list/appsModel',
           name: '应用模版',
           component: AppModelList

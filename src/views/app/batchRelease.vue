@@ -197,7 +197,6 @@
             this.apps[v].reset = true
             */
           }
-          console.log(this.apps)
         }
       })
     },
@@ -246,7 +245,6 @@
               this.getAPP
               /* ----- 清空值 ----- */
               for (let i = 0; i < this.apps.length; ++i) {
-                console.log(this.$refs['upload' + i])
               }
               this.uploadRowIndex = -1 // 当前操作的upload行数索引，默认-1
               this.uploadRowIndexObj = {}
@@ -298,7 +296,6 @@
       },
       // 勾选复选框时的触发事件
       selectApps (selection, row) {
-        console.log(selection)
         this.uploadAPPS = selection
       },
       // 点击上传文件按钮触发，在这里会触发beforeAvatarUpload
@@ -306,7 +303,6 @@
         // 保存当前行
         this.uploadRowIndex = index
         // 判断文件队列
-        console.log(this.uploadFileList['list' + index])
         if (this.uploadFileList['list' + index] === undefined) {
           this.$message.error('请选择文件')
         } else if (this.uploadFileList['list' + index].length > 1) {
@@ -320,8 +316,6 @@
       },
       // 文件列表移除文件时的钩子
       uploadRemove (file, fileList) {
-        console.log('移除')
-        console.log(file)
         this.$refs.multipleTable.toggleRowSelection(this.apps[this.uploadRowIndexObj[file.uid]])
       },
       // 文件上传时会调用
@@ -334,7 +328,6 @@
           this.uploadRowIndexObj[file.uid] = this.uploadRowIndex
           // 记录该行上传的文件个数
           this.uploadFileList['list' + this.uploadRowIndexObj[file.uid]] = fileList
-          console.log('准备', file)
         } else if (file.status === 'success') { // 上传成功
           if (file.response.resultCode !== '00') {
             this.$message.error('上传失败')
@@ -354,7 +347,6 @@
             // 更改包版本号
             app.labels.PACKAGE_VERSION = `${app.labels.PACKAGE_VERSION},${app.labels.CURRENT_VERSION}`
             app.labels.DEFAULT_PACKAGE_VERSION = new Date()
-            console.log(app)
             // 选中此行
             this.$refs.multipleTable.toggleRowSelection(this.apps[this.uploadRowIndexObj[file.uid]])
           }
@@ -398,11 +390,7 @@
       },
       // 选中某一行时的触发
       select (selection, row) {
-        console.log('select')
-        console.log(selection)
-        console.log('row', row)
         this.uploadAPPS = selection
-        console.log(this.uploadAPPS)
       },
       // 批量更新应用
       updateAPPList () {
@@ -412,9 +400,6 @@
             ua.push(v.appInfo)
           }
           let json = JSON.stringify(ua, null, 4)
-          console.log('-----------------------------')
-          console.log(ua)
-          console.log(json)
           this.$store.dispatch(appTypes.UPDATE_APPLIST, json)
             .then((data) => {
               if (data.resultCode !== '00') {

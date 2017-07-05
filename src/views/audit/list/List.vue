@@ -240,9 +240,6 @@
       filterAudits: function () {
         // console.log(this.apps.slice((this.page - 1) * this.pageSize, this.page * this.pageSize))
         // 从已有数组中返回元素
-        console.log('------------------------------------------llllllllllllllllllllllll')
-        console.log(this.total)
-        console.log(this.getAudit)
         /*
         if (this.getAudit.length !== 0) {
           return this.getAudit.audits.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)

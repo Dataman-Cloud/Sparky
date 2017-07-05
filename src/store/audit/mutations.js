@@ -2,8 +2,6 @@ import * as type from './mutations_types'
 
 export default {
   [type.FETCH_AUDIT_SELECT] (state, payload) {
-    console.log('88888888888888888888------------------------------------------')
-    console.log(payload)
     payload.audits.forEach((value, index) => {
       try {
         payload.audits[index].resultMessage = JSON.parse(payload.audits[index].result)
@@ -13,7 +11,6 @@ export default {
         payload.audits[index].requestMessage = {'msg': payload.audits[index].request}
       }
     })
-    console.log(payload)
     state.audit.audit = payload
   },
   [type.FETCH_AUDIT_OPERATIONS] (state, payload) {
