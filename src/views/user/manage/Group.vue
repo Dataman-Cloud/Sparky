@@ -117,7 +117,7 @@
 
     <!-- 添加用户到当前选择的组 -->
     <el-dialog title="用户添加" :visible.sync="dialog_addUserToGroup" size="tiny" style="text-align: left">
-      <el-form :model="userForm" :rules="rules" ref="userForm">
+      <el-form :model="userForm" :rules="rules" label-width="80px" label-position="left" ref="userForm">
         <el-form-item label="用户" prop="userName">
           <el-select v-model="userForm.userName" placeholder="请选择用户">
             <el-option v-for="user in users" :label="user.userName" :value="user.id" :key="user.id"></el-option>
