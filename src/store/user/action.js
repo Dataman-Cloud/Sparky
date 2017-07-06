@@ -2,8 +2,9 @@
  * Created by my9074 on 2017/4/8.
  */
 import * as type from './mutations_types'
-import * as api from '../../api/user'
-import * as clusterApi from '../../api/cluster'
+import * as api from 'api/user'
+import * as clusterApi from 'api/cluster'
+import Cookies from 'js-cookie'
 
 export default {
   [type.FETCH_ABOUTME] (context) {
@@ -109,7 +110,16 @@ export default {
   [type.FETCH_REPO_DEL] (context, playload) {
     return api.repoDel(playload)
   },
-  [type.PUT_SYSRESOURCES] (context, playload) {
-    context.commit(type.PUT_SYSRESOURCES, playload)
+  [type.LOG_IN] ({ commit }, { userName, password }) {
+    return new Promise((resolve, reject) => {
+      api.login(userName, password).then(response => {
+        Cookies.set('token', response.token)
+        commit(type.PUT_TOKEN, response.token)
+        commit(type.PUT_SYSRESOURCES, response.sysResources)
+        resolve(response.sysResources)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
