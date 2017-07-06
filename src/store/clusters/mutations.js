@@ -15,9 +15,6 @@ export default {
   [type.CLUSTER_INFO] (state, payload) {
     state.clusters.currClusters = payload
   },
-  [type.FETCH_AVAILABLE_NODE] (state, payload) {
-    state.clusters.currAvailableNode = payload
-  },
   [type.CHANGE_CLUSTER_NODE] (state, payload) {
   },
   [type.FETCH_CLUSTERS_IN_GROUPS] ({ clusters }, payload) {
