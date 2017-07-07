@@ -42,8 +42,8 @@
       login (ev) {
         let { dispatch } = this.$store
         this.loading = true
-        dispatch(LOG_IN, this.loginForm).then(_ => {
-          return dispatch('GenerateRoutes').then(_ => {
+        dispatch(LOG_IN, this.loginForm).then(res => {
+          return dispatch('GenerateRoutes', res).then(_ => {
             this.loading = false
             this.$router.push({name: '全部的应用'})
           }).catch(error => {

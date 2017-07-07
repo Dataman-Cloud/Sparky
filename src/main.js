@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
       next({name: '全部的应用'})
     } else {
       if (!store.getters.permissionRoutes) {
-        store.dispatch('GenerateRoutes').then(_ => {
+        store.dispatch('GenerateRoutes', store.getters.sysResources).then(_ => {
           // 这里最好不要改，很坑
           router.addRoutes(store.getters.appendRouters)
           next(Object.assign({}, to))
