@@ -10,6 +10,8 @@ import appgroups from './appgroups'
 import audit from './audit'
 import model from './model'
 import elastic from './elastic'
+import permission from './permission'
+import getters from './getters'
 
 Vue.use(Vuex)
 
@@ -24,6 +26,8 @@ export default new Vuex.Store({
     appgroups,
     audit,
     model,
-    elastic
-  }
+    elastic,
+    permission
+  },
+  getters
 })

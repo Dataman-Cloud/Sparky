@@ -50,11 +50,11 @@
 
 <script>
   import NavMenu from './NavMenu'
-  import store from '../store'
+  import store from 'store'
   import {mapState} from 'vuex'
-  import * as user from '../api/user'
-  import * as userType from '../store/user/mutations_types'
-  import * as appType from '../store/app/mutations_types'
+  import * as user from 'api/user'
+  import * as userType from 'store/user/mutations_types'
+  import * as appType from 'store/app/mutations_types'
 
   export default {
     components: {
