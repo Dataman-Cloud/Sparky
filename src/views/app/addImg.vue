@@ -25,8 +25,8 @@
         </el-form-item>
         <el-form-item label="选择主机" prop="master">
           <el-select v-model="ruleForm.master" placeholder="请选择主机">
-            <el-option v-for="item in this.node.slaves" :label="item.hostname" :value="item.hostname"
-                       :key="item.hostname"></el-option>
+            <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName"
+                       :key="item.hostName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="应用组" prop="group">

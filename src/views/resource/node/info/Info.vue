@@ -2,28 +2,28 @@
   <section>
     <el-form label-position="left" inline class="demo-table-expand">
       <el-form-item label="主机名称">
-        <span>{{nodeInfo.name }}</span>
+        <span>{{nodeInfo.Name }}</span>
       </el-form-item>
       <el-form-item label="主机IP">
         <span>{{this.$route.query.nodeIp }}</span>
       </el-form-item>
       <el-form-item label="系统版本">
-        <span>{{nodeInfo.operatingSystem }}</span>
+        <span>{{nodeInfo.OperatingSystem }}</span>
       </el-form-item>
       <el-form-item label="内核版本">
-        <span>{{nodeInfo.kernelVersion }}</span>
+        <span>{{nodeInfo.KernelVersion }}</span>
       </el-form-item>
       <el-form-item label="镜像个数">
-        <span>{{nodeInfo.images }}</span>
+        <span>{{nodeInfo.Images }}</span>
       </el-form-item>
       <el-form-item label="CPU">
-        <span>{{nodeInfo.nCPU }}</span>
+        <span>{{nodeInfo.NCPU }}</span>
       </el-form-item>
       <el-form-item label="内存">
-        <span>{{formatFileSize(nodeInfo.memTotal) }}</span>
+        <span>{{formatFileSize(nodeInfo.MemTotal) }}</span>
       </el-form-item>
       <el-form-item label="系统时间">
-        <span>{{nodeInfo.systemTime | moment("YYYY/MM/DD hh:mm:ss") }}</span>
+        <span>{{nodeInfo.RegistryConfig.SystemTime | moment("YYYY/MM/DD hh:mm:ss") }}</span>
       </el-form-item>
       <br clear="all"/>
     </el-form>
@@ -32,42 +32,42 @@
 
       <br clear="all"/>
       <el-form-item label="版本">
-        <span>{{nodeInfo.serverVersion }}</span>
+        <span>{{nodeInfo.ServerVersion }}</span>
       </el-form-item>
       <el-form-item label="存储驱动">
-        <span>{{nodeInfo.driver }}</span>
+        <span>{{nodeInfo.Driver }}</span>
       </el-form-item>
       <el-form-item label="Docker 存储目录">
-        <span>{{nodeInfo.dockerRootDir }}</span>
+        <span>{{nodeInfo.DockerRootDir }}</span>
       </el-form-item>
       <el-form-item label="Debug 模式">
-        <span>{{nodeInfo.debug ? '是' : '否' }}</span>
+        <span>{{nodeInfo.Debug ? '是' : '否' }}</span>
       </el-form-item>
       <el-form-item label="IPv4Forwarding">
-        <span>{{nodeInfo.iPv4Forwarding ? '是' : '否' }}</span>
+        <span>{{nodeInfo.IPv4Forwarding ? '是' : '否' }}</span>
       </el-form-item>
       <el-form-item label="Cgroup 驱动">
-        <span>{{nodeInfo.cgroupDriver }}</span>
+        <span>{{nodeInfo.CgroupDriver }}</span>
       </el-form-item>
       <el-form-item label="LoggingDriver">
-        <span>{{nodeInfo.loggingDriver ? '是' : '否' }}</span>
+        <span>{{nodeInfo.LoggingDriver ? '是' : '否' }}</span>
       </el-form-item>
       <el-form-item label="允许内存溢出">
-        <span>{{nodeInfo.oomKillDisable ? '是' : '否' }}</span>
+        <span>{{nodeInfo.OomKillDisable ? '是' : '否' }}</span>
       </el-form-item>
 
 
       <el-form-item label="容器总数" v-bind:style="smallLable">
-        <el-tag type="gray">{{nodeInfo.containers }}</el-tag>
+        <el-tag type="gray">{{nodeInfo.Containers }}</el-tag>
       </el-form-item>
       <el-form-item label="运行容器" v-bind:style="smallLable">
-        <el-tag type="gray">{{nodeInfo.containersRunning }}</el-tag>
+        <el-tag type="gray">{{nodeInfo.ContainersRunning }}</el-tag>
       </el-form-item>
       <el-form-item label="暂停容器" v-bind:style="smallLable">
         <el-tag type="gray">0</el-tag>
       </el-form-item>
       <el-form-item label="停止容器" v-bind:style="smallLable">
-        <el-tag type="gray">{{nodeInfo.containersStopped }}</el-tag>
+        <el-tag type="gray">{{nodeInfo.ContainersStopped }}</el-tag>
       </el-form-item>
 
     </el-form>

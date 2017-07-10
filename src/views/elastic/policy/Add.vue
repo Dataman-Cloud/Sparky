@@ -68,7 +68,7 @@
       <el-form-item  label="更新时间" prop="updated" v-if="false">
         <el-input v-model="ruleForm.updated"></el-input>
       </el-form-item>
-      <el-form-item  label="poolname" prop="poolname">
+      <el-form-item  label="poolname" prop="poolname" v-if="false">
         <el-input v-model="ruleForm.poolname"></el-input>
       </el-form-item>
       <el-form-item  label="用户名" prop="user_name" v-if="false">
@@ -156,6 +156,9 @@
       ...mapState({
         appsInfo (state) {
           return state.app.apps.appsInfo
+        },
+        userInfo (state) {
+          return state.user.aboutme.userName
         }
       })
     },
@@ -178,6 +181,7 @@
             }
           })
       }
+      this.ruleForm.user_name = this.userInfo
     },
     methods: {
       appSelectOp (appId) {
@@ -224,6 +228,11 @@
                 })
               } else if (this.ruleForm.min_instance > 0 && this.ruleForm.action === 2) {
                 this.ruleForm.max_instance = 0
+                if (this.ruleForm.status === true) {
+                  this.ruleForm.status = 'start'
+                } else {
+                  this.ruleForm.status = 'disable'
+                }
                 this.$store.dispatch(policyType.ADD_POLICY, this.ruleForm).then(() => {
                   this.$message({
                     message: '添加成功',

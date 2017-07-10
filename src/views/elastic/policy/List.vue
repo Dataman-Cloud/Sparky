@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column prop="app_id" label="名称" min-width="120"  sortable>
         <template scope="rule">
-          <p><span>{{rule.row.app_id.replace('/', '')}}</span></p>
+          <p><span>{{rule.row.app_id.replace('/','')}}</span></p>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="告警规则" width="150" sortable show-overflow-tooltip>
@@ -36,7 +36,7 @@
       <el-table-column prop="status" label="状态" width="100" sortable >
         <template scope="rule">
           <span v-if="rule.row.status === 'disable'">禁用</span>
-          <span v-else>开启</span>
+          <span v-else-if="rule.row.status === 'start'">开启</span>
         </template>
       </el-table-column>
       <el-table-column prop="monitor_cycle" label="监控周期(秒)" min-width="150" sortable>
@@ -50,6 +50,9 @@
       <el-table-column prop="created" label="创建时间" min-width="1" sortable v-if="false">
       </el-table-column>
       <el-table-column prop="updated" label="更新时间" min-width="200" sortable>
+        <template scope="rule">
+          {{rule.row.updated | moment("YYYY-MM-DD hh:mm:ss")}}
+        </template>
       </el-table-column>
       <el-table-column prop="action" label="扩缩" min-width="100" sortable>
         <template scope="rule">

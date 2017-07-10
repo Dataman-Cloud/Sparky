@@ -85,22 +85,22 @@
       <label>应用端口：<label v-for="item in dialog.dialogPortMappings">{{item.servicePort}}，</label></label><label style="float: right">协议：<label v-for="item in dialog.dialogPortMappings">{{item.protocol}}，</label></label><br/>
       <label>映射端口：<label v-for="item in dialog.dialogPortMappings">{{item.containerPort}}，</label></label><br/>
       <label>仓库认证：</label><br/>
-      <label>环境变量：
-        <div class="codemirrorHeight">
+      <label v-show="dialog.dialogEnvionVar !== '{}'">环境变量：
+      <div class="codemirrorHeight">
         <codemirror v-model="dialog.dialogEnvionVar" :options="editorOptions" class="codemirror">
         </codemirror>
       </div></label><br/>
-      <label>限制条件：
+      <label v-show="dialog.dialogRestrict !== '[]'">限制条件：
         <div class="codemirrorHeight">
           <codemirror v-model="dialog.dialogRestrict" :options="editorOptions" class="codemirror">
           </codemirror>
         </div></label><br/>
-      <label>健康检查：
+      <label v-show="dialog.dialogHealthCheck !== '[]'">健康检查：
         <div class="codemirrorHeight">
           <codemirror v-model="dialog.dialogHealthCheck" :options="editorOptions" class="codemirror">
           </codemirror>
         </div></label><br/>
-      <label>容器：
+      <label v-show="dialog.dialogDocker !== '{}'">容器：
         <div class="codemirrorHeight">
           <codemirror v-model="dialog.dialogDocker" :options="editorOptions" class="codemirror">
           </codemirror>
@@ -115,7 +115,6 @@
   import {Notification} from 'element-ui'
   import ElInput from '../../../node_modules/element-ui/packages/input/src/input'
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
-  import * as config from '@/config'
   import * as editorOptions from '@/common/defaultConfig'
   export default {
     components: {
@@ -125,7 +124,7 @@
     data () {
       return {
         editorOptions: editorOptions.editorOptions,
-        uploadFileBasePath: config.DEFAULT_BASE_URL + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileBasePath: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         autoUploadFile: false, // 是否立即上传
         uploadRowIndex: -1, // 当前操作的upload行数索引，默认-1
         uploadRowIndexObj: {},
@@ -171,6 +170,8 @@
           })
           */
           this.apps = state.app.apps.apps
+          console.log('1111-----------------------------')
+          console.log(this.apps)
           for (let v = 0; v < this.apps.length; v++) {
             this.apps[v].appInfo = JSON.parse(this.apps[v].appInfo)
             // 设置包的中文名
@@ -196,7 +197,10 @@
             this.apps[v].uploadButton = true
             this.apps[v].reset = true
             */
+            console.log('for-----------------------')
+            console.log(this.apps[v])
           }
+          console.log('end-----------------------')
           console.log(this.apps)
         }
       })
@@ -242,12 +246,18 @@
                 message: JSON.stringify(data.message)
               })
             } else {
-              // 列表赋值
-              this.getAPP
               /* ----- 清空值 ----- */
               for (let i = 0; i < this.apps.length; ++i) {
                 console.log(this.$refs['upload' + i])
+                if (this.$refs['upload' + i] !== undefined) {
+                  // 取消上传请求
+                  this.$refs['upload' + i].abort()
+                  // 清空已上传的文件列表
+                  this.$refs['upload' + i].clearFiles()
+                }
               }
+              // 列表赋值
+              this.getAPP
               this.uploadRowIndex = -1 // 当前操作的upload行数索引，默认-1
               this.uploadRowIndexObj = {}
               this.uploadFileList = {} // 上传文件的队列
@@ -381,16 +391,14 @@
         this.dialog.dialogVer = this.apps[index].appInfo.app.version // 版本
 
         this.dialog.dialogPortMappings = this.apps[index].appInfo.app.container.docker.portMappings // 应用端口,协议，映射端口
-        /*
-        this.dialog.dialogAPPNum = this.apps[index].appInfo.app.portMappings[0].servicePort // 应用端口
-        this.dialog.dialogProtocol = this.apps[index].appInfo.app.portMappings[0].protocol // 协议
-        this.dialog.dialogPort = this.apps[index].appInfo.app.portDefinitions[0].port // 映射端口
-        */
          // this.dialog.dialogDeport = this.apps[index]., // 仓库认证
         this.dialog.dialogEnvionVar = JSON.stringify(this.apps[index].appInfo.app.env, null, 4) // 环境变量
         this.dialog.dialogRestrict = JSON.stringify(this.apps[index].appInfo.app.constraints, null, 4) // 限制条件
         this.dialog.dialogHealthCheck = JSON.stringify(this.apps[index].appInfo.app.healthChecks, null, 4)// 健康检查
         this.dialog.dialogDocker = JSON.stringify(this.apps[index].appInfo.app.container.docker, null, 4) // 容器
+        console.log('弹出层内容---')
+        console.log(this.dialog)
+        console.log(this.apps[index].appInfo.app)
       },
       // 选择文件时保存当前行
       saveRowIndex (index) {
@@ -456,12 +464,15 @@
                   } else {
                     // 列表赋值
                     this.getAPP
-                    // 关闭加载动画
-                    this.loading = false
                   }
                 })
+            } else {
+              // 关闭加载动画
+              this.loading = false
             }
           }
+          // 关闭加载动画
+          this.loading = false
         })
     }
   }

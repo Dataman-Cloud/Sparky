@@ -228,6 +228,7 @@
       ...mapState({
         appInfo (state) {
           let appinfo = state.app.apps.currApp
+          console.log(appinfo)
           let queue = state.app.apps.queue.queue || []
           this.detectAppStatus(appinfo)
           this.applyAppDelayStatus(appinfo, queue)
@@ -386,14 +387,18 @@
         }
       },
       getStderr (id) {
-        let stderr = this.containers[id].stderrPath
-        stderr = stderr + '?Authorization=' + localStorage.getItem('token')
-        return stderr
+        if (this.containers !== undefined && this.containers[id] !== undefined) {
+          let stderr = this.containers[id].stderrPath
+          stderr = stderr + '?Authorization=' + localStorage.getItem('token')
+          return stderr
+        }
       },
       getStdout (id) {
-        let stdout = this.containers[id].stdoutPath
-        stdout = stdout + '?Authorization=' + localStorage.getItem('token')
-        return stdout
+        if (this.containers !== undefined && this.containers[id] !== undefined) {
+          let stdout = this.containers[id].stdoutPath
+          stdout = stdout + '?Authorization=' + localStorage.getItem('token')
+          return stdout
+        }
       },
       handleSelectionChange (val) {
         this.selectIds = []

@@ -42,9 +42,8 @@ export function nodeInstanceInfo (params) {
 export function nodeInstanceLogs (params) {
   let {nodeIp, instanceId} = params
   let token = localStorage.getItem('token')
-  let host = window.location.host
   let protocol = window.location.protocol
-  let url = `${protocol}${host}/jborg/node/${nodeIp}/instances/${instanceId}/logs?Authorization=${token}`
+  let url = `${protocol}/jborg/node/${nodeIp}/instances/${instanceId}/logs?Authorization=${token}`
   return new EventSource(url)
 }
 

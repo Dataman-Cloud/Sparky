@@ -23,8 +23,8 @@
         </el-form-item>
         <el-form-item label="选择主机" prop="master">
           <el-select v-model="ruleForm.master" placeholder="请选择主机">
-            <el-option v-for="item in this.node.slaves" :label="item.hostname" :value="item.hostname"
-                       :key="item.hostname"></el-option>
+            <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName"
+                       :key="item.hostName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="应用组" prop="group">
@@ -268,7 +268,7 @@
   import * as defaultOptions from '@/common/defaultConfig'
   import { Notification } from 'element-ui'
   import { app } from 'utils/app'
-
+  
   export default {
     components: {
       Codemirror
@@ -612,7 +612,7 @@
       dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
       dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
         if (data.resultCode === '00') {
-          this.mainRender(data.data.app)
+          this.mainRender(JSON.parse(data.data).app)
         }
       })
     }

@@ -34,6 +34,6 @@ export function listClusterByGroup (groupId) {
 }
 // 添加或删除在集群上指定的主机
 export function changeNodeInCluster (params) {
-  return axios.patch(`/jborg/nodes`, params)
+  return axios.post(`/jborg/nodes/`, params)
 }
 

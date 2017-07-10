@@ -156,9 +156,6 @@
               v['isRole'] = true
             }
           }
-          console.log('===-----999-------999999------')
-          console.log(group)
-          console.log(modelList)
           return modelList
         } else {
           return []
@@ -237,7 +234,11 @@
         .then(() => {
           this.listLoading = false
         })
-
+      // 判断是否为程序包发布页面
+      if (this.$route.path === '/app/list/catalogStackList') {
+        this.isCatalogStackCreate = true
+        this.CatalogStackCreate = '取消'
+      }
       // this.interval = setInterval(() => this.listModel(), 5000)
     },
     beforeDestroy: function () {
