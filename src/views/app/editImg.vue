@@ -269,7 +269,6 @@
   import { Notification } from 'element-ui'
   import { app } from 'utils/app'
 
-
   export default {
     components: {
       Codemirror

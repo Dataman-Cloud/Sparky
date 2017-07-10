@@ -1,4 +1,4 @@
-export function app = () => {
+export function app () {
   return {
     ports: {
       containerPort: '1',
