@@ -1,5 +1,5 @@
-// export const DEFAULT_BASE_URL = '/'
-export const DEFAULT_BASE_URL = 'http://localhost:8090'
+export const DEFAULT_BASE_URL = '/'
+// export const DEFAULT_BASE_URL = 'http://localhost:8088'
 export const HASRELOXSTACK = false
 export const HASMULTICLUSTER = false
 export const HASPROXY = false

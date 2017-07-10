@@ -23,8 +23,8 @@
         </el-form-item>
         <el-form-item label="选择主机" prop="master">
           <el-select v-model="ruleForm.master" placeholder="请选择主机">
-            <el-option v-for="item in this.node.slaves" :label="item.hostname" :value="item.hostname"
-                       :key="item.hostname"></el-option>
+            <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName"
+                       :key="item.hostName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="应用组" prop="group">
@@ -244,7 +244,8 @@
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showCodeMirror">
           <codemirror
-            v-model="showForm">
+            :code="showForm"
+            :options="editorOptions">
           </codemirror>
         </div>
         <br/><br/>
@@ -264,14 +265,13 @@
   import * as appTypes from '@/store/app/mutations_types'
   import HealthCheck from '@/common/model/HealthCheck'
   import { mapState } from 'vuex'
-  import Codemirror from '@/components/jsonEditor/index'
+  import { codemirror } from 'vue-codemirror'
+  import 'codemirror/keymap/sublime'
   import * as defaultOptions from '@/common/defaultConfig'
   import { Notification } from 'element-ui'
-  import { app } from 'utils/app'
-
   export default {
     components: {
-      Codemirror
+      codemirror
     },
     data () {
       return {
@@ -311,7 +311,7 @@
       showForm: {
         get () {
           let F2 = this.transForm()
-          return F2
+          return JSON.stringify(F2, null, 2)
         },
         set (newValue) {
           console.log('***********************' + newValue)
@@ -322,71 +322,136 @@
       }
     },
     methods: {
-      _removeFormItem (form, item) {
-        let index = form.indexOf(item)
-        if (index > -1) form.splice(index, 1)
-      },
-      _addFormItem (form, item) {
-        form.push(item)
-      },
       handleClick (tab, event) {
         this.showCodeMirror = true
         // console.log(tab, event)
       },
       networkChange () {
         this.removeAllPorts()
-        let isBridge = this.ruleForm.network === 'BRIDGE'
-        this.ruleForm.dockerProportion = !isBridge
+        if (this.ruleForm.network === 'BRIDGE') {
+          this.ruleForm.dockerProportion = false
+        } else if (this.ruleForm.network === 'HOST') {
+          this.ruleForm.dockerProportion = true
+        }
       },
       addPorts () {
-        this._addFormItem(this.ruleForm.ports, app().ports)
+        this.ruleForm.ports.push({
+          containerPort: '1',
+          protocol: 'tcp'
+        })
       },
       removePorts (item) {
-        this._removeFormItem(this.ruleForm.ports, item)
+        let index = this.ruleForm.ports.indexOf(item)
+        if (index > -1) {
+          this.ruleForm.ports.splice(index, 1)
+        }
       },
       removeAllPorts () {
         this.ruleForm.ports = []
       },
       addMount () {
-        this._addFormItem(this.ruleForm.mounts, app().mounts)
+        this.ruleForm.mounts.push({
+          containerPath: '',
+          hostPath: '',
+          mode: 'RO' // RW
+        })
       },
       removeMount (item) {
-        this._removeFormItem(this.ruleForm.mounts, item)
+        let index = this.ruleForm.mounts.indexOf(item)
+        if (index > -1) {
+          this.ruleForm.mounts.splice(index, 1)
+        }
       },
       addEnvironmentVariable () {
-        this._addFormItem(this.ruleForm.environmentVariables, app().environmentVariables)
+        this.ruleForm.environmentVariables.push({
+          key: '',
+          value: ''
+        })
       },
       removeEnvironmentVariable (item) {
-        this._removeFormItem(this.ruleForm.environmentVariables, item)
+        let index = this.ruleForm.environmentVariables.indexOf(item)
+        if (index > -1) {
+          this.ruleForm.environmentVariables.splice(index, 1)
+        }
       },
       addHealth () {
-        this._addFormItem(this.ruleForm.health, app().health)
+        this.ruleForm.health.push({
+          protocol: 'HTTP',
+          gracePeriodSeconds: null,
+          intervalSeconds: null,
+          timeoutSeconds: null,
+          maxConsecutiveFailures: '',
+          portType: undefined,
+          port: undefined,
+          protNumCode: false, // “端口号”的input元素是否显示
+          portNumOrPortIndexText: '端口组索引', // 存放“端口号”或“端口组索引”文字
+          portIndexCode: true, // “端口组索引”的input元素是否显示
+          portIndex: undefined,  // 用于存放选择“端口组索引”后的端口组索引
+          path: '', // 用于存放选择http协议后的“http路径input元素的值”
+          ignoreHttp1xx: false, // “忽略http返回码”的checkbox是否被选中
+          healthHttpCheckBoxCode: true, // 选择http协议后表格第一行“路径”标题是否显示
+          healthHttpPathCode: true, // 选择http协议后表格第二行“路径”的input元素是否显示
+          healthHttpPathText: true // 选择http协议后表格第三行“忽略http返回码”的checkbox元素是否显示
+          // healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
+        })
       },
       removeHealth (item) {
-        this._removeFormItem(this.ruleForm.health, item)
+        let index = this.ruleForm.health.indexOf(item)
+        if (index > -1) {
+          this.ruleForm.health.splice(index, 1)
+        }
       },
       addDockerPar () {
-        this._addFormItem(this.ruleForm.dockerPar, app().dockerPar)
+        this.ruleForm.dockerPar.push({
+          key: '',
+          value: ''
+        })
       },
       removeDockerPar (item) {
-        this._removeFormItem(this.ruleForm.dockerPar, item)
+        let index = this.ruleForm.dockerPar.indexOf(item)
+        if (index > -1) {
+          this.ruleForm.dockerPar.splice(index, 1)
+        }
       },
-      healthProtocolChange (healthItem) {
-        let isHttp = healthItem.protocol === 'HTTP'
-        healthItem.healthHttpCheckBoxCode = isHttp
-        healthItem.healthHttpPathCode = isHttp
-        healthItem.healthHttpPathText = isHttp
-        // healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
-        healthItem.ignoreHttp1xx = false
+      healthProtocolChange (item) {
+        let index = this.ruleForm.health.indexOf(item)
+        //  如果选中的option为http
+        if (this.ruleForm.health[index].protocol === 'HTTP') {
+          if (index > -1) {
+            this.ruleForm.health[index].healthHttpCheckBoxCode = true
+            this.ruleForm.health[index].healthHttpPathCode = true
+            this.ruleForm.health[index].healthHttpPathText = true
+            // healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
+          }
+        } else if (this.ruleForm.health[index].protocol === 'TCP') {
+          if (index > -1) {
+            this.ruleForm.health[index].healthHttpCheckBoxCode = false
+            this.ruleForm.health[index].healthHttpPathCode = false
+            this.ruleForm.health[index].healthHttpPathText = false
+            this.ruleForm.health[index].ignoreHttp1xx = false
+          }
+        }
       },
-      healthPortTypeChange (healthItem) {
+      healthPortTypeChange (item) {
+        let index = this.ruleForm.health.indexOf(item)
         // 如果选中了端口类型为“端口组索引”
-        let isSelFirst = healthItem.portType === '1'
-        healthItem.port = undefined // 清空之前填写的端口号
-        healthItem.protNumCode = !isSelFirst // “端口号”的input元素隐藏
-        healthItem.portNumOrPortIndexText = '端口组索引'// 文字显示为端口组索引
-        healthItem.portIndexCode = isSelFirst // “端口组索引”的input元素显示
-        healthItem.portIndex = undefined//  清空之前填写的“端口组索引”
+        if (this.ruleForm.health[index].portType === '1') {
+          if (index > -1) {
+            this.ruleForm.health[index].port = undefined // 清空之前填写的端口号
+            this.ruleForm.health[index].protNumCode = false // “端口号”的input元素隐藏
+            this.ruleForm.health[index].portNumOrPortIndexText = '端口组索引'// 文字显示为端口组索引
+            this.ruleForm.health[index].portIndexCode = true // “端口组索引”的input元素显示
+            this.ruleForm.health[index].portIndex = undefined//  清空之前填写的“端口组索引”
+          }
+        } else {
+          if (index > -1) {
+            this.ruleForm.health[index].port = undefined // 清空之前填写的端口号
+            this.ruleForm.health[index].protNumCode = true // “端口号”的input元素显示
+            this.ruleForm.health[index].portNumOrPortIndexText = '端口号'// 文字显示为端口组索引
+            this.ruleForm.health[index].portIndexCode = false // “端口组索引”的input元素隐藏
+            this.ruleForm.health[index].portIndex = undefined//  清空之前填写的“端口组索引”
+          }
+        }
       },
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {
@@ -602,17 +667,16 @@
       }
     },
     mounted () { // 页面加载完成后回调
-      let { dispatch } = this.$store
       // 查询镜像仓库
-      dispatch(userTypes.FETCH_REPOS, {})
+      this.$store.dispatch(userTypes.FETCH_REPOS, {})
       // 查询集群
-      dispatch(nodeType.FETCH_ALL_NODE, {})
+      this.$store.dispatch(nodeType.FETCH_ALL_NODE, {})
       // 查询主机
-      dispatch(mutationsType.FETCH_CLUSTERS, {})
-      dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
-      dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
+      this.$store.dispatch(mutationsType.FETCH_CLUSTERS, {})
+      this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
+      this.$store.dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
         if (data.resultCode === '00') {
-          this.mainRender(data.data.app)
+          this.mainRender(JSON.parse(data.data).app)
         }
       })
     }

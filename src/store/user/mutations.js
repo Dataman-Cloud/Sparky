@@ -73,11 +73,7 @@ export default {
   },
   [type.FETCH_REPO_DEL] (state, payload) {
   },
-  [type.PUT_SYSRESOURCES] (state, sysResources) {
-    state.sysResources = sysResources
-    localStorage.setItem('sysResources', JSON.stringify(sysResources))
-  },
-  [type.PUT_TOKEN] (state, token) {
-    state.token = token
+  [type.PUT_SYSRESOURCES] (state, payload) {
+    state.sysResources = payload
   }
 }

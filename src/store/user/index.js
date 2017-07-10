@@ -4,7 +4,6 @@
 import actions from './action'
 import mutations from './mutations'
 import getters from './getters'
-import Cookies from 'js-cookie'
 
 const state = {
   aboutme: {},
@@ -26,8 +25,7 @@ const state = {
     repos: [],
     total: 0
   },
-  sysResources: JSON.parse(localStorage.getItem('sysResources')) || [],
-  token: Cookies.get('token')
+  sysResources: []
 }
 
 export default {

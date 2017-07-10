@@ -11,7 +11,7 @@
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <router-link to="../addPrm">
+            <router-link to="../list/catalogStackList">
               <el-button type="primary">添加程序包</el-button>
             </router-link>
           </el-form-item>
@@ -107,17 +107,16 @@
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
                   <!--<el-dropdown-item>-->
-                  <!--<router-link :to="{name:'修改镜像',query:{aid:scope.row.id}}">-->
-                  <!--<el-button type="primary" icon="edit" size="small">更新</el-button>-->
-                  <!--</router-link>-->
+                    <!--<router-link :to="{name:'修改镜像',query:{aid:scope.row.id}}">-->
+                      <!--<el-button type="primary" icon="edit" size="small">更新</el-button>-->
+                    <!--</router-link>-->
                   <!--</el-dropdown-item>-->
                   <el-dropdown-item>
                     <el-button type="danger" icon="delete" size="small" @click="removeModel(scope.row.id)">删除
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small"
-                               style="width: 60px;">扩展
+                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small" style="width: 60px;">扩展
                     </el-button>
 
                   </el-dropdown-item>
@@ -223,8 +222,7 @@
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small"
-                               style="width: 60px;">扩展
+                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small" style="width: 60px;">扩展
                     </el-button>
 
                   </el-dropdown-item>
@@ -252,7 +250,7 @@
       title="扩展"
       :visible.sync="dialogVisible"
       :before-close="handleClose">
-      <el-input type="number" v-model="instances" size="small" :min="0" :step="1"></el-input>
+      <el-input-number v-model="instances" size="small" :min="0" :step="1"></el-input-number>
       <span slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="extend()">确 定</el-button>
@@ -291,15 +289,15 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-  import {LABEL_PREFIX} from '../../../config'
+  import { mapState } from 'vuex'
+  import { LABEL_PREFIX } from '../../../config'
   import * as type from '../../../store/app/mutations_types'
   import * as appgroupTypes from '../../../store/appgroups/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
   import ElCol from 'element-ui/packages/col/src/col'
   import ElFormItem from '../../../../node_modules/element-ui/packages/form/src/form-item'
   import ElButton from '../../../../node_modules/element-ui/packages/button/src/button'
-  import {Notification} from 'element-ui'
+  import { Notification } from 'element-ui'
   export default {
     components: {
       ElButton,
@@ -369,7 +367,8 @@
             }
             item.healthy = healthy
           }
-//          console.log('*********************appgroups=' + JSON.stringify(appgroups))
+          // console.log(state.appgroups.arr)
+          // console.log('*********************appgroups=' + JSON.stringify(appgroups))
           return appgroups
         },
         queue (state) {
@@ -482,8 +481,7 @@
           .then(_ => {
             done()
           })
-          .catch(_ => {
-          })
+          .catch(_ => {})
       },
       //  获取用户列表
       listApp () {

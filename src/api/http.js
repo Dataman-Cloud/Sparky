@@ -5,7 +5,7 @@ import axios from 'axios'
 import router from '../router'
 import {DEFAULT_BASE_URL} from '@/config'
 import {Notification} from 'element-ui'
-import store from '../store'
+
 // axios 配置
 axios.defaults.timeout = 10000
 axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置
@@ -13,8 +13,8 @@ axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    if (store.getters.token) {
-      config.headers.Authorization = store.getters.token
+    if (localStorage.getItem('token')) {
+      config.headers.Authorization = `${localStorage.getItem('token')}`
     }
     return config
   },

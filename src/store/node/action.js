@@ -24,9 +24,10 @@ export default {
       return data
     })
   },
-  [type.NODE_INFO] ({ commit }, playload) {
-    return api.nodeInfo(playload).then(({ data }) => {
-      commit(type.NODE_INFO, data)
+  [type.NODE_INFO] (context, playload) {
+    return api.nodeInfo(playload).then(data => {
+      context.commit(type.NODE_INFO, data.data)
+      return data
     })
   },
   [type.FETCH_NODE_INSTANCES] (context, playload) {

@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item label="选择主机"><!--prop="master"-->
         <el-select v-model="ruleForm.master"  placeholder="请选择主机">
-          <el-option v-for="item in this.node.slaves" :label="item.hostname" :value="item.hostname" :key="item.hostname"></el-option>
+          <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName" :key="item.hostName"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="网络模式">
@@ -273,15 +273,20 @@
           <el-radio :label="4" >WebLogic(.war)</el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- :http-request="fileUpload" -->
       <el-form-item style="width:300px;"  v-if="!this.cscForm.success">
         <el-upload
           class="upload-demo"
           ref="upload"
+          name="upload"
           v-bind:action="uploadFileAction"
+          v-bind:multiple="false"
+          v-bind:data="uploadParam"
+          v-bind:headers="uploadHeaders"
           :before-upload="beforeAvatarUpload"
-          :http-request="fileUpload"
+          :on-change="uploadChange"
           v-bind:auto-upload="uploadFile">
-          <el-button size="small" type="primary">点击上传</el-button>
+          <el-button size="small" type="primary">选择文件</el-button>
         </el-upload>
       </el-form-item>
       <el-form-item  v-if="!this.cscForm.success">
@@ -317,8 +322,9 @@
         catalogStackCreate: false, // 是否为程序包发布进入
         catalogStackCreateForm: false, // 程序包发布进入后的表单控制
         updateOrCreate: '立即创建', // 创建或更新的文本
-        // uploadFileAction: config.DEFAULT_BASE_URL + '/v1/uploadPackageFile', // 上传的文件路径
-        uploadFileAction: '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadHeaders: {'Authorization': localStorage.getItem('token')}, // 上传文件headers信息
+        // uploadFileAction: '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         uploadFile: false, // 是否立即上传
         isRole: false, // 是否有更新该模板的权限
         cscForm: { // 发布程序包的表单
@@ -425,6 +431,13 @@
         },
         getModelInfo (state) {
           return state.model.model.model
+        },
+        uploadParam () {
+          return {
+            GroupName: this.cscForm.appsGroup,
+            AppName: this.cscForm.appsName,
+            Version: this.cscForm.version,
+            PackageType: this.getPackageType}
         },
         setObjModelJSON (state) {
           console.log(state.model.model.model)
@@ -572,7 +585,7 @@
         let portMappings = []
         for (let v of this.ruleForm.ports) {
           let port = {}
-          port['containerPort'] = v.port // 端口号
+          port['containerPort'] = parseInt(v.port) // 端口号
           port['name'] = ''
           port['protocol'] = v.type // tcp或udp
           portMappings.push(port)
@@ -665,7 +678,6 @@
         return result
       },
       checkModelRole () { // 检查当前登录用户是否有该模板操作的权限
-        console.log(this.isRole + '2-----------------------')
         /* -- 判断权限 -- */
         // 当前登录用户的当前组信息
         let groups = []
@@ -700,6 +712,13 @@
       }
     },
     methods: {
+      appList () { // 跳转应用列表
+        this.$router.push({path: '/app/list/apps'})
+      },
+      appInfo () { // 跳转应用详细列表
+        this.$router.push({path: '/app/appInstance/list',
+          query: {'id': '%2F' + this.cscForm.appsGroup + '%2F' + this.cscForm.appsName}})
+      },
       networkChange () {
         if (this.ruleForm.network === 0) {
           this.ruleForm.dockerProportion = false
@@ -710,7 +729,7 @@
       },
       addPorts () {
         this.ruleForm.ports.push({
-          port: '1',
+          port: 1,
           type: 'tcp'
         })
       },
@@ -841,12 +860,60 @@
           }
         })
       },
-      appList () { // 跳转应用列表
-        this.$router.push({path: '/app/list/apps'})
-      },
-      appInfo () { // 跳转应用详细列表
-        this.$router.push({path: '/app/appInstance/list',
-          query: {'id': '%2F' + this.cscForm.appsGroup + '%2F' + this.cscForm.appsName}})
+      // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
+      uploadChange (file, fileList) {
+        if (file.status === 'ready') {
+        } else if (file.status === 'success') {
+          if (file.response.resultCode !== '00') {
+            this.$message.error('上传失败')
+            // 取消上传请求
+            this.$refs.upload.abort()
+            // 清空已上传的文件列表
+            this.$refs.upload.clearFiles()
+          } else {
+              // 上传成功
+            /* -----拼装json--------- */
+            // 获取json对象
+            let appModel = JSON.parse(this.getObjModelJSON)
+            // 添加应用组和应用名称
+            appModel.id = this.cscForm.appsGroup + '/' + this.cscForm.appsName
+            // 合并挂载目录
+            let vol = {}
+            vol['containerPath'] = appModel.labels.PACKAGE_VOLUME // 容器路径
+            vol['hostPath'] = file.response.data // 主机路径
+            vol['mode'] = 'RW' // 读写RW或只读RO
+            appModel.container.volumes.push(vol)
+            // 添加label
+            appModel.labels['PACKAGE_VOLUME'] = this.cscForm.appsName
+            appModel.labels['CURRENT_VERSION'] = this.cscForm.version
+            appModel.labels['DEPLOY_TIMES'] = '1'
+            appModel.labels['PACKAGE_TYPE'] = this.getPackageType
+            console.log(appModel)
+            // 创建应用接口
+            this.$store.dispatch(appType.ADD_APP, appModel)
+              .then((data) => {
+                if (data.resultCode === '00') {
+                  // 更新状态为完成
+                  this.cscForm.success = true
+                } else {
+                  Notification.error({
+                    title: '创建应用出错',
+                    message: JSON.stringify(data.message)
+                  })
+                  // 取消上传请求
+                  this.$refs.upload.abort()
+                  // 清空已上传的文件列表
+                  this.$refs.upload.clearFiles()
+                }
+              })
+          }
+        } else if (file.status === 'fail') {
+          this.$message.error('上传失败')
+          // 取消上传请求
+          this.$refs.upload.abort()
+          // 清空已上传的文件列表
+          this.$refs.upload.clearFiles()
+        }
       },
       fileUpload (e) { // 上传文件并创建模板
         // 获取json对象
@@ -880,7 +947,6 @@
               // 创建应用接口
               this.$store.dispatch(appType.ADD_APP, appModel)
                 .then((data) => {
-                  console.log(data)
                   if (data.resultCode === '00') {
                     // 更新状态为完成
                     this.cscForm.success = true
@@ -913,7 +979,6 @@
               this.$store.dispatch(modelType.FETCH_UPDATA_MODEL, {
                 modelInfo: modelInfo
               }).then((data) => {
-                console.log(data)
                 if (data.resultCode === '00') {
                   // 更新成功
                   this.$router.push({path: '/app/list/appsModel'})
@@ -1010,12 +1075,12 @@
       // 查询仓库
       this.$store.dispatch(reposType.FETCH_REPOS, {})
         .then((data) => { this.queryErrorMsg(data, '查询仓库失败') })
-      // 查询集群
-      this.$store.dispatch(nodeType.FETCH_ALL_NODE, {})
-        .then((data) => { this.queryErrorMsg(data, '查询集群失败') })
       // 查询主机
-      this.$store.dispatch(mutationsType.FETCH_CLUSTERS, {})
+      this.$store.dispatch(nodeType.FETCH_ALL_NODE, {})
         .then((data) => { this.queryErrorMsg(data, '查询主机失败') })
+      // 查询集群
+      this.$store.dispatch(mutationsType.FETCH_CLUSTERS, {})
+        .then((data) => { this.queryErrorMsg(data, '查询集群失败') })
       // 如果为更新页面的话
       if (this.$route.path === '/app/list/updateModel') {
         // 获取该模版id并查询该id的模版信息

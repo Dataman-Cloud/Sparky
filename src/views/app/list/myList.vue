@@ -11,7 +11,7 @@
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <router-link to="../addPrm">
+            <router-link to="../list/catalogStackList">
               <el-button type="primary">添加程序包</el-button>
             </router-link>
           </el-form-item>

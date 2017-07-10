@@ -16,10 +16,16 @@
     <el-table-column prop="uid" label="uid" min-width="1" sortable v-if="false">
     </el-table-column>
     <el-table-column prop="app_id" label="名称" min-width="150" sortable>
+      <template scope="rule">
+        <p><span>{{rule.row.app_id.replace('/','')}}</span></p>
+      </template>
     </el-table-column>
     <el-table-column prop="step" label="步长" width="100" sortable>
     </el-table-column>
     <el-table-column prop="operation_time" label="扩容时间" width="200" sortable>
+      <template scope="rule">
+        {{rule.row.updated | moment("YYYY-MM-DD hh:mm:ss")}}
+      </template>
     </el-table-column>
     <el-table-column prop="before_inst_num" label="扩缩前实例数(个)" min-width="200" sortable>
     </el-table-column>
@@ -29,7 +35,7 @@
     </el-table-column>
     <el-table-column prop="action" label="扩缩结果" min-width="120" sortable>
       <template scope="rule">
-        <span v-if="rule.row.action === 1">扩</span>
+        <span v-if="rule.row.action === 1 || rule.row.action === 3">扩</span>
         <span v-else>缩</span>
       </template>
     </el-table-column>
@@ -87,6 +93,8 @@
     methods: {
       handleCurrentChange (val) {
         this.page = val
+        let param = {pageSize: this.pageSize, page: this.page}
+        return this.$store.dispatch(type.FETCH_SELECT_CAPABILITIES, param)
       },
       //  获取扩缩历史
       listCapability () {

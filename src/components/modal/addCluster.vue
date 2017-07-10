@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="添加集群" v-model="dialog_addCluster" size="tiny" style="text-align: left" ref="dialog">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="集群名称" prop="vClusterLabel">
           <el-input v-model="form.vClusterLabel"></el-input>
         </el-form-item>

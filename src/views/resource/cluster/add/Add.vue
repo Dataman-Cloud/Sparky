@@ -2,7 +2,7 @@
   <section>
     <el-row :gutter="20">
       <el-col :span="10">
-        <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
+        <el-form ref="form" :model="form" :rules="rules" label-width="100px">
           <el-form-item label="集群名称" prop="clusterLabel">
             <el-input v-model="form.vClusterLabel"></el-input>
           </el-form-item>

@@ -25,8 +25,8 @@
         </el-form-item>
         <el-form-item label="选择主机" prop="master">
           <el-select v-model="ruleForm.master" placeholder="请选择主机">
-            <el-option v-for="item in this.node.slaves" :label="item.hostname" :value="item.hostname"
-                       :key="item.hostname"></el-option>
+            <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName"
+                       :key="item.hostName"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="应用组" prop="group">
@@ -252,7 +252,7 @@
 
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showForm">
-          <codemirror v-model="showForm" class="codemirror">
+          <codemirror v-model="showForm" :options="editorOptions" class="codemirror">
           </codemirror>
         </div>
         <!-- <el-form-item class="jsonText">
@@ -285,12 +285,12 @@
   import HealthCheck from '@/common/model/HealthCheck'
   import { mapState } from 'vuex'
   import * as editorOptions from '@/common/defaultConfig'
-  import Codemirror from '@/components/jsonEditor/index'
+  import { codemirror } from 'vue-codemirror'
   import { Notification } from 'element-ui'
 
   export default {
     components: {
-      Codemirror
+      codemirror
     },
     data () {
       return {
@@ -453,7 +453,7 @@
           if (F1.cmd != null) {
             F2.cmd = this.ruleForm.cmd
           }
-          return F2
+          return JSON.stringify(F2, null, 2)
         },
         set (newValue) {
 //          console.log('***********************' + newValue)

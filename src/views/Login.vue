@@ -9,21 +9,21 @@
       <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="login" :loading="loading">登录
+      <el-button type="primary" style="width:100%;" @click.native.prevent="login" :loading="logining">登录
       </el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-  // import * as user from 'api/user'
+  import * as user from '../api/user'
   import { Notification } from 'element-ui'
-  import { LOG_IN } from 'store/user/mutations_types'
+  import * as usertype from '../store/user/mutations_types'
 
   export default {
     data () {
       return {
-        loading: false,
+        logining: false,
         loginForm: {
           userName: 'admin',
           password: 'Admin1234'
@@ -40,20 +40,21 @@
     },
     methods: {
       login (ev) {
-        let { dispatch } = this.$store
-        this.loading = true
-        dispatch(LOG_IN, this.loginForm).then(res => {
-          return dispatch('GenerateRoutes', res).then(_ => {
-            this.loading = false
-            this.$router.push({name: '全部的应用'})
-          }).catch(error => {
-            this.showResult(error, 'd', 'sa')
-            this.loading = false
+        this.logining = true
+        user.login(this.loginForm)
+          .then(data => {
+/*            this.logining = false
+            localStorage.setItem('token', data.token)
+            this.$router.push({name: '全部的应用'}) */
+            this.showResult(data, '登录', '登录', () => {
+              this.logining = false
+              localStorage.setItem('token', data.token)
+              this.$store.dispatch(usertype.PUT_SYSRESOURCES, data.sysResources)
+              this.$router.push({name: '全部的应用'})
+            })
+          }, rej => {
+            this.logining = false
           })
-        }).catch(error => {
-          this.showResult(error, 'd', 'sa')
-          this.loading = false
-        })
       },
       showResult (data, success, errorTitle, callback) {
         success = success || '操作成功'
@@ -70,7 +71,7 @@
             message: JSON.stringify(data.message),
             type: 'error'
           })
-          this.loading = false
+          this.logining = false
         }
       }
     }

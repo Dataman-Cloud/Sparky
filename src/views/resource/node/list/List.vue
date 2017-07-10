@@ -17,7 +17,7 @@
     <el-table :data="filterNodes" highlight-current-row v-loading="listLoading" style="width: 100%;">
       <el-table-column prop="ip" label="ip" min-width="100" sortable>
         <template scope="node">
-          <router-link :to="{name: '主机信息', query:{nodeIp: node.row.hostName }}">{{node.row.hostName }}</router-link>
+          <router-link :to="{name: '主机信息', query:{nodeIp: node.row.nodeIp }}">{{node.row.nodeIp }}</router-link>
         </template>
       </el-table-column>
       <el-table-column prop="nodeRole" label="角色" min-width="100" sortable>

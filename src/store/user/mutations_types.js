@@ -27,6 +27,4 @@ export const FETCH_GROUP_ADD = 'FETCH_GROUP_ADD'
 export const FETCH_GROUP_EDIT = 'FETCH_GROUP_EDIT'
 export const FETCH_GROUP_DEL = 'FETCH_GROUP_DEL'
 
-export const LOG_IN = 'LOG_IN'
 export const PUT_SYSRESOURCES = 'PUT_SYSRESOURCES'
-export const PUT_TOKEN = 'PUT_TOKEN'
