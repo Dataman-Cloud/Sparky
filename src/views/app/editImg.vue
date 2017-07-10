@@ -269,6 +269,8 @@
   import 'codemirror/keymap/sublime'
   import * as defaultOptions from '@/common/defaultConfig'
   import { Notification } from 'element-ui'
+  import { app } from 'utils/app'
+
   export default {
     components: {
       codemirror
