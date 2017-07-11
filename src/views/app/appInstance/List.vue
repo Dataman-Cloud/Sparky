@@ -48,7 +48,7 @@
           <el-table-column prop="id" label="实例ID" min-width="400" sortable>
             <template scope="scope">
               <router-link
-                :to="{name: '容器信息', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
+                :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
                 {{scope.row.id }}
               </router-link>
             </template>
@@ -314,6 +314,9 @@
 //        console.log('***************taskId=' + 'test_aaaa.c770c2c8-5580-11e7-bb08-02428b347a54')
 //        console.log('=--------------------taskId:' + taskId)
         try {
+          console.log('999999999999999999999999999')
+          console.log(this.containers)
+          console.log(this.containers[taskId])
           let container = this.containers[taskId]
 //          console.log('222222222222222222222' + JSON.stringify(container))
           return container.containerId
