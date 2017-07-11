@@ -287,7 +287,7 @@
         total (state) {
           // 获取元素个数
           return Object.getOwnPropertyNames(state.app.apps.currContainers).length - 1
-        },
+        }
       })
     },
     methods: {

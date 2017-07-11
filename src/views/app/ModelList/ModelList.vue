@@ -65,8 +65,12 @@
   import {LABEL_PREFIX} from '@/config'
   import * as type from '@/store/model/mutations_types'
   import * as editorOptions from '@/common/defaultConfig'
+  import Codemirror from '@/components/jsonEditor/index'
 
   export default {
+    components: {
+      Codemirror
+    },
     data () {
       return {
         editorOptions: editorOptions.editorOptions,
@@ -170,7 +174,7 @@
         this.dialogMessage.accountName = this.filterModels[index].accountsName
         this.dialogMessage.groupName = this.filterModels[index].groupName
         this.dialogMessage.desc = this.filterModels[index].desc
-        this.dialogMessage.json = this.filterModels[index].json
+        this.dialogMessage.json = JSON.parse(this.filterModels[index].json)
       },
       // 删除模版按钮
       removeModel (index) {

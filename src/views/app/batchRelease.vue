@@ -117,11 +117,13 @@
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
   import * as editorOptions from '@/common/defaultConfig'
   import store from 'store'
+  import Codemirror from '@/components/jsonEditor/index'
 
   export default {
     components: {
       ElButton,
-      ElInput
+      ElInput,
+      Codemirror
     },
     data () {
       return {
@@ -394,10 +396,10 @@
 
         this.dialog.dialogPortMappings = this.apps[index].appInfo.app.container.docker.portMappings // 应用端口,协议，映射端口
          // this.dialog.dialogDeport = this.apps[index]., // 仓库认证
-        this.dialog.dialogEnvionVar = JSON.stringify(this.apps[index].appInfo.app.env, null, 4) // 环境变量
-        this.dialog.dialogRestrict = JSON.stringify(this.apps[index].appInfo.app.constraints, null, 4) // 限制条件
-        this.dialog.dialogHealthCheck = JSON.stringify(this.apps[index].appInfo.app.healthChecks, null, 4)// 健康检查
-        this.dialog.dialogDocker = JSON.stringify(this.apps[index].appInfo.app.container.docker, null, 4) // 容器
+        this.dialog.dialogEnvionVar = this.apps[index].appInfo.app.env, null, 4 // 环境变量
+        this.dialog.dialogRestrict = this.apps[index].appInfo.app.constraints, null, 4 // 限制条件
+        this.dialog.dialogHealthCheck = this.apps[index].appInfo.app.healthChecks, null, 4// 健康检查
+        this.dialog.dialogDocker = this.apps[index].appInfo.app.container.docker, null, 4 // 容器
         console.log('弹出层内容---')
         console.log(this.dialog)
         console.log(this.apps[index].appInfo.app)
