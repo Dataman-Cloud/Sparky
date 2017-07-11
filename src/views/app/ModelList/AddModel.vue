@@ -316,13 +316,14 @@
   import Container from '@/common/model/Container'
   import Docker from '@/common/model/Docker'
   import { Notification } from 'element-ui'
+  import {DEFAULT_BASE_URL} from '@/config'
   export default {
     data () {
       return {
         catalogStackCreate: false, // 是否为程序包发布进入
         catalogStackCreateForm: false, // 程序包发布进入后的表单控制
         updateOrCreate: '立即创建', // 创建或更新的文本
-        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileAction: DEFAULT_BASE_URL + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         uploadHeaders: {'Authorization': localStorage.getItem('token')}, // 上传文件headers信息
         // uploadFileAction: '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         uploadFile: false, // 是否立即上传

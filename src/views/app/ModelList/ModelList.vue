@@ -12,7 +12,7 @@
       </el-form>
     </el-col>
     <!--列表-->
-    <el-table :data="filterModels" highlight-current-row v-loading="listLoading" style="width: 100%;">
+    <el-table :data="modelList" highlight-current-row v-loading="listLoading" style="width: 100%;">
       <el-table-column prop="name" label="模版名称" min-width="65" sortable  show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="accountsName" label="创建者" width="100" sortable >
@@ -65,6 +65,7 @@
   import {LABEL_PREFIX} from '@/config'
   import * as type from '@/store/model/mutations_types'
   import * as editorOptions from '@/common/defaultConfig'
+  import * as userType from 'store/user/mutations_types'
 
   export default {
     data () {
@@ -88,7 +89,8 @@
           json: ''
         },
         prefix: LABEL_PREFIX,
-        interval: null
+        interval: null,
+        modelList: []
       }
     },
     watch: {
@@ -121,7 +123,7 @@
         // 从已有数组中返回元素
         if (this.models && Array.isArray(this.models) && this.models.length > 0) {
           // 获取列表数据
-          let modelList = this.models.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
+          let ml = this.models.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
           /* -- 判断权限 -- */
           // 当前登录用户的当前组信息
           let groups = []
@@ -143,7 +145,7 @@
             }
           }
           // 循环列表数据 判断权限
-          for (let v of modelList) {
+          for (let v of ml) {
             // 默认没有权限
             v['isRole'] = false
             if (group.role === 'superuser') { // 超管有权限
@@ -156,9 +158,8 @@
               v['isRole'] = true
             }
           }
-          return modelList
+          this.modelList = ml
         } else {
-          return []
         }
       }
     },
@@ -203,7 +204,9 @@
       listModel () {
         return this.$store.dispatch(type.FETCH_SELECT_MODEL, {
           curGroupId: this.curGroupId
-        }).then(() => {})
+        }).then(() => {
+          this.filterModels
+        })
       },
       // 添加新的应用模版
       addAppModel () {
@@ -230,6 +233,7 @@
     },
     mounted () {
       this.listLoading = true
+      this.$store.dispatch(userType.FETCH_ABOUTME)
       this.listModel()
         .then(() => {
           this.listLoading = false

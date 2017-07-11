@@ -116,6 +116,7 @@
   import ElInput from '../../../node_modules/element-ui/packages/input/src/input'
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
   import * as editorOptions from '@/common/defaultConfig'
+  import {DEFAULT_BASE_URL} from '@/config'
   export default {
     components: {
       ElButton,
@@ -124,7 +125,7 @@
     data () {
       return {
         editorOptions: editorOptions.editorOptions,
-        uploadFileBasePath: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileBasePath: DEFAULT_BASE_URL + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         autoUploadFile: false, // 是否立即上传
         uploadRowIndex: -1, // 当前操作的upload行数索引，默认-1
         uploadRowIndexObj: {},
