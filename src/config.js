@@ -1,4 +1,5 @@
 export const DEFAULT_BASE_URL = '/'
+// 加一个注释
 // export const DEFAULT_BASE_URL = 'http://192.168.199.24:8090'
 export const HASRELOXSTACK = false
 export const HASMULTICLUSTER = false
