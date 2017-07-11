@@ -9,6 +9,7 @@ import * as Terminal from 'xterm'
 // import * as Fit from 'xterm/dist/addons/fit.js'
 // import {DEFAULT_BASE_URL} from '@/config'
 import 'xterm/dist/xterm.css'
+import store from 'store'
 
 export default {
   props: {
@@ -39,7 +40,7 @@ export default {
     },
     openWebSocket () {
       let terminalContainer = document.getElementById('terminal')
-      let token = localStorage.getItem('token')
+      let token = store.getters.token
       this.ws = new WebSocket(`${this.url}?Authorization=${token}`)
       let autoReconnect = -1
       let wsError

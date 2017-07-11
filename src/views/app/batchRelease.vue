@@ -116,6 +116,8 @@
   import ElInput from '../../../node_modules/element-ui/packages/input/src/input'
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
   import * as editorOptions from '@/common/defaultConfig'
+  import store from 'store'
+
   export default {
     components: {
       ElButton,
@@ -130,7 +132,7 @@
         uploadRowIndexObj: {},
         uploadFileList: {}, // 上传文件的队列
         loading: false,
-        headers: {'Authorization': localStorage.getItem('token')}, // headers信息
+        headers: {'Authorization': store.getters.token}, // headers信息
         appsGroup: '', // 当前应用组
         dialog: { // 弹出层信息
           dialogVisible: false, // 弹出层是否显示
