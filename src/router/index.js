@@ -67,11 +67,6 @@ export const constantRouterMap = [
         component: MyAppList
       },
       {
-        path: 'list/myApps',
-        name: '批量发布',
-        component: MyAppList
-      },
-      {
         path: 'list/appsModel',
         name: '应用模版',
         component: AppModelList

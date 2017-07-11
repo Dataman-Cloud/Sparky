@@ -13,6 +13,8 @@
 
 <script>
 import { Navbar, AppMain, Breadcrumb, Sidebar } from 'views/layout'
+import * as userType from 'store/user/mutations_types'
+import store from 'store'
 export default {
   name: 'layout',
   components: {
@@ -20,6 +22,12 @@ export default {
     AppMain,
     Breadcrumb,
     Sidebar
+  },
+  beforeRouteEnter (to, from, next) {
+    store.dispatch(userType.FETCH_ABOUTME)
+      .then(() => {
+        next()
+      })
   }
 }
 </script>

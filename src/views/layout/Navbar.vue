@@ -29,6 +29,7 @@ import {mapState} from 'vuex'
 import * as user from 'api/user'
 import * as userType from 'store/user/mutations_types'
 import * as appType from 'store/app/mutations_types'
+import store from 'store'
 
 export default {
   data () {
@@ -36,6 +37,12 @@ export default {
       sysName: 'DM/OS',
       selectGroup: this.$store.state.user.aboutme.currentGroupId
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    store.dispatch(userType.FETCH_ABOUTME)
+      .then(() => {
+        next()
+      })
   },
   methods: {
     //  退出登录
