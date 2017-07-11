@@ -6,7 +6,7 @@ import {DEFAULT_BASE_URL} from '@/config'
 import {Notification} from 'element-ui'
 import store from '../store'
 import { LOG_OUT } from 'store/user/mutations_types'
-import router from 'vue-router'
+import router from 'router'
 // axios 配置
 axios.defaults.timeout = 10000
 axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置

@@ -30,7 +30,7 @@ import * as user from 'api/user'
 import * as userType from 'store/user/mutations_types'
 import * as appType from 'store/app/mutations_types'
 import store from 'store'
-import router from 'vue-router'
+import router from 'router'
 
 export default {
   data () {
