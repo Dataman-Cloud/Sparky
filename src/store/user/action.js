@@ -121,5 +121,17 @@ export default {
         reject(err)
       })
     })
+  },
+  [type.LOG_OUT] ({ commit }) {
+    return new Promise((resolve, reject) => {
+      api.logout().then(_ => {
+        commit(type.PUT_TOKEN, '')
+        commit(type.PUT_SYSRESOURCES, [])
+        Cookies.remove('token')
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }

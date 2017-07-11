@@ -38,35 +38,28 @@ export default {
       selectGroup: this.$store.state.user.aboutme.currentGroupId
     }
   },
-  beforeRouteEnter (to, from, next) {
-    store.dispatch(userType.FETCH_ABOUTME)
-      .then(() => {
-        next()
-      })
-  },
   methods: {
     //  退出登录
     logout: function () {
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
-        user.logout()
-          .then(data => {
-            localStorage.removeItem('token')
-            this.$router.push('/login')
-          })
+        store.dispatch(userType.LOG_OUT).then(data => {
+          this.$router.push('/login')
+        })
       }).catch(() => {
 
       })
     },
     switchGroup () {
+      let { dispatch } = store
       user.switchGroup(this.selectGroup)
         .then(data => {
-          this.$store.dispatch(userType.PUT_SYSRESOURCES, data.sysResources).then(() =>
-            this.$store.dispatch(userType.FETCH_ABOUTME)
+          dispatch(userType.PUT_SYSRESOURCES, data.sysResources).then(() =>
+            dispatch(userType.FETCH_ABOUTME)
               .then(() => {
                 console.log(appType + '--------------')
                 this.$router.push({path: '/app/list/'})
                 /*
-                 this.$store.dispatch(appType.FETCH_APPS, this.selectGroup)
+                 dispatch(appType.FETCH_APPS, this.selectGroup)
                  .then(() => this.$router.push({name: '全部的应用'}))
                  */
               })
