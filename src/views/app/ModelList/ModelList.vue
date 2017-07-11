@@ -65,6 +65,7 @@
   import {LABEL_PREFIX} from '@/config'
   import * as type from '@/store/model/mutations_types'
   import * as editorOptions from '@/common/defaultConfig'
+  import * as userType from 'store/user/mutations_types'
 
   export default {
     data () {
@@ -232,6 +233,7 @@
     },
     mounted () {
       this.listLoading = true
+      this.$store.dispatch(userType.FETCH_ABOUTME)
       this.listModel()
         .then(() => {
           this.listLoading = false
