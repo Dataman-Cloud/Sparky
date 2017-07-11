@@ -187,6 +187,7 @@
   import * as type from '../../../store/app/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
   import TimeLine from '@/components/timeline/index'
+  import store from 'store'
 
   export default {
     components: {
@@ -389,14 +390,14 @@
       getStderr (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
           let stderr = this.containers[id].stderrPath
-          stderr = stderr + '?Authorization=' + localStorage.getItem('token')
+          stderr = stderr + '?Authorization=' + store.getters.token
           return stderr
         }
       },
       getStdout (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
           let stdout = this.containers[id].stdoutPath
-          stdout = stdout + '?Authorization=' + localStorage.getItem('token')
+          stdout = stdout + '?Authorization=' + store.getters.token
           return stdout
         }
       },
