@@ -1,5 +1,6 @@
 /* eslint-disable no-multiple-empty-lines */
 import axios from './http'
+import store from 'store'
 
 // 获取所有的主机
 export function listNodes () {
@@ -41,7 +42,7 @@ export function nodeInstanceInfo (params) {
 // 获取主机上指定容器的日志
 export function nodeInstanceLogs (params) {
   let {nodeIp, instanceId} = params
-  let token = localStorage.getItem('token')
+  let token = store.getters.token
   let protocol = window.location.protocol
   let url = `${protocol}/jborg/node/${nodeIp}/instances/${instanceId}/logs?Authorization=${token}`
   return new EventSource(url)
@@ -59,7 +60,7 @@ export function nodeInstanceLogsWS (params) {
 // 获取主机上指定容器的状态
 export function nodeInstanceStats (params) {
   let {nodeIp, instanceId} = params
-  let token = localStorage.getItem('token')
+  let token = store.getters.token
   // let host = window.location.host
   let protocol = window.location.protocol
   let url = `${protocol}/jborg/node/${nodeIp}/instances/${instanceId}/stats?Authorization=${token}`
