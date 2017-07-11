@@ -43,7 +43,7 @@ export default {
     logout: function () {
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
-          this.$router.push('/login')
+          location.reload()
         })
       }).catch(() => {
 
