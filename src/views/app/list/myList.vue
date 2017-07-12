@@ -144,6 +144,7 @@
 
     <el-dialog
       title="扩展"
+      size="tiny"
       :visible.sync="dialogVisible"
       :before-close="handleClose">
       <el-input-number v-model="instances" size="small" :min="0" :step="1"></el-input-number>

@@ -250,9 +250,11 @@
 
     <el-dialog
       title="扩展"
+      size="tiny"
       :visible.sync="dialogVisible"
       :before-close="handleClose">
-      <el-input type="number" v-model="instances" size="small" :min="0" :step="1"></el-input>
+      <el-input-number v-model="instances" size="small" :min="0" :step="1"></el-input-number>
+<!--      <el-input type="number" v-model="instances" size="small" :min="0" :step="1"></el-input> -->
       <span slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="extend()">确 定</el-button>
