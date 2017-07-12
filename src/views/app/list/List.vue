@@ -4,14 +4,14 @@
     <el-row>
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters" ref="test">
-          <!--
           <el-form-item>
             <el-input v-model="filters.name" placeholder="应用名称"></el-input>
           </el-form-item>
-          -->
+          <!--
           <el-form-item>
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
+          -->
           <el-form-item>
             <router-link to="../list/catalogStackList">
               <el-button type="primary">添加程序包</el-button>
