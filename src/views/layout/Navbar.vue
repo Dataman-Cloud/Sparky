@@ -42,15 +42,16 @@ export default {
   methods: {
     //  退出登录
     logout: function () {
+      let toLogin = () => router.replace({
+        name: 'Login',
+        query: {redirect: router.currentRoute.fullPath}
+      })
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
-          router.replace({
-            name: 'Login',
-            query: {redirect: router.currentRoute.fullPath}
-          })
+          toLogin()
         })
       }).catch(() => {
-
+        toLogin()
       })
     },
     switchGroup () {
