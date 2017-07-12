@@ -2,7 +2,7 @@
   <section>
     <el-form label-position="left" inline class="demo-table-expand">
       <el-form-item label="容器名称">
-        <span>{{instance.Name }} <el-tag type="primary">{{instance.State.Status }} </el-tag></span>
+        <span>{{instance.Name }} <el-tag type="primary" v-if="instance.State !== undefined">{{instance.State.Status }} </el-tag></span>
       </el-form-item>
       <el-form-item label="创建时间">
         <span>{{instance.Created | moment("YYYY/MM/DD hh:mm:ss") }}</span>
@@ -11,10 +11,10 @@
         <span>{{instance.Driver }}</span>
       </el-form-item>
       <el-form-item label="主机名称">
-        <span>{{instance.Config.Hostname }}</span>
+        <span v-if="instance.Config !== undefined">{{instance.Config.Hostname }}</span>
       </el-form-item>
       <el-form-item label="网络模式">
-        <span>{{instance.HostConfig.NetworkMode }}</span>
+        <span v-if="instance.HostConfig !== undefined">{{instance.HostConfig.NetworkMode }}</span>
       </el-form-item>
     </el-form>
 
@@ -23,7 +23,7 @@
       <el-tab-pane label="基础信息" name="tab1">
         <el-form label-position="left" inline class="demo-table-expand">
           <el-form-item label="镜像名称" v-bind:style="bigLable">
-            <span>{{instance.Config.Image }}</span>
+            <span v-if="instance.Config !== undefined">{{instance.Config.Image }}</span>
           </el-form-item>
           <el-form-item label="摘要" v-bind:style="bigLable">
             <span>{{instance.Image }}</span>
@@ -137,9 +137,11 @@
         },
         envarr (state) {
           let arr = []
-          for (var env of state.node.nodes.currInstance.Config.Env) {
-            var temp = env.split('=')
-            arr.push({key: temp[0], value: temp[1]})
+          if (state.node.nodes.currInstance.Config !== undefined) {
+            for (var env of state.node.nodes.currInstance.Config.Env) {
+              var temp = env.split('=')
+              arr.push({key: temp[0], value: temp[1]})
+            }
           }
           return arr
         }

@@ -30,6 +30,7 @@ import * as user from 'api/user'
 import * as userType from 'store/user/mutations_types'
 import * as appType from 'store/app/mutations_types'
 import store from 'store'
+import router from 'router'
 
 export default {
   data () {
@@ -43,7 +44,10 @@ export default {
     logout: function () {
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
-          this.$router.push('/login')
+          router.replace({
+            name: 'Login',
+            query: {redirect: router.currentRoute.fullPath}
+          })
         })
       }).catch(() => {
 
