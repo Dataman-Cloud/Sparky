@@ -7,9 +7,11 @@
           <el-form-item>
             <el-input v-model="filters.name" placeholder="应用名称"></el-input>
           </el-form-item>
+          <!--
           <el-form-item>
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
+          -->
           <el-form-item>
             <router-link to="../list/catalogStackList">
               <el-button type="primary">添加程序包</el-button>
@@ -142,7 +144,7 @@
         <!--</el-col>-->
       </el-collapse-item>
 
-      <el-collapse-item :name="0">
+      <el-collapse-item :name="0" v-if="unversion.list.length > 0">
         <template slot="title">
           <el-row style="float: right;width:95%">
             <el-col :span="10">未分组</el-col>
@@ -371,6 +373,28 @@
             }
             item.healthy = healthy
           }
+          // 如果有查询条件的话
+          if (this.filters.name !== '' && this.filters.name !== null) {
+            let serchAPPList = []
+            // 循环对比数据
+            for (let v of appgroups) {
+              let list = []
+              for (let k of v.apps) {
+                // 获取列表中的应用id
+                let name = k.id.split('/')[2] ? k.id.split('/')[2] : k.id.split('/')[1]
+                if (name.indexOf(this.filters.name) > -1) { // 对比传来的应用id的条件
+                  // 符合条件的添加进list
+                  list.push(k)
+                }
+              }
+              // 避免添加空数组
+              if (list.length > 0) {
+                serchAPPList.push({'apps': list, 'id': v.id, 'healthy': v.healthy})
+              }
+            }
+            console.log(serchAPPList)
+            return serchAPPList
+          }
           // console.log(state.appgroups.arr)
           // console.log('*********************appgroups=' + JSON.stringify(appgroups))
           return appgroups
@@ -389,6 +413,25 @@
           unversion.healthy = healthy
           unversion.list = state.appgroups.unversion
 //          console.log('************************unversion=' + JSON.stringify(unversion))
+          console.log('======================', unversion)
+          // 如果有查询条件的话
+          if (this.filters.name !== '' && this.filters.name !== null) {
+            let serchAPPList = {'list': []}
+            // 循环对比数据
+            for (let v of unversion.list) {
+              // 获取列表中的应用id
+              let name = v.id.split('/')[2] ? v.id.split('/')[2] : v.id.split('/')[1]
+              if (name.indexOf(this.filters.name) > -1) { // 对比传来的应用id的条件
+                // 符合条件的添加进list
+                serchAPPList['list'].push(v)
+              }
+            }
+            if (serchAPPList['list'].length > 0) {
+              serchAPPList['healthy'] = unversion['healthy']
+            }
+            console.log('-------------------------', serchAPPList)
+            return serchAPPList
+          }
           return unversion
         },
         users (state) {
