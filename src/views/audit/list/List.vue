@@ -88,7 +88,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import {LABEL_PREFIX, DEFAULT_BASE_URL} from '@/config'
+  import {LABEL_PREFIX} from '@/config'
   import * as auditType from '../../../store/audit/mutations_types'
   import { Notification } from 'element-ui'
   export default {
@@ -341,7 +341,7 @@
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
         this.selectForm.timeExtent = [start, end]
         // 发起请求
-        let url = `${DEFAULT_BASE_URL}/jborg/audits/exportExcel?${this.submitPar()}`
+        let url = window.location.protocol + `/jborg/audits/exportExcel?${this.submitPar()}`
         let $a = document.createElement('a')
         $a.target = '_blank'
         $a.href = url

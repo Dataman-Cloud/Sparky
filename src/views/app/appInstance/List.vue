@@ -48,7 +48,7 @@
           <el-table-column prop="id" label="实例ID" min-width="400" sortable>
             <template scope="scope">
               <router-link
-                :to="{name: '容器信息', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
+                :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
                 {{scope.row.id }}
               </router-link>
             </template>
@@ -73,8 +73,8 @@
           </el-table-column>
           <el-table-column label="日志" min-width="150" sortable>
             <template scope="scope">
-              <a :href="getStderr(scope.row.id)" target="_blank">stdout</a>
-              <a :href="getStdout(scope.row.id)" target="_blank">stderr</a>
+              <a :href="getStderr(scope.row.id)" target="_blank">stderr</a>
+              <a :href="getStdout(scope.row.id)" target="_blank">stdout</a>
             </template>
           </el-table-column>
 
@@ -178,7 +178,11 @@
         <el-button type="primary" @click="extend()">确 定</el-button>
       </span>
     </el-dialog>
-
+    <el-col :span="24" class="toolbar">
+      <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
   </section>
 </template>
 
@@ -187,7 +191,6 @@
   import * as type from '../../../store/app/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
   import TimeLine from '@/components/timeline/index'
-  import store from 'store'
 
   export default {
     components: {
@@ -213,6 +216,13 @@
           lineHeight: '18px'
         },
         activeName: 'first',
+        /*
+         import {DEFAULT_BASE_URL} from '@/config'
+         download: `DEFAULT_BASE_URL/jborg/file/download/`, // 下载文件的接
+        */
+        download: `${window.location.protocol}//${window.location.host}/jborg/file/download/`, // 下载文件的接
+        page: 1, // 默认当前第1页
+        pageSize: 10, // 一页显示几条数据
         interval: null,
         healthy: 0,
         unhealthy: 0,
@@ -229,7 +239,6 @@
       ...mapState({
         appInfo (state) {
           let appinfo = state.app.apps.currApp
-          console.log(appinfo)
           let queue = state.app.apps.queue.queue || []
           this.detectAppStatus(appinfo)
           this.applyAppDelayStatus(appinfo, queue)
@@ -251,7 +260,7 @@
             task.taskHealth = taskHealth
             this.countHealth(taskHealth)
           }
-          return arr
+          return arr.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
         },
         containers (state) {
           return state.app.apps.currContainers
@@ -274,10 +283,17 @@
         },
         users (state) {
           return state.user.users.users
+        },
+        total (state) {
+          // 获取元素个数
+          return Object.getOwnPropertyNames(state.app.apps.currContainers).length - 1
         }
       })
     },
     methods: {
+      handleCurrentChange (val) {
+        this.page = val
+      },
       getAppInfo () {
         let aid = window.btoa(this.$route.query.id)
         return this.$store.dispatch(type.FETCH_APP_INFO, aid)
@@ -298,6 +314,9 @@
 //        console.log('***************taskId=' + 'test_aaaa.c770c2c8-5580-11e7-bb08-02428b347a54')
 //        console.log('=--------------------taskId:' + taskId)
         try {
+          console.log('999999999999999999999999999')
+          console.log(this.containers)
+          console.log(this.containers[taskId])
           let container = this.containers[taskId]
 //          console.log('222222222222222222222' + JSON.stringify(container))
           return container.containerId
@@ -389,15 +408,15 @@
       },
       getStderr (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
-          let stderr = this.containers[id].stderrPath
-          stderr = stderr + '?Authorization=' + store.getters.token
+          let filePath = window.btoa(this.containers[id].stderrPath)
+          let stderr = this.download + `stderr?filePath=${filePath}`
           return stderr
         }
       },
       getStdout (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
-          let stdout = this.containers[id].stdoutPath
-          stdout = stdout + '?Authorization=' + store.getters.token
+          let stdoutPath = window.btoa(this.containers[id].stdoutPath)
+          let stdout = this.download + `stdout?filePath=${stdoutPath}`
           return stdout
         }
       },
