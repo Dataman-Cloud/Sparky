@@ -133,5 +133,13 @@ export default {
         reject(error)
       })
     })
+  },
+  [type.CLEAR_TOKEN] ({ commit }) {
+    return new Promise((resolve, reject) => {
+      commit(type.PUT_TOKEN, '')
+      commit(type.PUT_SYSRESOURCES, [])
+      Cookies.remove('token')
+      resolve()
+    })
   }
 }
