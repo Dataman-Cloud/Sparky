@@ -72,6 +72,12 @@ export const constantRouterMap = [
         component: AppModelList
       },
       {
+        path: 'list/catalogStackList',
+        name: '程序包发布列表',
+        component: AppModelList,
+        hidden: true
+      },
+      {
         path: 'list/addModel',
         name: '添加应用模版',
         component: AddModel,
