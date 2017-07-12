@@ -5,7 +5,7 @@ import axios from 'axios'
 import {DEFAULT_BASE_URL} from '@/config'
 import {Notification} from 'element-ui'
 import store from '../store'
-import { LOG_OUT } from 'store/user/mutations_types'
+import { CLEAR_TOKEN } from 'store/user/mutations_types'
 import router from 'router'
 // axios 配置
 axios.defaults.timeout = 10000
@@ -33,7 +33,7 @@ axios.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           // 401 清除token信息并跳转到登录页面
-          store.dispatch(LOG_OUT).then(data => {
+          store.dispatch(CLEAR_TOKEN).then(data => {
             router.replace({
               name: 'Login',
               query: {redirect: router.currentRoute.fullPath}
