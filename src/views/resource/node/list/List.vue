@@ -24,6 +24,8 @@
       </el-table-column>
       <el-table-column prop="nodeStatus" label="主机状态" min-width="100" sortable>
       </el-table-column>
+      <el-table-column prop="clusterLable" label="所属集群" min-width="100" sortable>
+      </el-table-column>
       <el-table-column prop="mesosVersion" label="esos版本" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="registeredTime" label="创建时间" min-width="100" sortable>

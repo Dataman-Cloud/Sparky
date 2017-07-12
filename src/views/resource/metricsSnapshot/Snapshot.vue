@@ -8,9 +8,15 @@
           </el-table-column>
           <el-table-column prop="cpu" label="cpu" width="180">
           </el-table-column>
-          <el-table-column prop="mem" label="内存(M)" width="180">
+          <el-table-column prop="mem" label="内存" width="180">
+            <template scope="scope">
+              {{formatFileSize(scope.row.mem * 1024 * 1024) }}
+            </template>
           </el-table-column>
-          <el-table-column prop="disk" label="磁盘(M)">
+          <el-table-column prop="disk" label="磁盘">
+            <template scope="scope">
+              {{formatFileSize(scope.row.disk * 1024 * 1024) }}
+            </template>
           </el-table-column>
         </el-table>
         <strong class="title">Slave 节点</strong>
@@ -39,6 +45,7 @@
 <script>
   import {mapState} from 'vuex'
   import * as type from '../../../store/node/mutations_types'
+  import * as util from '../../../common/js/util'
 
   export default {
     data () {
@@ -78,7 +85,7 @@
             return arr
           }
           arr.push({key: 'Staging', value: snapshot['masterTasksStaging']})
-          arr.push({key: 'Starting', value: snapshot['mmasterTasksStarting']})
+          arr.push({key: 'Starting', value: snapshot['masterTasksStarting']})
           arr.push({key: 'Running', value: snapshot['masterTasksRunning']})
           arr.push({key: 'Killing', value: snapshot['masterTasksKilling']})
           arr.push({key: 'Finished', value: snapshot['masterTasksFinished']})
@@ -93,6 +100,13 @@
     methods: {
       getSnapshot () {
         return this.$store.dispatch(type.METRICS_SNAPSHOT)
+      },
+      formatFileSize (size) {
+        size = parseFloat(size)
+        if (size === 0) {
+          return size.toFixed(2) + 'MB'
+        }
+        return util.renderSize(size)
       }
     },
     mounted () {
