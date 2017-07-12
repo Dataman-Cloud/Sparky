@@ -404,6 +404,18 @@
     computed: {
       ...mapState({
         node ({ node }) {
+          // 已选择集群的话，根据集群筛选主机数据
+          if (this.ruleForm.groups !== null && this.ruleForm.groups !== '' && this.ruleForm.groups !== undefined) {
+            // 循环对比主机的集群信息
+            let list = []
+            for (let v of node.nodes.nodes) {
+              if (v.clusterLable === this.ruleForm.groups) {
+                list.push(v)
+              }
+            }
+            console.log(list)
+            return list
+          }
           return node.nodes.nodes
         },
         nodeTotal ({ node }) {

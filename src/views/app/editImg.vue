@@ -268,7 +268,7 @@
   import * as defaultOptions from '@/common/defaultConfig'
   import { Notification } from 'element-ui'
   import { app } from 'utils/app'
-  
+
   export default {
     components: {
       Codemirror
@@ -286,6 +286,17 @@
     computed: {
       ...mapState({
         node ({node}) {
+          // 已选择集群的话，根据集群筛选主机数据
+          if (this.ruleForm.vcluster !== null && this.ruleForm.vcluster !== '' && this.ruleForm.vcluster !== undefined) {
+            // 循环对比主机的集群信息
+            let list = []
+            for (let v of node.nodes.nodes) {
+              if (v.clusterLable === this.ruleForm.vcluster) {
+                list.push(v)
+              }
+            }
+            return list
+          }
           return node.nodes.nodes
         },
         nodeTotal ({node}) {
@@ -612,7 +623,7 @@
       dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
       dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
         if (data.resultCode === '00') {
-          this.mainRender(JSON.parse(data.data).app)
+          this.mainRender(data.data.app)
         }
       })
     }
