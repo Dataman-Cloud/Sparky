@@ -4,13 +4,30 @@
 import actions from './action'
 import mutations from './mutations'
 import getters from './getters'
+import Cookies from 'js-cookie'
 
 const state = {
   aboutme: {},
+  userinfo: null,
+  userEdit: {},
   users: {
     users: [],
     total: 0
-  }
+  },
+  groups: {
+    groups: [],
+    total: 0
+  },
+  usersInGroups: {
+    users: [],
+    total: 0
+  },
+  repos: {
+    repos: [],
+    total: 0
+  },
+  sysResources: JSON.parse(localStorage.getItem('sysResources')) || [],
+  token: Cookies.get('token')
 }
 
 export default {

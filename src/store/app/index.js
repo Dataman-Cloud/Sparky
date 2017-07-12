@@ -7,6 +7,13 @@ import mutations from './mutations'
 const state = {
   apps: {
     apps: [],
+    currApp: {},
+    currContainers: [],
+    queue: [],
+    model: {},
+    forUpdateApp: {},
+    appVersions: [],
+    appsInfo: [],
     total: 0
   }
 }

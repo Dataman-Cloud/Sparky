@@ -1,0 +1,36 @@
+/**
+调整codemirror全局高度
+ */
+.CodeMirror {
+  height: 600px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.margin-left-100 {
+  margin-left: -100px;
+}
+
+/* 设置table内容不换行*/
+.el-table .cell {
+    white-space: nowrap !important;
+}
+
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+
+.CodeMirror {
+  height: 460px;
+}
+
+.margin-bottom-0 {
+  margin-bottom: 0 !important;
+}
+.addGroup .el-form-item__content .el-form-item__error{
+  left: 65px!important;
+}
+.codemirrorHeight .CodeMirror{
+  height: auto;
+}
