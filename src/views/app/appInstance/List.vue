@@ -31,7 +31,7 @@
       <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button>
       <el-button type="primary" @click="dialogVisible = true">扩展</el-button>
       <el-button type="primary" @click="delApp">删除</el-button>
-      <el-button type="primary">更新</el-button>
+<!--      <el-button type="primary">更新</el-button> -->
     </el-form>
 
     <el-tabs v-model="activeName">
@@ -53,7 +53,9 @@
               <router-link
                 :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
                 {{scope.row.id }}
-              </router-link>
+              </router-link> <br />
+
+              -<a target="_blank" :href="getIPAddr(scope.row)"><span>{{scope.row.host }}:{{scope.row.ports }}</span></a>
             </template>
           </el-table-column>
           <el-table-column prop="host" label="IP" min-width="150" sortable>
@@ -417,6 +419,11 @@
             break
         }
       },
+      getIPAddr (para) {
+        let ip = para.host
+        let port = para.ports
+        return 'http://' + ip + ':' + port
+      },
       getStderr (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
           let filePath = window.btoa(this.containers[id].stderrPath)
@@ -496,7 +503,7 @@
         let myMessage = this.$message
         let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': 0}}
         this.$store.dispatch(type.UPDATE_APP, param).then(function (data) {
-          if (data.code === 0) {
+          if (data.resultCode === '00') {
             myMessage({type: 'success', message: '停止成功!'})
           }
         })
@@ -505,7 +512,7 @@
         let myMessage = this.$message
         let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': this.instancesNum}}
         this.$store.dispatch(type.UPDATE_APP, param).then((data) => {
-          if (data.code === 0) {
+          if (data.resultCode === '00') {
             myMessage({type: 'success', message: '扩展成功!'})
             this.dialogVisible = false
             this.init()
