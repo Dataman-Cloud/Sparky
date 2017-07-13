@@ -94,8 +94,8 @@
           <time-line refs="time-line" :index="index" @expandClick="expandList(version)">
             <span slot="title">{{version === appInfo.version ? '当前版本' : version}}</span>
             <template slot="action">
-              <el-button type="primary" icon="edit" size="mini">编辑</el-button>
-              <el-button type="primary" icon="caret-right" size="mini">部署</el-button>
+              <el-button type="primary" icon="edit" size="mini" @click="versionAppUpdate(version)">编辑</el-button>
+              <el-button type="primary" icon="caret-right" size="mini" @click="versionDeployment(version)">部署</el-button>
             </template>
             <!-- v-if="version === appInfo.version"  -->
             <template slot="content">
@@ -194,6 +194,7 @@
   import * as type from '../../../store/app/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
   import TimeLine from '@/components/timeline/index'
+  import * as appTypes from '@/store/app/mutations_types'
 
   export default {
     components: {
@@ -295,12 +296,7 @@
           return Object.getOwnPropertyNames(state.app.apps.currContainers).length - 1
         },
         versionsInfo (state) {
-          let appVersionInfo = state.app.apps.appVersionInfo
-          appVersionInfo.containerJson = JSON.stringify(appVersionInfo.container, null, 4)
-          appVersionInfo.healthChecksJson = JSON.stringify(appVersionInfo.healthChecks, null, 4)
-          appVersionInfo.envJson = JSON.stringify(appVersionInfo.env, null, 4)
-          appVersionInfo.constraintsJson = JSON.stringify(appVersionInfo.constraints, null, 4)
-          return appVersionInfo
+          return state.app.apps.appVersionInfo
         }
       })
     },
@@ -535,6 +531,7 @@
         this.getQueue()
 //        this.initSelect()
       },
+      // 根据版本查询应用信息
       expandList (version) {
         // 对比当前的版本信息
         if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
@@ -544,10 +541,50 @@
               if (data.resultCode !== '00') {
                 this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
               } else {
-                this.versionAPPInfo = this.versionsInfo
+                let appVersionInfo = this.versionsInfo
+                appVersionInfo.containerJson = JSON.stringify(appVersionInfo.container, null, 4)
+                appVersionInfo.healthChecksJson = JSON.stringify(appVersionInfo.healthChecks, null, 4)
+                appVersionInfo.envJson = JSON.stringify(appVersionInfo.env, null, 4)
+                appVersionInfo.constraintsJson = JSON.stringify(appVersionInfo.constraints, null, 4)
+                this.versionAPPInfo = appVersionInfo
               }
             })
         }
+      },
+      // 根据版本部署应用
+      versionDeployment (version) {
+        // 对比当前的版本信息
+        if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
+          // 查询该版本的应用信息
+          this.$store.dispatch(type.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.appInfo.id), 'vid': window.btoa(version)})
+            .then((data) => {
+              if (data.resultCode !== '00') {
+                this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
+              } else {
+                this.$store.dispatch(appTypes.UPDATE_APP, {
+                  'aid': window.btoa(this.versionAPPInfo.id),
+                  'params': this.versionsInfo
+                }).then(data => {
+                  console.log('***************************返回结果' + JSON.stringify(data))
+                  if (data.resultCode === '00') {
+                    this.$message({
+                      type: 'success',
+                      message: '部署应用成功!'
+                    })
+                  } else {
+                    Notification({
+                      title: '部署应用出错',
+                      message: JSON.stringify(data.message),
+                      type: 'error'
+                    })
+                  }
+                })
+              }
+            })
+        }
+      },
+      versionAppUpdate (version) {
+        this.$router.push({path: '/app/versionAppUpdate', query: {'aid': this.appInfo.id, 'vid': version}})
       }
     },
     mounted () {
