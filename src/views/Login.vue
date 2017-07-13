@@ -19,6 +19,8 @@
   // import * as user from 'api/user'
   import { Notification } from 'element-ui'
   import { LOG_IN } from 'store/user/mutations_types'
+  import router from 'router'
+  import store from 'store'
 
   export default {
     data () {
@@ -45,6 +47,7 @@
         dispatch(LOG_IN, this.loginForm).then(res => {
           return dispatch('GenerateRoutes', res).then(_ => {
             this.loading = false
+            router.addRoutes(store.getters.appendRouters)
             this.$router.push({name: '全部的应用'})
           }).catch(error => {
             this.showResult(error, 'd', 'sa')

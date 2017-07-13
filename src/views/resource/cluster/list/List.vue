@@ -123,7 +123,7 @@
       },
       // 打开添加集群
       openAddCluster () {
-        this.$router.push({path: '/resource/cluster/add'})
+        this.$router.push({name: '添加集群'})
       },
       // 删除集群
       delCluster (cluster) {

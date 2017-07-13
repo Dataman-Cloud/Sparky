@@ -48,7 +48,7 @@ export default {
       })
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
-          toLogin()
+          location.reload()
         })
       }).catch(() => {
         toLogin()
