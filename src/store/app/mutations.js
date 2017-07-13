@@ -30,5 +30,8 @@ export default {
   // 获取应用appid,instances,poolname
   [type.GET_FILTER_APPS] (state, payload) {
     state.apps.appsInfo = payload
+  },
+  [type.FETCH_APP_VERSION_INFO] (state, payload) {
+    state.apps.appVersionInfo = payload
   }
 }
