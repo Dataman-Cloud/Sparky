@@ -115,21 +115,19 @@
       },
       delNode (index, node) {
         let params = {method: 'del', nodeIps: [node.hostName], vClusterId: this.cluster.id}
-        console.log(params)
+        // console.log(params)
+        this.fullscreenLoading = true
         this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
-          this.fullscreenLoading = true
-          setTimeout(() => {
-            this.fullscreenLoading = false
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.getInfo()
-            })
-          }, 3000)
+          this.fullscreenLoading = false
+          this.$message({
+            message: '删除成功',
+            type: 'success',
+            onClose: this.getInfo()
+          })
         })
       },
       delCluster () {
-        console.log(this.cluster)
+        // console.log(this.cluster)
         this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then(() => {
           this.$message({
             message: '删除成功',
@@ -146,7 +144,7 @@
               availableNodeIps.push({key: n.hostName, lable: n.hostName})
             }
           }
-          console.log(availableNodeIps)
+          // console.log(availableNodeIps)
           this.availableNodes = availableNodeIps
           this.dialogVisible = true
         })
@@ -157,17 +155,15 @@
           return
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.cluster.id}
+        this.fullscreenLoading = true
         this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
-          this.fullscreenLoading = true
-          setTimeout(() => {
-            this.fullscreenLoading = false
-            this.dialogVisible = false
-            this.$message({
-              message: '添加成功',
-              type: 'success',
-              onClose: this.getInfo()
-            })
-          }, 3000)
+          this.fullscreenLoading = false
+          this.dialogVisible = false
+          this.$message({
+            message: '添加成功',
+            type: 'success',
+            onClose: this.getInfo()
+          })
         })
       },
       goList () {

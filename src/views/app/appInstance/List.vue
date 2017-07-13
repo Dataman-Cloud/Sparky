@@ -1,13 +1,7 @@
 <template>
   <section>
-    <el-form label-position="left" inline class="demo-table-expand">
-      <el-form-item label="应用名称">
-        <span>{{appInfo.id }}</span>
-      </el-form-item>
-      <el-form-item label="应用状态">
-        <span>{{appInfo.status }}</span>
-      </el-form-item>
-      <br clear="all">
+    <el-form label-position="left" inline class="demo-table-expand" style="padding-top: 20px;">
+
       <el-form-item label="healthy" v-bind:style="smallLable">
         <el-tag type="gray">{{healthy }}</el-tag>
       </el-form-item>
@@ -18,12 +12,21 @@
         <el-tag type="gray">{{unknown }}</el-tag>
       </el-form-item>
       <br clear="all">
-      <el-form-item label="最近更新时间">
-        <span>{{appInfo.version | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+      <el-form-item label="应用名称" v-bind:style="smallLable">
+        <span>{{appInfo.id }}</span>
       </el-form-item>
-      <el-form-item label="访问地址">
+      <el-form-item label="应用状态" v-bind:style="smallLable">
+        <span>{{appInfo.status }}</span>
+      </el-form-item>
+      <el-form-item label="访问地址" v-bind:style="smallLable">
         <span>-</span>
       </el-form-item>
+      <br clear="all">
+      <el-form-item label="最近更新时间" style="margin-bottom: 20px;">
+        <span>{{appInfo.version | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+      </el-form-item>
+      <br clear="all">
+
       <el-button type="primary" @click="stopApp">停止</el-button>
       <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button>
       <el-button type="primary" @click="dialogVisible = true">扩展</el-button>
@@ -199,7 +202,7 @@
     data () {
       return {
         smallLable: {
-          width: '20%'
+          width: '30%'
         },
         bigLable: {
           width: '80%'

@@ -79,12 +79,34 @@
     <el-dialog
       :visible.sync="dialog.dialogVisible"
       size="small">
-      <label>应用名称：{{dialog.dialogName}}</label><label style="float: right">CPU：{{dialog.dialogCPU}}</label><br/>
-      <label>内存：{{dialog.dialogMem}}</label><label style="float: right">实例个数：{{dialog.dialogExample}}</label><br/>
-      <label>CMD：{{dialog.dialogCMD}}</label><label style="float: right">版本：{{dialog.dialogVer}}</label><br/>
-      <label>应用端口：<label v-for="item in dialog.dialogPortMappings">{{item.servicePort}}，</label></label><label style="float: right">协议：<label v-for="item in dialog.dialogPortMappings">{{item.protocol}}，</label></label><br/>
+      <el-row>
+        <el-col :span="12"><div class="grid-content bg-purple"><label>应用名称：{{dialog.dialogName}}</label></div></el-col>
+        <el-col :span="12"><div class="grid-content bg-purple-light"><label>CPU：{{dialog.dialogCPU}}</label></div></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12"><div class="grid-content bg-purple"><label>内存：{{dialog.dialogMem}}</label></div></el-col>
+        <el-col :span="12"><div class="grid-content bg-purple-light"></div><label>实例个数：{{dialog.dialogExample}}</label></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12"><div class="grid-content bg-purple"><label>CMD：{{dialog.dialogCMD}}</label></div></el-col>
+        <el-col :span="12"><div class="grid-content bg-purple-light"><label>版本：{{dialog.dialogVer}}</label></div></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12"><div class="grid-content bg-purple"><label>应用端口：<label v-for="item in dialog.dialogPortMappings">{{item.servicePort}}，</label></label></div></el-col>
+        <el-col :span="12"><div class="grid-content bg-purple-light"><label>协议：<label v-for="item in dialog.dialogPortMappings">{{item.protocol}}，</label></label></div></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12"><div class="grid-content bg-purple"><label>映射端口：<label v-for="item in dialog.dialogPortMappings">{{item.containerPort}}，</label></label></div></el-col>
+        <el-col :span="12"><div class="grid-content bg-purple-light"><label>仓库认证：</label></div></el-col>
+      </el-row>
+
+<!--      <label>应用名称：{{dialog.dialogName}}</label><label class="proClass">CPU：{{dialog.dialogCPU}}</label><br/>
+      <label>内存：{{dialog.dialogMem}}</label><label class="proClass">实例个数：{{dialog.dialogExample}}</label><br/>
+      <label>CMD：{{dialog.dialogCMD}}</label><label>版本：{{dialog.dialogVer}}</label><br/>
+      <label>应用端口：<label v-for="item in dialog.dialogPortMappings">{{item.servicePort}}，</label></label><label class="proClass">协议：<label v-for="item in dialog.dialogPortMappings">{{item.protocol}}，</label></label><br/>
       <label>映射端口：<label v-for="item in dialog.dialogPortMappings">{{item.containerPort}}，</label></label><br/>
-      <label>仓库认证：</label><br/>
+      <label>仓库认证：</label><br/> -->
+
       <label v-show="dialog.dialogEnvionVar !== '{}'">环境变量：
       <div class="codemirrorHeight">
         <codemirror v-model="dialog.dialogEnvionVar" :options="editorOptions" class="codemirror">
@@ -484,5 +506,8 @@
 <style>
   .CodeMirror{
     height: auto;
+  }
+  .proClass {
+    margin-left: 30%;
   }
 </style>

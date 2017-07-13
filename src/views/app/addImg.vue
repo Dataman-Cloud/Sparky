@@ -1,6 +1,6 @@
 <template>
 
-  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top: 30px;">
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="表单模式" name="formModel">
 
@@ -268,7 +268,7 @@
 
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-      <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
+      <!-- <el-button @click="resetForm('ruleForm')">重置</el-button> -->
     </el-form-item>
 
   </el-form>
