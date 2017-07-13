@@ -61,7 +61,7 @@
       <el-transfer v-model="checkNodeIps" :data="availableNodes" :titles="titles"></el-transfer>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addNode">确 定</el-button>
+        <el-button type="primary" @click="addNode" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -85,7 +85,8 @@
         checkNodeIps: [],
         availableNodes: [],
         titles: ['可选主机', '已选择主机'],
-        vClusterId: null
+        vClusterId: null,
+        fullscreenLoading: false
       }
     },
     computed: {
@@ -156,7 +157,9 @@
           return
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.vClusterId}
+        this.fullscreenLoading = true
         this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
+          this.fullscreenLoading = false
           this.dialogVisible = false
           this.$message({
             message: '添加成功',
