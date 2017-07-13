@@ -79,66 +79,71 @@
           </el-table-column>
 
         </el-table>
-
+        <el-col :span="24" class="toolbar">
+          <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
+                         style="float:right;">
+          </el-pagination>
+        </el-col>
       </el-tab-pane>
 
       <el-tab-pane label="配置" name="second">
         <template v-for="(version, index) in versions">
-          <time-line refs="time-line" :index="index">
+          <time-line refs="time-line" :index="index" @expandClick="expandList(version)">
             <span slot="title">{{version === appInfo.version ? '当前版本' : version}}</span>
             <template slot="action">
               <el-button type="primary" icon="edit" size="mini">编辑</el-button>
               <el-button type="primary" icon="caret-right" size="mini">部署</el-button>
             </template>
-            <template v-if="version === appInfo.version" slot="content">
+            <!-- v-if="version === appInfo.version"  -->
+            <template slot="content">
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="应用名称">
-                  <span>{{appInfo.id }}</span>
+                  <span>{{versionAPPInfo.id }}</span>
                 </el-form-item>
                 <el-form-item label="CPU">
-                  <span>{{appInfo.cpus * 100 }}%</span>
+                  <span>{{versionAPPInfo.cpus * 100 }}%</span>
                 </el-form-item>
                 <el-form-item label="内存">
-                  <span>{{appInfo.mem }}M</span>
+                  <span>{{versionAPPInfo.mem }}M</span>
                 </el-form-item>
                 <el-form-item label="实例个数">
-                  <span>{{appInfo.instances }}</span>
+                  <span>{{versionAPPInfo.instances }}</span>
                 </el-form-item>
                 <el-form-item label="CMD">
-                  <span>{{appInfo.cmd }}</span>
+                  <span>{{versionAPPInfo.cmd }}</span>
                 </el-form-item>
                 <el-form-item label="版本">
-                  <span>{{appInfo.version }}</span>
+                  <span>{{versionAPPInfo.version }}</span>
                 </el-form-item>
                 <el-form-item label="应用端口">
-                  <span>{{appInfo.labels.BORG_FRONTEND_APP_PORT }}</span>
+                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_APP_PORT }}</span>
                 </el-form-item>
                 <el-form-item label="协议">
-                  <span>{{appInfo.labels.BORG_FRONTEND_PROTO }}</span>
+                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_PROTO }}</span>
                 </el-form-item>
                 <el-form-item label="映射端口">
-                  <span>{{appInfo.labels.BORG_FRONTEND_MAP_PORT }}</span>
+                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_MAP_PORT }}</span>
                 </el-form-item>
                 <el-form-item label="仓库认证">
-                  <span>{{appInfo.uris }}</span>
+                  <span>{{versionAPPInfo.uris }}</span>
                 </el-form-item>
                 <el-form-item label="环境变量">
-                  <span>{{appInfo.envJson }}</span>
+                  <span>{{versionAPPInfo.envJson }}</span>
                 </el-form-item>
 
                 <el-form-item label="限制条件" v-bind:style="bigLable">
                   <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{appInfo.constraintsJson}}</pre>
+                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.constraintsJson}}</pre>
                   </div>
                 </el-form-item>
                 <el-form-item label="健康检查" v-bind:style="bigLable">
                   <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{appInfo.healthChecksJson}}</pre>
+                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.healthChecksJson}}</pre>
                   </div>
                 </el-form-item>
                 <el-form-item label="容器信息" v-bind:style="bigLable">
                   <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{appInfo.containerJson}}</pre>
+                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.containerJson}}</pre>
                   </div>
                 </el-form-item>
               </el-form>
@@ -178,11 +183,6 @@
         <el-button type="primary" @click="extend()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-col :span="24" class="toolbar">
-      <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
-                     style="float:right;">
-      </el-pagination>
-    </el-col>
   </section>
 </template>
 
@@ -232,7 +232,8 @@
         userId: null,
         editDialogVisible: false,
         instancesNum: 0,
-        dialogVisible: false
+        dialogVisible: false,
+        versionAPPInfo: undefined
       }
     },
     computed: {
@@ -248,6 +249,8 @@
           appinfo.envJson = JSON.stringify(appinfo.env, null, 4)
           appinfo.constraintsJson = JSON.stringify(appinfo.constraints, null, 4)
           this.instancesNum = appinfo.instances
+          // 版本应用信息默认为当前应用信息
+          this.versionAPPInfo = appinfo
           return appinfo
         },
         tasks (state) {
@@ -287,6 +290,14 @@
         total (state) {
           // 获取元素个数
           return Object.getOwnPropertyNames(state.app.apps.currContainers).length - 1
+        },
+        versionsInfo (state) {
+          let appVersionInfo = state.app.apps.appVersionInfo
+          appVersionInfo.containerJson = JSON.stringify(appVersionInfo.container, null, 4)
+          appVersionInfo.healthChecksJson = JSON.stringify(appVersionInfo.healthChecks, null, 4)
+          appVersionInfo.envJson = JSON.stringify(appVersionInfo.env, null, 4)
+          appVersionInfo.constraintsJson = JSON.stringify(appVersionInfo.constraints, null, 4)
+          return appVersionInfo
         }
       })
     },
@@ -314,9 +325,6 @@
 //        console.log('***************taskId=' + 'test_aaaa.c770c2c8-5580-11e7-bb08-02428b347a54')
 //        console.log('=--------------------taskId:' + taskId)
         try {
-          console.log('999999999999999999999999999')
-          console.log(this.containers)
-          console.log(this.containers[taskId])
           let container = this.containers[taskId]
 //          console.log('222222222222222222222' + JSON.stringify(container))
           return container.containerId
@@ -523,6 +531,22 @@
         this.getAppContainers()
         this.getQueue()
 //        this.initSelect()
+      },
+      expandList (version) {
+        // 对比当前的版本信息
+        if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
+          // 查询该版本的应用信息
+          this.$store.dispatch(type.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.appInfo.id), 'vid': window.btoa(version)})
+            .then((data) => {
+              if (data.resultCode !== '00') {
+                this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
+              } else {
+                this.versionAPPInfo = this.versionsInfo
+              }
+            })
+        } else {
+            console.log('不查询')
+        }
       }
     },
     mounted () {

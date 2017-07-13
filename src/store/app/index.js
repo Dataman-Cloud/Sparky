@@ -13,6 +13,7 @@ const state = {
     model: {},
     forUpdateApp: {},
     appVersions: [],
+    appVersionInfo: {},
     appsInfo: [],
     total: 0
   }

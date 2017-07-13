@@ -83,9 +83,14 @@ export default {
     })
   },
   [type.UPDATE_APPLIST] (context, playload) {
-    console.log('111-----------------------------------')
-    console.log(playload)
     return api.updateAppList(playload)
+  },
+  // 根据应用id和版本号获取应用信息
+  [type.FETCH_APP_VERSION_INFO] (context, playload) {
+    return api.getAppVsersion(playload.aid, playload.vid).then(data => {
+      context.commit(type.FETCH_APP_VERSION_INFO, data.data)
+      return data
+    })
   }
 
 }
