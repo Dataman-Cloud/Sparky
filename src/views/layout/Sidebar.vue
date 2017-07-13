@@ -1,6 +1,6 @@
 <template>
   <aside class="menu-expanded">
-    <el-menu :default-active="$route.path" mode="vertical" unique-opened router>
+    <el-menu :default-active="$route.path" mode="vertical" unique-opened>
       <sidebar-item :routes='permissionRoutes'/>
     </el-menu>
  </aside>

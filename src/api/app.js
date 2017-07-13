@@ -98,7 +98,7 @@ export function appVersions (aid) {
 }
 // 获取应用指定版本
 export function getAppVsersion (aid, vid) {
-  return axios.get(`/jborg/app/${aid}/versions/${vid}`)
+  return axios.get(`/jborg/app/getAppVersion/${aid}/versions/${vid}`)
 }
 // 删除指定应用
 export function delApp (aid) {

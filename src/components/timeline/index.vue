@@ -32,6 +32,7 @@ export default {
 
   methods: {
     handleClick () {
+      this.$emit('expandClick', this.index, !this.isActive)
       this.isActive = !this.isActive
     }
   }
