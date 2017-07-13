@@ -544,8 +544,6 @@
                 this.versionAPPInfo = this.versionsInfo
               }
             })
-        } else {
-            console.log('不查询')
         }
       }
     },
