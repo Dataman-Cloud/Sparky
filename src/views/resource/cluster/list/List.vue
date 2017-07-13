@@ -168,6 +168,7 @@
         })
       },
       handleClose () {
+        this.dialogVisible = false
       }
     },
     mounted () {
