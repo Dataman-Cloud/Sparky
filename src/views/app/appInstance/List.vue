@@ -195,6 +195,7 @@
   import * as userType from '../../../store/user/mutations_types'
   import TimeLine from '@/components/timeline/index'
   import * as appTypes from '@/store/app/mutations_types'
+  import { Notification } from 'element-ui'
 
   export default {
     components: {
@@ -561,9 +562,14 @@
               if (data.resultCode !== '00') {
                 this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
               } else {
+                  /* -----封装json数据 ----------- */
+                let parJSON =  this.versionsInfo
+                parJSON['id'] = parJSON['id'].substring(1, parJSON['id'].length)
+                // 删除version，不删报错
+                delete (parJSON['version'])
                 this.$store.dispatch(appTypes.UPDATE_APP, {
                   'aid': window.btoa(this.versionAPPInfo.id),
-                  'params': this.versionsInfo
+                  'params': parJSON
                 }).then(data => {
                   console.log('***************************返回结果' + JSON.stringify(data))
                   if (data.resultCode === '00') {

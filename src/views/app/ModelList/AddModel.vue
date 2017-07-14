@@ -993,6 +993,10 @@
                 modelInfo: modelInfo
               }).then((data) => {
                 if (data.resultCode === '00') {
+                  this.$message({
+                    type: 'success',
+                    message: '更新成功!'
+                  })
                   // 更新成功
                   this.$router.push({path: '/app/list/appsModel'})
                 } else {
@@ -1008,6 +1012,10 @@
                 modelInfo: {'name': this.ruleForm.name, 'json': this.getObjModelJSON, 'desc': this.ruleForm.desc} })
                 .then((data) => {
                   if (data.resultCode === '00') {
+                    this.$message({
+                      type: 'success',
+                      message: '创建成功!'
+                    })
                     // 跳转回列表
                     this.$router.push({path: '/app/list/appsModel'})
                   } else {
