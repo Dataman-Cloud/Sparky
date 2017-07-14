@@ -57,11 +57,22 @@ export default {
     // 查询主机
     dispatch(mutationsType.FETCH_CLUSTERS, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
-    dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
-      if (data.resultCode === '00') {
-        this.mainRender(data.data.app)
-      }
-    })
+    if (this.$route.path === '/app/versionAppUpdate') {
+      // 查询该版本的应用信息
+      this.$store.dispatch(appTypes.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.$route.query.aid), 'vid': window.btoa(this.$route.query.vid)})
+        .then((data) => {
+          if (data.resultCode === '00') {
+            console.log(data.data)
+            this.mainRender(data.data)
+          }
+        })
+    } else {
+      dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
+        if (data.resultCode === '00') {
+          this.mainRender(data.data.app)
+        }
+      })
+    }
   }
 }
 </script>
