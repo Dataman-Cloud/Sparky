@@ -34,4 +34,11 @@
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
 </style>
