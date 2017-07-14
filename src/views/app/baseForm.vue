@@ -589,12 +589,18 @@
           normalForm.dockerPar.push({key: v['key'], value: v['value']})
         }
         this.ruleForm = normalForm
+      },
+      resetForm (formName) {
+        return
       }
     },
     filters: {
       replaceSprit (value) {
         return value.replace('/', '')
       }
+    },
+    beforeDestroy () {
+      this.resetForm()
     }
   }
 </script>
