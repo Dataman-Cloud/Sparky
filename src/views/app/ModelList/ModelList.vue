@@ -62,7 +62,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import {LABEL_PREFIX} from '@/config'
+  import labelPrefix from 'labelPrefix'
   import * as type from '@/store/model/mutations_types'
   import * as editorOptions from '@/common/defaultConfig'
   import Codemirror from '@/components/jsonEditor/index'
@@ -91,7 +91,7 @@
           desc: '',
           json: ''
         },
-        prefix: LABEL_PREFIX,
+        prefix: labelPrefix,
         interval: null
       }
     },

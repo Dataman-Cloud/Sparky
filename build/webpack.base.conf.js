@@ -37,6 +37,10 @@ module.exports = {
       'static': path.resolve(__dirname, '../static')
     }
   },
+  externals: {
+    baseUrl: 'DEFAULT_BASE_URL',
+    labelPrefix: 'LABEL_PREFIX'
+  },
   module: {
     rules: [
       {

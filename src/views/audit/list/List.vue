@@ -88,7 +88,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import {LABEL_PREFIX} from '@/config'
+  import labelPrefix from 'labelPrefix'
   import * as auditType from '../../../store/audit/mutations_types'
   import { Notification } from 'element-ui'
   export default {
@@ -147,7 +147,7 @@
         currentPage: 1, // 每次点击查询按钮都从此页数开始查，默认从第1页开始
         listLoading: false,
         dialogVisible: false,
-        prefix: LABEL_PREFIX,
+        prefix: labelPrefix,
         interval: null
       }
     },

@@ -7,7 +7,6 @@
 <script>
 import * as Terminal from 'xterm'
 // import * as Fit from 'xterm/dist/addons/fit.js'
-// import {DEFAULT_BASE_URL} from '@/config'
 import 'xterm/dist/xterm.css'
 import store from 'store'
 
@@ -25,7 +24,6 @@ export default {
   },
   methods: {
     buildUrl (params) {
-      // let domain = DEFAULT_BASE_URL.replace(/http/, 'ws')
       let domain = 'ws://192.168.199.22:5015'
       let uri = 'v1/nodes/$node_ip/instances/$instance_id/terminal'
       let url = domain + '/' + uri

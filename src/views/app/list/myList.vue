@@ -184,7 +184,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { LABEL_PREFIX } from '../../../config'
+  import labelPrefix from 'labelPrefix'
   import * as type from '../../../store/app/mutations_types'
   import * as appgroupTypes from '../../../store/appgroups/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
@@ -223,7 +223,7 @@
         instances: 0,
         page: 1,
         listLoading: false,
-        prefix: LABEL_PREFIX,
+        prefix: labelPrefix,
         interval: null
       }
     },

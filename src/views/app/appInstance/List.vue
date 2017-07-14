@@ -221,10 +221,6 @@
           lineHeight: '18px'
         },
         activeName: 'first',
-        /*
-         import {DEFAULT_BASE_URL} from '@/config'
-         download: `DEFAULT_BASE_URL/jborg/file/download/`, // 下载文件的接
-        */
         download: `${window.location.protocol}//${window.location.host}/jborg/file/download/`, // 下载文件的接
         page: 1, // 默认当前第1页
         pageSize: 10, // 一页显示几条数据

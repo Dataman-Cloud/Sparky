@@ -2,15 +2,14 @@
  * Created by my9074 on 2017/4/5.
  */
 import axios from 'axios'
-import {DEFAULT_BASE_URL} from '@/config'
+import baseUrl from 'baseUrl'
 import {Notification} from 'element-ui'
 import store from '../store'
 import { CLEAR_TOKEN } from 'store/user/mutations_types'
 import router from 'router'
 // axios 配置
 axios.defaults.timeout = 10000
-axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置
-
+axios.defaults.baseURL = baseUrl //  可配置
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
