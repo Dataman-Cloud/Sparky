@@ -240,10 +240,10 @@
 </div>
 </template>
 <script>
-  import * as nodeType from '@/store/node/mutations_types'
-  import * as mutationsType from '@/store/clusters/mutations_types'
-  import * as userTypes from '../../store/user/mutations_types'
-  import * as appgroupTypes from '@/store/appgroups/mutations_types'
+  // import * as nodeType from '@/store/node/mutations_types'
+  // import * as mutationsType from '@/store/clusters/mutations_types'
+  // import * as userTypes from '../../store/user/mutations_types'
+  // import * as appgroupTypes from '@/store/appgroups/mutations_types'
   import * as appTypes from '@/store/app/mutations_types'
   import HealthCheck from '@/common/model/HealthCheck'
   import { mapState } from 'vuex'
@@ -269,13 +269,13 @@
         activeName: 'formModel',
         rules: defaultOptions.formRule,
         resultForm: defaultOptions.resultForm,
-        showCodeMirror: false
+        showCodeMirror: false,
+        showForm: ''
       }
     },
     computed: {
       ...mapState({
         node ({node}) {
-          console.log(node)
           // 已选择集群的话，根据集群筛选主机数据
           if (this.ruleForm.vcluster !== null && this.ruleForm.vcluster !== '' && this.ruleForm.vcluster !== undefined) {
             // 循环对比主机的集群信息
@@ -308,18 +308,6 @@
       filterApps: function () {
         // 从已有数组中返回元素
         return this.apps.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-      },
-      showForm: {
-        get () {
-          let jsonForm = this.transForm()
-          return jsonForm
-        },
-        set (newValue) {
-          console.log('***********************' + newValue)
-          this.resultForm = JSON.parse(newValue)
-          this.ruleForm.appId = this.resultForm.id && this.resultForm.id.indexOf('/') > -1 ? this.resultForm.id.split('/')[1] : this.resultForm.appId
-          this.ruleForm.group = this.resultForm.id && this.resultForm.id.indexOf('/') > -1 ? this.resultForm.id.split('/')[0] : null// 待修改
-        }
       }
     },
     methods: {
@@ -331,8 +319,17 @@
         form.push(item)
       },
       handleClick (tab, event) {
-        this.showCodeMirror = true
-        // console.log(tab, event)
+        if (tab.name === 'jsonModel') {
+          try {
+            this.showForm = JSON.stringify(this.transForm(), null, 2)
+          } catch (e) {
+            throw new Error(`has something wrong with the form`)
+          } finally {
+            this.showCodeMirror = true
+          }
+        } else {
+          this.showCodeMirror = false
+        }
       },
       networkChange () {
         this.removeAllPorts()
@@ -390,17 +387,14 @@
         healthItem.portIndex = undefined//  清空之前填写的“端口组索引”
       },
       submitForm (formName) {
-        console.log(formName, '123123123')
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.transForm()
-            console.log('success submit!' + JSON.stringify(this.resultForm))
             let router = this.$router
             this.$store.dispatch(appTypes.UPDATE_APP, {
               'aid': window.btoa(this.$route.query.aid),
               'params': this.resultForm
             }).then(data => {
-//              console.log('***************************返回结果' + JSON.stringify(data))
               if (data.resultCode === '00') {
                 this.$message({
                   type: 'success',
@@ -416,12 +410,12 @@
               }
             })
           } else {
-            console.log('error submit!!')
             return false
           }
         })
       },
       transForm () {
+        console.log('start ')
         let jsonForm = this.resultForm
         let normalForm = this.ruleForm
         let container = jsonForm.container
@@ -603,22 +597,6 @@
         return value.replace('/', '')
       }
     }
-    // mounted () { // 页面加载完成后回调
-    //   console.log('13123123')
-    //   let { dispatch } = this.$store
-    //   // 查询镜像仓库
-    //   dispatch(userTypes.FETCH_REPOS, {})
-    //   // 查询集群
-    //   dispatch(nodeType.FETCH_ALL_NODE, {})
-    //   // 查询主机
-    //   dispatch(mutationsType.FETCH_CLUSTERS, {})
-    //   dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
-    //   dispatch(appTypes.GET_APP, window.btoa(this.$route.query.aid)).then((data) => {
-    //     if (data.resultCode === '00') {
-    //       this.mainRender(data.data.app)
-    //     }
-    //   })
-    // }
   }
 </script>
 <style scoped>

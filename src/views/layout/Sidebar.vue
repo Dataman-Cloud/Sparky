@@ -20,7 +20,6 @@
     methods: {
     },
     mounted () {
-      console.log(this.$router.options.routes)
     }
   }
 </script>

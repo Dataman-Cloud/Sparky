@@ -36,11 +36,39 @@ import * as nodeType from '@/store/node/mutations_types'
 import * as mutationsType from '@/store/clusters/mutations_types'
 import * as userTypes from '../../store/user/mutations_types'
 import * as appgroupTypes from '@/store/appgroups/mutations_types'
+import * as appTypes from '@/store/app/mutations_types'
 
 export default {
   extends: baseForm,
   components: {
     baseForm
+  },
+  methods: {
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let router = this.$router
+          this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                type: 'success',
+                message: '创建应用成功!'
+              })
+              router.push({name: '全部的应用'})
+            } else {
+              Notification({
+                title: '创建应用出错',
+                message: JSON.stringify(data.message),
+                type: 'error'
+              })
+            }
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    }
   },
   mounted () { // 页面加载完成后回调
     let { dispatch } = this.$store
