@@ -1,9 +1,9 @@
 <template>
   <section>
     <el-col :span="24" class="content-wrapper">
-      <transition name="fade" mode="out-in">
+      <!-- <transition name="fade" mode="out-in"> -->
         <router-view :key="key"></router-view>
-      </transition>
+      <!-- </transition> -->
     </el-col>
   </section>
 </template>
