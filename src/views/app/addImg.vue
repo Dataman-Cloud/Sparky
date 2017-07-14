@@ -51,8 +51,10 @@ export default {
     }
   },
   methods: {
+    resetForm () {
+      this.$refs['ruleForm'].resetFields()
+    },
     submitForm (formName) {
-      console.log()
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let router = this.$router

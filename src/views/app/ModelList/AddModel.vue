@@ -443,6 +443,9 @@ export default {
     }
   },
   methods: {
+    resetForm () {
+      this.$refs['ruleForm'].resetFields()
+    },
     appList () { // 跳转应用列表
       this.$router.push({path: '/app/list/apps'})
     },
@@ -610,9 +613,6 @@ export default {
           return false
         }
       })
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
     },
     // 程序包发布表单控制
     cscFormController () {
