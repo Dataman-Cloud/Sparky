@@ -56,7 +56,7 @@
   <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion"></el-checkbox>
 </el-form-item>
 
-<el-form-item label="F5 Pool名称" :rules="rules" style="width: 400px;">
+<el-form-item label="F5 Pool名称" style="width: 400px;">
   <el-input v-model="ruleForm.f5Pool"></el-input>
 </el-form-item>
 <slot name="mount"></slot>
@@ -230,7 +230,7 @@
       </el-form-item>
     </el-row>
     <el-row>
-      <el-form-item label="CMD" :rules="rules" style="width: 400px;">
+      <el-form-item label="CMD" style="width: 400px;">
         <el-input v-model="ruleForm.cmd" placeholder="输入需要运行的命令"></el-input>
       </el-form-item>
     </el-row>
@@ -267,7 +267,7 @@
         editorOptions: defaultOptions.editorOptions,
         ruleForm: defaultOptions.ruleForm,
         activeName: 'formModel',
-        rules: defaultOptions.formRule,
+        // rules: defaultOptions.formRule,
         resultForm: defaultOptions.resultForm,
         showCodeMirror: false,
         showForm: ''
@@ -415,7 +415,6 @@
         })
       },
       transForm () {
-        console.log('start ')
         let jsonForm = this.resultForm
         let normalForm = this.ruleForm
         let container = jsonForm.container
