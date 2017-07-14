@@ -122,11 +122,11 @@ export function getApptasks (aid) {
 }
 // 杀掉列出的任务实例并根据请求扩缩应用
 export function delAppTask (param) {
-  return axios.post(`/jborg/tasks/delete`, param)
+  return axios.post(`/jborg/tasks/deleteTasks?scale=true&force=false`, param)
 }
 // 杀掉列出的任务实例并根据请求扩缩应用
 export function delAppTaskOrScale (param) {
-  return axios.post(`/jborg/tasks/delete?scale=true`, param)
+  return axios.post(`/jborg/tasks/deleteTasks?scale=true&force=true`, param)
 }
 // 获取所有等待执行的任务实例，，，
 export function queue () {
