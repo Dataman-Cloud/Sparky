@@ -20,7 +20,14 @@ const baseFormRule = {
     {type: 'number', message: '容器个数必须为数字值'}
   ]
 }
+const appendRule = {
+  procedureMount: [
+    {required: true, message: '请输入程序包挂载点', trigger: 'blur'}
+  ]
+}
+const modelFormRule = Object.assign({}, baseFormRule, appendRule)
 
 export default {
-  baseFormRule
+  baseFormRule,
+  modelFormRule
 }
