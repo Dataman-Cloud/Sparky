@@ -65,7 +65,7 @@
           }
           arr.push({type: '总数', cpu: parseFloat(snapshot['masterCpusTotal']).toFixed(2), mem: snapshot['masterMemTotal'], disk: snapshot['masterDiskTotal']})
           arr.push({type: '使用', cpu: parseFloat(snapshot['masterCpusUsed']).toFixed(2), mem: snapshot['masterMemUsed'], disk: snapshot['masterDiskUsed']})
-          arr.push({type: '空闲', cpu: parseFloat(snapshot['masterCpusTotal'] - snapshot['masterCpusUsed']).toFixed(2), mem: snapshot['masterMemTotal'] - snapshot['masterMemUsed'], disk: snapshot['masterDiskTotal'] - snapshot['masterDiskUsed']})
+          arr.push({type: '空闲', cpu: parseFloat(snapshot['masterCpusTotal'] - snapshot['masterCpusUsed']).toFixed(2), mem: parseFloat(snapshot['masterMemTotal'] - snapshot['masterMemUsed']).toFixed(2), disk: parseFloat(snapshot['masterDiskTotal'] - snapshot['masterDiskUsed']).toFixed(2)})
           return arr
         },
         nodeArr (state) {
