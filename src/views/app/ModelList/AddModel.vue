@@ -630,6 +630,7 @@ export default {
             }).then((data) => {
               if (data.resultCode === '00') {
                 // 更新成功
+                this.$message({message: '更新成功', type: 'success'})
                 this.$router.push({path: '/app/list/appsModel'})
               } else {
                 Notification.error({
@@ -644,6 +645,7 @@ export default {
               modelInfo: {'name': this.ruleForm.name, 'json': this.getObjModelJSON, 'desc': this.ruleForm.desc} })
               .then((data) => {
                 if (data.resultCode === '00') {
+                  this.$message({message: '创建成功', type: 'success'})
                   // 跳转回列表
                   this.$router.push({path: '/app/list/appsModel'})
                 } else {
