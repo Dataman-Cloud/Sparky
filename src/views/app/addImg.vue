@@ -37,17 +37,26 @@ import * as mutationsType from '@/store/clusters/mutations_types'
 import * as userTypes from '../../store/user/mutations_types'
 import * as appgroupTypes from '@/store/appgroups/mutations_types'
 import * as appTypes from '@/store/app/mutations_types'
+import appConf from '@/common/app'
+import { Notification } from 'element-ui'
 
 export default {
   extends: baseForm,
   components: {
     baseForm
   },
+  data () {
+    return {
+      rules: appConf.baseFormRule
+    }
+  },
   methods: {
     submitForm (formName) {
+      console.log()
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let router = this.$router
+          this.resultForm = this.transForm()
           this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
             if (data.resultCode === '00') {
               this.$message({
