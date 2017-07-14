@@ -41,11 +41,18 @@ import * as mutationsType from '@/store/clusters/mutations_types'
 import * as userTypes from '../../store/user/mutations_types'
 import * as appgroupTypes from '@/store/appgroups/mutations_types'
 import * as appTypes from '@/store/app/mutations_types'
+import appConf from '@/common/app'
+// import { Notification } from 'element-ui'
 
 export default {
   extends: baseForm,
   components: {
     baseForm
+  },
+  data () {
+    return {
+      rules: appConf.baseFormRule
+    }
   },
   mounted () { // 页面加载完成后回调
     console.log('13123123')
