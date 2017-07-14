@@ -54,6 +54,11 @@ export default {
       rules: appConf.baseFormRule
     }
   },
+  methods: {
+    resetForm () {
+      this.$refs['ruleForm'].resetFields()
+    }
+  },
   mounted () { // 页面加载完成后回调
     console.log('13123123')
     let { dispatch } = this.$store
