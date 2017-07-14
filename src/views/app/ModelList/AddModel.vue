@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <!-- 正常添加或修改模版的表单 -->
     <el-form :model="ruleForm" v-if="!catalogStackCreateForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
       <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
@@ -8,7 +8,7 @@
       <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
         {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
       </el-form-item>
-      <el-form-item label="描述" :rules="rules" prop="desc" style="width:800px;">
+      <el-form-item label="描述" prop="desc" style="width:800px;">
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
       </el-form-item>
     <base-form :isEdit='false'>
@@ -30,7 +30,7 @@
       <el-form-item label="创建时间" min-width="70" sortable>
         {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
       </el-form-item>
-      <el-form-item label="描述" :rules="rules" style="width:800px;">
+      <el-form-item label="描述" style="width:800px;">
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="true" ></el-input>
       </el-form-item><!-- -->
       <el-form-item label="选择应用组" prop="appsGroup"  >
@@ -99,6 +99,7 @@ import Container from '@/common/model/Container'
 import Docker from '@/common/model/Docker'
 import { Notification } from 'element-ui'
 import store from 'store'
+import appConf from '@/common/app'
 
 export default {
   extends: baseForm,
@@ -122,32 +123,6 @@ export default {
         packageType: 0,
         success: false // 是否发布程序包成功，成功后禁用应用组名称，应用名称，版本号，隐藏：包类型和上传按钮，显示：状态为创建完成，“应用列表”和“查看应用详情”按钮
       },
-      ruleForm: { // 创建或更新的表单
-        id: '',
-        name: '',
-        desc: '',
-        image: '',
-        force: false,
-        base: '',
-        groups: '',
-        master: '',
-        network: 0,
-        cpus: 0,
-        memory: 0,
-        hardDrive: 0,
-        dockerNum: '',
-        dockerProportion: false,
-        dockerProportionDefault: false, // dockerProportion的值是否为原有的值(查询出的值)
-        f5Pool: '',
-        procedureMount: '',
-        ports: [],
-        mounts: [],
-        environmentVariables: [],
-        health: [],
-        cmd: undefined,
-        dockerPar: [],
-        createdTime: ''
-      },
       cscFormRules: {
         appsName: [
           { required: true, message: '请输入应用名称', trigger: 'blur' }
@@ -159,44 +134,18 @@ export default {
           { required: true, message: '请选择应用组', trigger: 'change' }
         ]
       },
-      rules: {
-        name: [
-          { required: true, message: '请输入模版名称', trigger: 'blur' }
-        ],
-        desc: [
-        ],
-        image: [
-          { required: true, message: '请输入镜像地址', trigger: 'blur' }
-        ],
-        groups: [
-          { required: true, message: '请选择集群', trigger: 'change' }
-          // { required: true, type: 'number', message: '请选择集群', trigger: 'change' }
-        ],
-        /*
-         master: [
-         { required: true, message: '请选择主机', trigger: 'change' }
-         ],
-         */
-        network: [
-          { required: true, message: '请选择网络模式 ', trigger: 'change' }
-        ],
-        norms: [
-        ],
-        procedureMount: [
-          { required: true, message: '请输入程序包挂载点', trigger: 'blur' }
-        ]
-      }
+      rules: appConf.modelFormRule
     }
   },
   computed: {
     ...mapState({
       node ({ node }) {
         // 已选择集群的话，根据集群筛选主机数据
-        if (this.ruleForm.groups !== null && this.ruleForm.groups !== '' && this.ruleForm.groups !== undefined) {
+        if (this.ruleForm.vCluster !== null && this.ruleForm.vCluster !== '' && this.ruleForm.vCluster !== undefined) {
           // 循环对比主机的集群信息
           let list = []
           for (let v of node.nodes.nodes) {
-            if (v.clusterLable === this.ruleForm.groups) {
+            if (v.clusterLable === this.ruleForm.vCluster) {
               list.push(v)
             }
           }
@@ -232,7 +181,7 @@ export default {
         this.ruleForm.image = appModel.container.docker.image // 镜像
         this.ruleForm.force = appModel.container.docker.forcePullImage // 强制拉取镜像
         // 仓库认证
-        this.ruleForm.groups = appModel.constraints[0][2] // 选择的集群
+        this.ruleForm.vCluster = appModel.constraints[0][2] // 选择的集群
         this.ruleForm.network = appModel.container.docker.network === 'BRIDGE' ? 0 : 1 // 网络模式
         this.ruleForm.cpus = appModel.cpus // cpu
         this.ruleForm.memory = appModel.mem // 内存
@@ -334,13 +283,13 @@ export default {
       let constraints = null
       if (this.ruleForm.dockerProportion === true) { // 是否勾选了1主机:1容器
         constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.groups], // 集群
+          ['vcluster', 'LIKE', this.ruleForm.vCluster], // 集群
           ['hostname', 'UNIQUE'],
           ['hostname', 'LIKE', this.ruleForm.master]// 主机
         ]
       } else if (this.ruleForm.dockerProportion === false) {
         constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.groups], // 集群
+          ['vcluster', 'LIKE', this.ruleForm.vCluster], // 集群
           ['hostname', 'LIKE', this.ruleForm.master]// 主机
         ]
       }
