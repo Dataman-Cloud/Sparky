@@ -563,7 +563,7 @@
                 this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
               } else {
                   /* -----封装json数据 ----------- */
-                let parJSON =  this.versionsInfo
+                let parJSON = this.versionsInfo
                 parJSON['id'] = parJSON['id'].substring(1, parJSON['id'].length)
                 // 删除version，不删报错
                 delete (parJSON['version'])

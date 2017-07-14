@@ -118,15 +118,15 @@ export function restartApp (aid) {
 }
 // 获取app的实例列表
 export function getApptasks (aid) {
-  return axios.get(`//jborg/apps/${aid}/tasks`)
+  return axios.get(`/jborg/apps/${aid}/tasks`)
 }
 // 杀掉列出的任务实例并根据请求扩缩应用
 export function delAppTask (param) {
-  return axios.post(`//jborg/tasks/delete`, param)
+  return axios.post(`/jborg/tasks/delete`, param)
 }
 // 杀掉列出的任务实例并根据请求扩缩应用
 export function delAppTaskOrScale (param) {
-  return axios.post(`//jborg/tasks/delete?scale=true`, param)
+  return axios.post(`/jborg/tasks/delete?scale=true`, param)
 }
 // 获取所有等待执行的任务实例，，，
 export function queue () {
