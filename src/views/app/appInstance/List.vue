@@ -55,7 +55,7 @@
                 {{scope.row.id }}
               </router-link> <br />
 
-              -<a target="_blank" :href="getIPAddr(scope.row)"><span>{{scope.row.host }}:{{scope.row.ports }}</span></a>
+              <span>{{scope.row.host }}:<a target="_blank" :href="getIPAddr(scope.row)">{{scope.row.ports }}</a></span>
             </template>
           </el-table-column>
           <el-table-column prop="host" label="IP" min-width="150" sortable>
@@ -616,6 +616,11 @@
 
   .demo-table-expand {
     font-size: 0;
+  }
+  a,
+  a:focus,
+  a:hover {
+    text-decoration: none;
   }
 
   .demo-table-expand label {
