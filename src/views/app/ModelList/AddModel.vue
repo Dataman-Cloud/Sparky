@@ -17,7 +17,7 @@
       </el-form-item>
     </base-form>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate && isRole">{{this.updateOrCreate}}</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate && isRole">{{updateOrCreate}}</el-button>
       <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">下一步</el-button>
       <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
     </el-form-item>
@@ -34,17 +34,17 @@
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="true" ></el-input>
       </el-form-item><!-- -->
       <el-form-item label="选择应用组" prop="appsGroup"  >
-        <el-select v-model="cscForm.appsGroup" v-bind:disabled="this.cscForm.success" placeholder="请选择应用组" >
-          <el-option v-for="item in this.appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')" :key="item.id"></el-option>
+        <el-select v-model="cscForm.appsGroup" v-bind:disabled="cscForm.success" placeholder="请选择应用组" >
+          <el-option v-for="item in appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="应用名称"  style="width: 400px;" prop="appsName" >
-        <el-input v-model="cscForm.appsName" v-bind:disabled="this.cscForm.success"></el-input>
+        <el-input v-model="cscForm.appsName" v-bind:disabled="cscForm.success"></el-input>
       </el-form-item>
       <el-form-item label="版本号"  style="width: 400px;" prop="version" >
-        <el-input v-model="cscForm.version" v-bind:disabled="this.cscForm.success"></el-input>
+        <el-input v-model="cscForm.version" v-bind:disabled="cscForm.success"></el-input>
       </el-form-item>
-      <el-form-item v-if="!this.cscForm.success" label="包类型">
+      <el-form-item v-if="!cscForm.success" label="包类型">
         <el-radio-group v-model="cscForm.packageType" >
           <el-radio :label="0" >微服务(.jar)</el-radio>
           <el-radio :label="1" >Dubbo(.jar)</el-radio>
@@ -54,7 +54,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- :http-request="fileUpload" -->
-      <el-form-item style="width:300px;"  v-if="!this.cscForm.success">
+      <el-form-item style="width:300px;"  v-if="!cscForm.success">
         <el-upload
           class="upload-demo"
           ref="upload"
@@ -69,15 +69,15 @@
           <el-button size="small" type="primary">选择文件</el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item  v-if="!this.cscForm.success">
+      <el-form-item  v-if="!cscForm.success">
         <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">上一步</el-button>
         <el-button type="primary" @click="cscFormSubmit('cscForm')">创建</el-button>
         <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
       </el-form-item>
-      <el-form-item v-if="this.cscForm.success">
+      <el-form-item v-if="cscForm.success">
         <el-form-item label="状态" min-width="70" sortable>创建完成</el-form-item>
       </el-form-item>
-      <el-form-item v-if="this.cscForm.success">
+      <el-form-item v-if="cscForm.success">
         <el-button type="primary" @click="appList" >查看应用列表</el-button>
         <el-button type="primary" @click="appInfo" >查看应用详情</el-button>
       </el-form-item>
@@ -452,6 +452,11 @@ export default {
     // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
     uploadChange (file, fileList) {
       if (file.status === 'ready') {
+        if (fileList.length > 1) {
+          this.$message.error('只能上传一个文件')
+          // 清空已上传的文件列表
+          this.$refs.upload.clearFiles()
+        }
       } else if (file.status === 'success') {
         if (file.response.resultCode !== '00') {
           this.$message.error('上传失败')
