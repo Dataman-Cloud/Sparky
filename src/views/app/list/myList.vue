@@ -204,7 +204,7 @@
             :before-upload="beforeAvatarUpload"
             :on-change="uploadChange"
             v-bind:auto-upload="uploadFile">
-            <el-button size="small" type="primary">选择文件</el-button>
+            <el-button size="small" type="primary" :disabled="IsShowUploadAddButton">选择文件</el-button>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -264,6 +264,7 @@
         uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
         uploadFile: false, // 是否立即上传
+        IsShowUploadAddButton: false,
         createable: true,
         dialogVisible: false,
         editDialogVisible: false,
@@ -413,6 +414,7 @@
       },
       // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
       uploadChange (file, fileList) {
+        this.IsShowUploadAddButton = fileList ? fileList.length > 0 : false
         if (file.status === 'ready') {
         } else if (file.status === 'success') {
           if (file.response.resultCode !== '00') {
