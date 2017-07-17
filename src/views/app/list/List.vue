@@ -390,8 +390,8 @@
           PACKAGE_TYPE: ''
         },
         dialog_packageEdit: false,
-        uploadFileAction: 'http://localhost:8088/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
-//        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+//        uploadFileAction: 'http://localhost:8088/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
         uploadFile: false // 是否立即上传
       }
