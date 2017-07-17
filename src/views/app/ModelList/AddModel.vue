@@ -452,6 +452,11 @@ export default {
     // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
     uploadChange (file, fileList) {
       if (file.status === 'ready') {
+        if (fileList.length > 1) {
+          this.$message.error('只能上传一个文件')
+          // 清空已上传的文件列表
+          this.$refs.upload.clearFiles()
+        }
       } else if (file.status === 'success') {
         if (file.response.resultCode !== '00') {
           this.$message.error('上传失败')
