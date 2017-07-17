@@ -91,6 +91,7 @@
   export default {
     data () {
       return {
+        interval: null,
         dialogVisible: false,
         checkNodeIps: [],
         availableNodes: [],
@@ -171,7 +172,11 @@
       }
     },
     mounted () {
+      this.interval = setInterval(this.getInfo, 3000)
       this.getInfo()
+    },
+    beforeDestroy: function () {
+      clearInterval(this.interval)
     }
   }
 </script>
