@@ -11,7 +11,7 @@
       <el-form-item label="描述" prop="desc" style="width:800px;">
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
       </el-form-item>
-    <base-form :isEdit='false'>
+    <base-form :isEdit='false' :ruleForm="ruleForm">
       <el-form-item label="程序包挂载" prop="procedureMount" style="width: 400px;" slot="mount">
         <el-input v-model="ruleForm.procedureMount" placeholder="容器路径"></el-input>
       </el-form-item>
@@ -108,6 +108,7 @@ export default {
   },
   data () {
     return {
+      ruleForm: appConf.modelForm(),
       catalogStackCreate: false, // 是否为程序包发布进入
       catalogStackCreateForm: false, // 程序包发布进入后的表单控制
       updateOrCreate: '立即创建', // 创建或更新的文本
@@ -134,7 +135,7 @@ export default {
           { required: true, message: '请选择应用组', trigger: 'change' }
         ]
       },
-      rules: appConf.modelFormRule
+      rules: appConf.modelFormRule()
     }
   },
   computed: {

@@ -61,7 +61,7 @@
           </el-table-column>
           <el-table-column prop="vclusterName" label="集群" min-width="100" sortable>
           </el-table-column>
-          <el-table-column prop="instances" label="实例" min-width="100" sortable>
+          <el-table-column prop="instances" label="实例" min-width="80" sortable>
           </el-table-column>
           <el-table-column label="健康状态" min-width="120" sortable>
             <template scope="test3">
@@ -102,7 +102,7 @@
           </el-table-column>
           <el-table-column label="版本" min-width="200" prop="version" sortable>
           </el-table-column>
-          <el-table-column label="操作" min-width="130">
+          <el-table-column label="操作" min-width="180">
             <template scope="scope">
               <el-button type="warning" size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
@@ -131,6 +131,11 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+
+              <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
+                <el-button type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
+              </span>
+
             </template>
           </el-table-column>
         </el-table>
@@ -165,7 +170,7 @@
           </el-table-column>
           <el-table-column prop="vclusterName" label="集群" min-width="100" sortable>
           </el-table-column>
-          <el-table-column prop="instances" label="实例" min-width="100" sortable>
+          <el-table-column prop="instances" label="实例" min-width="80" sortable>
           </el-table-column>
           <el-table-column label="健康状态" min-width="120" sortable>
             <template scope="test3">
@@ -209,7 +214,7 @@
               {{ test2.row.version | moment('YYYY-MM-DD HH:mm:ss') }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="130">
+          <el-table-column label="操作" min-width="180">
             <template scope="scope">
               <el-button type="warning" size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
@@ -238,6 +243,11 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+
+              <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
+                <el-button type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
+              </span>
+
             </template>
           </el-table-column>
         </el-table>
@@ -290,6 +300,39 @@
     <el-button type="primary" @click="editUser()">确 定</el-button>
   </span>
     </el-dialog>
+
+    <el-dialog title="程序包更新" :visible.sync="dialog_packageEdit" size="small">
+      <el-form :model="p_form" :rules="rules" ref="p_form">
+        <el-form-item label="版本号" prop="PACKAGE_VERSION">
+          <el-input v-model="p_form.PACKAGE_VERSION"></el-input>
+        </el-form-item>
+        <el-form-item label="包类型" prop="PACKAGE_TYPE">
+          <el-input :disabled="true" v-model="p_form.PACKAGE_TYPE"></el-input>
+        </el-form-item>
+        <el-form-item style="width:300px;">
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            name="upload"
+            v-bind:action="uploadFileAction"
+            v-bind:multiple="false"
+            v-bind:data="uploadParam"
+            v-bind:headers="uploadHeaders"
+            :before-upload="beforeAvatarUpload"
+            :on-change="uploadChange"
+            v-bind:auto-upload="uploadFile">
+            <el-button size="small" type="primary">选择文件</el-button>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog_packageEdit = false">取 消</el-button>
+        <el-button type="primary" @click="update('p_form')">确 定</el-button>
+      </div>
+
+    </el-dialog>
+
     <!--工具条-->
   </section>
 </template>
@@ -304,6 +347,8 @@
   import ElFormItem from '../../../../node_modules/element-ui/packages/form/src/form-item'
   import ElButton from '../../../../node_modules/element-ui/packages/button/src/button'
   import {Notification} from 'element-ui'
+  import * as appType from '@/store/app/mutations_types'
+  import store from 'store'
   export default {
     components: {
       ElButton,
@@ -324,6 +369,9 @@
             {pattern: /^[a-z0-9-]+$/, message: '应用id只能包含小写字母、数字及中划线', trigger: 'input'}
           ]
         },
+        rules: {
+          PACKAGE_VERSION: [{ required: true, message: '版本不能为空', trigger: 'blur' }]
+        },
         createable: true,
         dialogVisible: false,
         editDialogVisible: false,
@@ -336,10 +384,26 @@
         page: 1,
         listLoading: false,
         prefix: LABEL_PREFIX,
-        interval: null
+        interval: null,
+        p_form: {
+          PACKAGE_VERSION: '',
+          PACKAGE_TYPE: ''
+        },
+        dialog_packageEdit: false,
+        uploadFileAction: 'http://localhost:8088/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+//        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
+        uploadFile: false // 是否立即上传
       }
     },
     computed: {
+      uploadParam () {
+        return {
+          GroupName: this.p_form.groupName,
+          AppName: this.p_form.appName,
+          Version: this.p_form.PACKAGE_VERSION,
+          PackageType: this.p_form.PACKAGE_TYPE}
+      },
       activeGroup: {
         get: function () {
 //          console.log('****************' + sessionStorage.getItem('activeGroup'))
@@ -441,9 +505,175 @@
       filterApps: function () {
 //        console.log(this.page)
         return this.apps.slice((this.page - 1) * 20, this.page * 20)
+      },
+      getPackageType () {
+        let result = ''
+        // 添加程序包类型
+        switch (this.p_form.PACKAGE_TYPE) {
+          case 'micro':
+            result = 'micro'
+            break
+          case 'dubbo':
+            result = 'dubbo'
+            break
+          case 'nginx':
+            result = 'nginx'
+            break
+          case 'tomcat':
+            result = 'tomcat'
+            break
+          case 'weblogic':
+            result = 'weblogic'
+            break
+        }
+        return result
       }
     },
     methods: {
+      update (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            // 提交文件上传
+            this.$refs.upload.submit()
+          }
+          this.dialog_packageEdit = false
+        })
+      },
+      packageEdit (para) {
+        let id = para.id
+        this.$store.dispatch(appType.GET_APP, window.btoa(id))
+          .then((data) => {
+            let paras = data.data.app
+            let group = id.split('/')
+            let groupName = group[1]
+            let appName = group[2]
+            let version = paras.labels.CURRENT_VERSION
+            let type = paras.labels.PACKAGE_TYPE
+            this.p_form = {
+              id: id,
+              para: paras,
+              groupName: groupName,
+              appName: appName,
+              PACKAGE_VERSION: version,
+              PACKAGE_TYPE: type
+            }
+            this.dialog_packageEdit = true
+          })
+      },
+      // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
+      uploadChange (file, fileList) {
+        if (file.status === 'ready') {
+        } else if (file.status === 'success') {
+          if (file.response.resultCode !== '00') {
+            this.$message.error('上传失败')
+            // 取消上传请求
+            this.$refs.upload.abort()
+            // 清空已上传的文件列表
+            this.$refs.upload.clearFiles()
+          } else {
+            // 上传成功
+
+            /* ----------------------- 封装此行数据------------------------- */
+            // 获取程序包地址
+            let path = file.response.data
+            let app = this.p_form.para
+            let id = app.id.substring(1)
+            let appName = app.id.substring(app.id.lastIndexOf('/') + 1)
+           // 找到挂载程序包的地址并修改为新地址
+            for (let v of app.container.volumes) {
+              if (v.hostPath.indexOf(`/data/apps/${this.p_form.groupName}/${appName}/${app.labels.CURRENT_VERSION}`) > -1) {
+                v.hostPath = path // 替换为新地址
+              }
+            }
+           // 更改包版本号
+            delete (app['version'])
+            let aid = window.btoa(id)
+            app.labels.PACKAGE_VERSION = app.labels.CURRENT_VERSION
+            app.labels.CURRENT_VERSION = this.p_form.PACKAGE_VERSION
+            app.labels.PACKAGE_VERSION = `${app.labels.PACKAGE_VERSION},${app.labels.CURRENT_VERSION}`
+            app.labels.DEFAULT_PACKAGE_VERSION = new Date()
+
+            // 获取json对象
+/*            let appModel = this.p_form.para
+            console.log('-------------------------')
+            console.log(JSON.stringify(appModel))
+            // 添加应用组和应用名称
+            let i = this.p_form.id
+            appModel.aid = i.substring(1)
+            console.log(appModel.aid)
+            appModel.labels['PACKAGE_TYPE'] = this.getPackageType
+            appModel.labels['PACKAGE_VERSION'] = this.p_form.PACKAGE_VERSION
+            */
+            // 创建应用接口
+            this.$store.dispatch(appType.UPDATE_APP, {'aid': aid, params: app})
+              .then((data) => {
+                if (data.resultCode === '00') {
+                  // 更新状态为完成
+                 // this.cscForm.success = true
+                  // 清空已上传的文件列表
+                  this.$refs.upload.clearFiles()
+                } else {
+                  Notification.error({
+                    title: '创建应用出错',
+                    message: JSON.stringify(data.message)
+                  })
+                  // 取消上传请求
+                  this.$refs.upload.abort()
+                  // 清空已上传的文件列表
+                  this.$refs.upload.clearFiles()
+                }
+              })
+          }
+        } else if (file.status === 'fail') {
+          this.$message.error('上传失败')
+          // 取消上传请求
+          this.$refs.upload.abort()
+          // 清空已上传的文件列表
+          this.$refs.upload.clearFiles()
+        }
+      },
+      // 控制上传文件类型
+      beforeAvatarUpload (file) {
+        let result = true
+        // 获取后缀名
+        const fileType = file.name.substring(file.name.lastIndexOf('.') + 1)
+        console.log(fileType)
+        console.log(this.p_form.PACKAGE_TYPE)
+        // 获取应上传的后缀名
+        switch (this.p_form.PACKAGE_TYPE) {
+          case 'micro':
+            if (fileType !== 'jar') {
+              this.$message.error('必须上传jar文件')
+              result = false
+            }
+            break
+          case 'dubbo':
+            if (fileType !== 'jar') {
+              this.$message.error('必须上传jar文件')
+              result = false
+            }
+            break
+          case 'nginx':
+            if (fileType !== 'zip') {
+              this.$message.error('必须上传zip文件')
+              result = false
+            }
+            break
+          case 'tomcat':
+            if (fileType !== 'war') {
+              this.$message.error('必须上传war文件')
+              result = false
+            }
+            break
+          case 'weblogic':
+            if (fileType !== 'war') {
+              this.$message.error('必须上传war文件')
+              result = false
+            }
+            break
+        }
+        return result
+      },
       getHealthyCount (arr) {
 //        console.log('**********************' + JSON.stringify(arr))
         if (arr !== undefined && arr != null && arr.length) {
