@@ -114,6 +114,12 @@ export const constantRouterMap = [
         hidden: true
       },
       {
+        path: 'versionAppUpdate',
+        name: '版本应用更新',
+        component: AppEditImg,
+        hidden: true
+      },
+      {
         path: 'appInstance/list',
         name: '应用实例信息',
         component: AppInstanList,
