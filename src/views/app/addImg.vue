@@ -2,7 +2,7 @@
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="表单模式" name="formModel">
-        <base-form :isEdit='false'>
+        <base-form :isEdit='false' :ruleForm="ruleForm">
           <el-form-item label="应用id" prop="name" style="width: 400px;" slot="appId">
             <el-input v-model="ruleForm.name" :disabled="false"></el-input>
           </el-form-item>
@@ -14,7 +14,7 @@
           </el-form-item>
         </base-form>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">更新应用</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
           <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
         </el-form-item>
       </el-tab-pane>
@@ -39,6 +39,7 @@ import * as appgroupTypes from '@/store/appgroups/mutations_types'
 import * as appTypes from '@/store/app/mutations_types'
 import appConf from '@/common/app'
 import { Notification } from 'element-ui'
+import appUtil from 'utils/app'
 
 export default {
   extends: baseForm,
@@ -47,10 +48,15 @@ export default {
   },
   data () {
     return {
-      rules: appConf.baseFormRule
+      ruleForm: appConf.ruleForm(),
+      rules: appConf.baseFormRule(),
+      resultForm: appConf.resultForm()
     }
   },
   methods: {
+    transForm () {
+      appUtil.transformFormToJson(this.ruleForm, this.resultForm)
+    },
     resetForm () {
       this.$refs['ruleForm'].resetFields()
     },
@@ -58,7 +64,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let router = this.$router
-          this.resultForm = this.transForm()
+          this.transForm()
           this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
             if (data.resultCode === '00') {
               this.$message({

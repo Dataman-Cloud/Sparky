@@ -53,7 +53,7 @@
       <span >所属组：</span><span >{{dialogMessage.groupName}}</span><br/><br/>
       <span>{{dialogMessage.desc}}</span>
       <div class="">
-        <codemirror v-model="this.dialogMessage.json" :options="editorOptions" class="codemirror">
+        <codemirror v-model="this.dialogMessage.json" class="codemirror">
         </codemirror>
       </div>
     </el-dialog>
@@ -64,7 +64,6 @@
   import {mapState} from 'vuex'
   import {LABEL_PREFIX} from '@/config'
   import * as type from '@/store/model/mutations_types'
-  import * as editorOptions from '@/common/defaultConfig'
   import Codemirror from '@/components/jsonEditor/index'
 
   export default {
@@ -73,7 +72,6 @@
     },
     data () {
       return {
-        editorOptions: editorOptions.editorOptions,
         filters: {
           name: '00000'
         },
@@ -174,7 +172,7 @@
         this.dialogMessage.accountName = this.filterModels[index].accountsName
         this.dialogMessage.groupName = this.filterModels[index].groupName
         this.dialogMessage.desc = this.filterModels[index].desc
-        this.dialogMessage.json = JSON.parse(this.filterModels[index].json)
+        this.dialogMessage.json = this.filterModels[index].json
       },
       // 删除模版按钮
       removeModel (index) {
