@@ -53,14 +53,18 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 │   ├── App.vue                       // 页面入口文件
 │   ├── api                           // API 请求
 │   ├── assets                        // 静态资源
-│   │   └── logo.png
-│   ├── components                    // vue 公共组件
-│   │   └── Hello.vue
+│   │   └── logo.png                
+│   ├── components                    // vue 公共组件 
+│   │   └── app
+│   ├── common                        // 页面模块内的基本配置
+│   │   └── Hello.vue 
 │   ├── main.js                       // 程序入口文件，加载各种公共组件
 │   ├── router                        // 路由
 │   │   └── index.js
 │   ├── store                         // vuex 的状态管理
 │   │   └── index.js
+│   ├── utils                         // 页面内抽离出的较为复杂的逻辑
+│   │   └── app
 │   └── views                         // 项目页面
 ├── static                            // 静态文件，比如一些图片，json数据等
 └── test                              // 自动化测试相关文件

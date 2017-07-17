@@ -109,22 +109,22 @@
 
       <label v-show="dialog.dialogEnvionVar !== '{}'">环境变量：
       <div class="codemirrorHeight">
-        <codemirror v-model="dialog.dialogEnvionVar" :options="editorOptions" class="codemirror">
+        <codemirror v-model="dialog.dialogEnvionVar" class="codemirror">
         </codemirror>
       </div></label><br/>
       <label v-show="dialog.dialogRestrict !== '[]'">限制条件：
         <div class="codemirrorHeight">
-          <codemirror v-model="dialog.dialogRestrict" :options="editorOptions" class="codemirror">
+          <codemirror v-model="dialog.dialogRestrict" class="codemirror">
           </codemirror>
         </div></label><br/>
       <label v-show="dialog.dialogHealthCheck !== '[]'">健康检查：
         <div class="codemirrorHeight">
-          <codemirror v-model="dialog.dialogHealthCheck" :options="editorOptions" class="codemirror">
+          <codemirror v-model="dialog.dialogHealthCheck" class="codemirror">
           </codemirror>
         </div></label><br/>
       <label v-show="dialog.dialogDocker !== '{}'">容器：
         <div class="codemirrorHeight">
-          <codemirror v-model="dialog.dialogDocker" :options="editorOptions" class="codemirror">
+          <codemirror v-model="dialog.dialogDocker" class="codemirror">
           </codemirror>
         </div></label><br/>
     </el-dialog>
@@ -137,7 +137,6 @@
   import {Notification} from 'element-ui'
   import ElInput from '../../../node_modules/element-ui/packages/input/src/input'
   import ElButton from '../../../node_modules/element-ui/packages/button/src/button'
-  import * as editorOptions from '@/common/defaultConfig'
   import store from 'store'
   import Codemirror from '@/components/jsonEditor/index'
 
@@ -149,7 +148,6 @@
     },
     data () {
       return {
-        editorOptions: editorOptions.editorOptions,
         uploadFileBasePath: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
         autoUploadFile: false, // 是否立即上传
         uploadRowIndex: -1, // 当前操作的upload行数索引，默认-1
