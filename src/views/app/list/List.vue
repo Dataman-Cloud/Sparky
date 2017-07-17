@@ -547,7 +547,7 @@
             let group = id.split('/')
             let groupName = group[1]
             let appName = group[2]
-            let version = paras.labels.PACKAGE_VERSION
+            let version = paras.labels.CURRENT_VERSION
             let type = paras.labels.PACKAGE_TYPE
             this.p_form = {
               id: id,
@@ -576,20 +576,19 @@
             /* ----------------------- 封装此行数据------------------------- */
             // 获取程序包地址
             let path = file.response.data
-            console.log(path)
             let app = this.p_form.para
             let id = app.id.substring(1)
-            console.log(id)
             let appName = app.id.substring(app.id.lastIndexOf('/') + 1)
            // 找到挂载程序包的地址并修改为新地址
             for (let v of app.container.volumes) {
-              if (v.hostPath.indexOf(`/data/apps/${id}/${appName}/${app.labels.CURRENT_VERSION}`) > -1) {
+              if (v.hostPath.indexOf(`/data/apps/${this.p_form.groupName}/${appName}/${app.labels.CURRENT_VERSION}`) > -1) {
                 v.hostPath = path // 替换为新地址
               }
             }
            // 更改包版本号
             delete (app['version'])
             let aid = window.btoa(id)
+            app.labels.PACKAGE_VERSION = app.labels.CURRENT_VERSION
             app.labels.CURRENT_VERSION = this.p_form.PACKAGE_VERSION
             app.labels.PACKAGE_VERSION = `${app.labels.PACKAGE_VERSION},${app.labels.CURRENT_VERSION}`
             app.labels.DEFAULT_PACKAGE_VERSION = new Date()
@@ -610,7 +609,9 @@
               .then((data) => {
                 if (data.resultCode === '00') {
                   // 更新状态为完成
-                  this.cscForm.success = true
+                 // this.cscForm.success = true
+                  // 清空已上传的文件列表
+                  this.$refs.upload.clearFiles()
                 } else {
                   Notification.error({
                     title: '创建应用出错',
