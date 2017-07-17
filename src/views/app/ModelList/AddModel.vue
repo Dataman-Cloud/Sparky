@@ -140,21 +140,6 @@ export default {
   },
   computed: {
     ...mapState({
-      node ({ node }) {
-        // 已选择集群的话，根据集群筛选主机数据
-        if (this.ruleForm.vCluster !== null && this.ruleForm.vCluster !== '' && this.ruleForm.vCluster !== undefined) {
-          // 循环对比主机的集群信息
-          let list = []
-          for (let v of node.nodes.nodes) {
-            if (v.clusterLable === this.ruleForm.vCluster) {
-              list.push(v)
-            }
-          }
-          console.log(list)
-          return list
-        }
-        return node.nodes.nodes
-      },
       uploadPackageFilePath ({ model }) {
         return model.model.uploadPackageFilePath
       },
@@ -182,8 +167,9 @@ export default {
         this.ruleForm.image = appModel.container.docker.image // 镜像
         this.ruleForm.force = appModel.container.docker.forcePullImage // 强制拉取镜像
         // 仓库认证
-        this.ruleForm.vCluster = appModel.constraints[0][2] // 选择的集群
-        this.ruleForm.network = appModel.container.docker.network === 'BRIDGE' ? 0 : 1 // 网络模式
+        this.ruleForm.vcluster = appModel.constraints[0][2] // 选择的集群
+        // this.ruleForm.network = appModel.container.docker.network === 'BRIDGE' ? 0 : 1 // 网络模式
+        this.ruleForm.network = appModel.container.docker.network // 网络模式
         this.ruleForm.cpus = appModel.cpus // cpu
         this.ruleForm.memory = appModel.mem // 内存
         this.ruleForm.hardDrive = appModel.disk // 硬盘
@@ -219,25 +205,25 @@ export default {
         this.ruleForm.cmd = appModel.cmd // CMD命令
         //  自定义端口号
         for (let v of appModel.container.docker.portMappings) {
-          this.ruleForm.ports.push({port: v.containerPort, type: v.protocol})
+          this.ruleForm.ports.push({containerPort: v.containerPort, protocol: v.protocol})
         }
         // 挂载目录
         for (let v of appModel.container.volumes) {
-          this.ruleForm.mounts.push({dockerPath: v.containerPath, masterPath: v.hostPath, type: v.mode})
+          this.ruleForm.mounts.push({containerPath: v.containerPath, hostPath: v.hostPath, mode: v.mode})
         }
         if (appModel.hasOwnProperty('healthChecks')) {
           // 健康检查
           for (let v of appModel.healthChecks) {
             let health = {}
-            health.networkProtocol = v.protocol // 协议
-            health.graceTime = v.gracePeriodSeconds // 宽限时间
-            health.intervalTime = v.intervalSeconds// 检查间隔
-            health.overtime = v.timeoutSeconds// 检查超时
-            health.maxFail = v.maxConsecutiveFailures // 最大失败次数
+            health.protocol = v.protocol // 协议
+            health.gracePeriodSeconds = v.gracePeriodSeconds // 宽限时间
+            health.intervalSeconds = v.intervalSeconds// 检查间隔
+            health.timeoutSeconds = v.timeoutSeconds// 检查超时
+            health.maxConsecutiveFailures = v.maxConsecutiveFailures // 最大失败次数
             if (v.protocol === 'HTTP') {
               // ---htrp
-              health.healthHttpPath = v.path // 选择http协议后的路径
-              health.healthIsIgnoreHttpCode = v.ignoreHttp1xx // 是否选中了忽略http返回码
+              health.path = v.path // 选择http协议后的路径
+              health.ignoreHttp1xx = v.ignoreHttp1xx // 是否选中了忽略http返回码
               health.healthHttpPathText = true// 选择http协议后表格第一行“路径”标题
               health.healthHttpPathCode = true // 选择http协议后显示表格第二行“路径”
               health.healthHttpCheckBoxCode = true// 选择http协议后显示表格第三行“忽略http返回码”的checkbox元素
@@ -252,7 +238,7 @@ export default {
               health.portIndexCode = true // “端口组索引”的input元素显示
             } else {
               health.portType = '2' // 选中端口号
-              health.portNum = v.port // 端口号的值
+              health.port = v.port // 端口号的值
               health.protNumCode = true // “端口号”的input元素显示
               health.portNumOrPortIndexText = '端口号'// 文字显示为端口组索引
               health.portIndexCode = false // “端口组索引”的input元素隐藏
@@ -284,13 +270,13 @@ export default {
       let constraints = null
       if (this.ruleForm.dockerProportion === true) { // 是否勾选了1主机:1容器
         constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.vCluster], // 集群
+          ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
           ['hostname', 'UNIQUE'],
           ['hostname', 'LIKE', this.ruleForm.master]// 主机
         ]
       } else if (this.ruleForm.dockerProportion === false) {
         constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.vCluster], // 集群
+          ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
           ['hostname', 'LIKE', this.ruleForm.master]// 主机
         ]
       }
@@ -317,25 +303,26 @@ export default {
       let portMappings = []
       for (let v of this.ruleForm.ports) {
         let port = {}
-        port['containerPort'] = parseInt(v.port) // 端口号
+        port['containerPort'] = parseInt(v.containerPort) // 端口号
         port['name'] = ''
-        port['protocol'] = v.type // tcp或udp
+        port['protocol'] = v.protocol // tcp或udp
         portMappings.push(port)
       }
       // 挂载目录
       let volumes = []
       for (let v of this.ruleForm.mounts) {
         let vol = {}
-        vol['containerPath'] = v.dockerPath // 容器路径
-        vol['hostPath'] = v.masterPath // 主机路径
-        vol['mode'] = v.type // 读写RW或只读RO
+        vol['containerPath'] = v.containerPath // 容器路径
+        vol['hostPath'] = v.hostPath // 主机路径
+        vol['mode'] = v.mode // 读写RW或只读RO
         volumes.push(vol)
       }
       // docker和挂载目录
       let cont = new Container(
         new Docker(
           this.ruleForm.image, // 镜像地址
-          this.ruleForm.network === 0 ? 'BRIDGE' : 'HOST', // 网桥模式，HOST模式
+          // this.ruleForm.network === 0 ? 'BRIDGE' : 'HOST', // 网桥模式，HOST模式
+          this.ruleForm.network,
           this.ruleForm.force, // 是否强制拉取镜像
           null,
           parameters, // 自定义Docker参数
@@ -348,17 +335,17 @@ export default {
       let healthChecks = []
       for (let v of this.ruleForm.health) {
         let heal = {}
-        heal['protocol'] = v.networkProtocol // 协议http或tcp
+        heal['protocol'] = v.protocol // 协议http或tcp
         heal['value'] = ''
         heal['delaySeconds'] = null
-        heal['gracePeriodSeconds'] = v.graceTime // 宽限时间
-        heal['intervalSeconds'] = v.intervalTime// 间隔时间
+        heal['gracePeriodSeconds'] = v.gracePeriodSeconds // 宽限时间
+        heal['intervalSeconds'] = v.intervalSeconds// 间隔时间
         heal['portName'] = ''
-        heal['timeoutSeconds'] = v.overtime// 检查超时
-        heal['maxConsecutiveFailures'] = v.maxFail// 最多持续失败次数
-        if (v.networkProtocol === 'HTTP') {
-          heal['ignoreHttp1xx'] = v.healthIsIgnoreHttpCode// 选择http协议后是否勾选了忽略http返回码
-          heal['path'] = v.healthHttpPath // 选择http协议后填写的路径
+        heal['timeoutSeconds'] = v.timeoutSeconds// 检查超时
+        heal['maxConsecutiveFailures'] = v.maxConsecutiveFailures// 最多持续失败次数
+        if (v.protocol === 'HTTP') {
+          heal['ignoreHttp1xx'] = v.ignoreHttp1xx// 选择http协议后是否勾选了忽略http返回码
+          heal['path'] = v.path // 选择http协议后填写的路径
         }
         if (v.portType === '1') { // 选择了端口组索引
           heal['ifPortIndex'] = 1
@@ -368,8 +355,8 @@ export default {
           }
         } else if (v.portType === '2') { // 选择了端口号
           // 判断转为int
-          if (v.portNum !== '' && v.portNum !== null) {
-            heal['port'] = parseInt(v.portNum) // 端口号，如选择端口组索引则没有此属性
+          if (v.port !== '' && v.port !== null) {
+            heal['port'] = parseInt(v.port) // 端口号，如选择端口组索引则没有此属性
           }
         }
         healthChecks.push(heal)
