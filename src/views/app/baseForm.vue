@@ -18,7 +18,7 @@
   </el-select>
 </el-form-item>
 <el-form-item label="选择集群" prop="vcluster">
-  <el-select v-model="ruleForm.vcluster" :disabled="isEdit" placeholder="请选择集群">
+  <el-select v-model="ruleForm.vcluster" @change="vclusterChanger" :disabled="isEdit" placeholder="请选择集群">
     <el-option v-for="item in this.mutation.clusters" :label="item.vClusterLabel"
                :value="item.vClusterLabel" :key="item.vClusterLabel"></el-option>
   </el-select>
@@ -274,7 +274,7 @@
             // 循环对比主机的集群信息
             let list = []
             for (let v of node.nodes.nodes) {
-              if (v.vClusterLable === this.ruleForm.vcluster) {
+              if (v.clusterLable === this.ruleForm.vcluster) {
                 list.push(v)
               }
             }
@@ -375,7 +375,7 @@
         let isSelFirst = healthItem.portType === '1'
         healthItem.port = undefined // 清空之前填写的端口号
         healthItem.protNumCode = !isSelFirst // “端口号”的input元素隐藏
-        healthItem.portNumOrPortIndexText = '端口组索引'// 文字显示为端口组索引
+        healthItem.portNumOrPortIndexText = isSelFirst ? '端口组索引' : '端口号' // 文字显示为端口组索引
         healthItem.portIndexCode = isSelFirst // “端口组索引”的input元素显示
         healthItem.portIndex = undefined//  清空之前填写的“端口组索引”
       },
@@ -384,6 +384,10 @@
       // },
       resetForm (formName) {
         return
+      },
+      vclusterChanger () {
+        // 切换集群后清空已选的master
+        this.ruleForm.master = undefined
       }
     },
     filters: {

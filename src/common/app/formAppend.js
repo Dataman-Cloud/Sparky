@@ -23,7 +23,7 @@ function formAppend () {
       intervalSeconds: null,
       timeoutSeconds: null,
       maxConsecutiveFailures: '',
-      portType: undefined,
+      portType: '1',
       port: undefined,
       protNumCode: false, // “端口号”的input元素是否显示
       portNumOrPortIndexText: '端口组索引', // 存放“端口号”或“端口组索引”文字
