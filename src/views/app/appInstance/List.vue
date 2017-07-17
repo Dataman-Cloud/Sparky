@@ -92,69 +92,71 @@
       </el-tab-pane>
 
       <el-tab-pane label="配置" name="second">
-        <template v-for="(version, index) in versions">
-          <time-line refs="time-line" :index="index" @expandClick="expandList(version)">
-            <span slot="title">{{version === appInfo.version ? '当前版本' : version}}</span>
-            <template slot="action">
-              <el-button type="primary" icon="edit" size="mini" @click="versionAppUpdate(version)">编辑</el-button>
-              <el-button type="primary" icon="caret-right" size="mini" @click="versionDeployment(version)">部署</el-button>
-            </template>
-            <!-- v-if="version === appInfo.version"  -->
-            <template slot="content">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="应用名称">
-                  <span>{{versionAPPInfo.id }}</span>
-                </el-form-item>
-                <el-form-item label="CPU">
-                  <span>{{versionAPPInfo.cpus * 100 }}%</span>
-                </el-form-item>
-                <el-form-item label="内存">
-                  <span>{{versionAPPInfo.mem }}M</span>
-                </el-form-item>
-                <el-form-item label="实例个数">
-                  <span>{{versionAPPInfo.instances }}</span>
-                </el-form-item>
-                <el-form-item label="CMD">
-                  <span>{{versionAPPInfo.cmd }}</span>
-                </el-form-item>
-                <el-form-item label="版本">
-                  <span>{{versionAPPInfo.version }}</span>
-                </el-form-item>
-                <el-form-item label="应用端口">
-                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_APP_PORT }}</span>
-                </el-form-item>
-                <el-form-item label="协议">
-                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_PROTO }}</span>
-                </el-form-item>
-                <el-form-item label="映射端口">
-                  <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_MAP_PORT }}</span>
-                </el-form-item>
-                <el-form-item label="仓库认证">
-                  <span>{{versionAPPInfo.uris }}</span>
-                </el-form-item>
-                <el-form-item label="环境变量">
-                  <span>{{versionAPPInfo.envJson }}</span>
-                </el-form-item>
+        <timeline refs="timeline" :accordion='true' @expandClick="expandList">
+          <template v-for="(version, index) in versions">
+            <timeline-item refs="timeline-item" :index="index">
+              <span slot="title">{{version === appInfo.version ? '当前版本' : version}}</span>
+              <template slot="action">
+                <el-button type="primary" icon="edit" size="mini" @click="versionAppUpdate(version)">编辑</el-button>
+                <el-button type="primary" icon="caret-right" size="mini" @click="versionDeployment(version)">部署</el-button>
+              </template>
+              <!-- v-if="version === appInfo.version"  -->
+              <template slot="content">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="应用名称">
+                    <span>{{versionAPPInfo.id }}</span>
+                  </el-form-item>
+                  <el-form-item label="CPU">
+                    <span>{{versionAPPInfo.cpus * 100 }}%</span>
+                  </el-form-item>
+                  <el-form-item label="内存">
+                    <span>{{versionAPPInfo.mem }}M</span>
+                  </el-form-item>
+                  <el-form-item label="实例个数">
+                    <span>{{versionAPPInfo.instances }}</span>
+                  </el-form-item>
+                  <el-form-item label="CMD">
+                    <span>{{versionAPPInfo.cmd }}</span>
+                  </el-form-item>
+                  <el-form-item label="版本">
+                    <span>{{versionAPPInfo.version }}</span>
+                  </el-form-item>
+                  <el-form-item label="应用端口">
+                    <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_APP_PORT }}</span>
+                  </el-form-item>
+                  <el-form-item label="协议">
+                    <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_PROTO }}</span>
+                  </el-form-item>
+                  <el-form-item label="映射端口">
+                    <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_MAP_PORT }}</span>
+                  </el-form-item>
+                  <el-form-item label="仓库认证">
+                    <span>{{versionAPPInfo.uris }}</span>
+                  </el-form-item>
+                  <el-form-item label="环境变量">
+                    <span>{{versionAPPInfo.envJson }}</span>
+                  </el-form-item>
 
-                <el-form-item label="限制条件" v-bind:style="bigLable">
-                  <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.constraintsJson}}</pre>
-                  </div>
-                </el-form-item>
-                <el-form-item label="健康检查" v-bind:style="bigLable">
-                  <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.healthChecksJson}}</pre>
-                  </div>
-                </el-form-item>
-                <el-form-item label="容器信息" v-bind:style="bigLable">
-                  <div v-bind:style="codeView">
-                    <pre v-bind:style="codeViewPre">{{versionAPPInfo.containerJson}}</pre>
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </time-line>
-        </template>
+                  <el-form-item label="限制条件" v-bind:style="bigLable">
+                    <div v-bind:style="codeView">
+                      <pre v-bind:style="codeViewPre">{{versionAPPInfo.constraintsJson}}</pre>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="健康检查" v-bind:style="bigLable">
+                    <div v-bind:style="codeView">
+                      <pre v-bind:style="codeViewPre">{{versionAPPInfo.healthChecksJson}}</pre>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="容器信息" v-bind:style="bigLable">
+                    <div v-bind:style="codeView">
+                      <pre v-bind:style="codeViewPre">{{versionAPPInfo.containerJson}}</pre>
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </timeline-item>
+          </template>
+        </timeline>
       </el-tab-pane>
 
       <el-tab-pane label="调试" name="third">
@@ -195,13 +197,15 @@
   import { mapState } from 'vuex'
   import * as type from '../../../store/app/mutations_types'
   import * as userType from '../../../store/user/mutations_types'
-  import TimeLine from '@/components/timeline/index'
+  import Timeline from '@/components/timeline/timeline'
+  import TimelineItem from '@/components/timeline/timeline-item'
   import * as appTypes from '@/store/app/mutations_types'
   import { Notification } from 'element-ui'
 
   export default {
     components: {
-      TimeLine
+      Timeline,
+      TimelineItem
     },
     data () {
       return {
@@ -540,7 +544,8 @@
 //        this.initSelect()
       },
       // 根据版本查询应用信息
-      expandList (version) {
+      expandList (index) {
+        let version = this.versions[index]
         // 对比当前的版本信息
         if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
           // 查询该版本的应用信息
