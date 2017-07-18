@@ -44,18 +44,25 @@
       login (ev) {
         let { dispatch } = this.$store
         this.loading = true
-        dispatch(LOG_IN, this.loginForm).then(res => {
-          return dispatch('GenerateRoutes', res).then(_ => {
+        this.$refs['loginForm'].validate((valid) => {
+          if (valid) {
+            dispatch(LOG_IN, this.loginForm).then(res => {
+              return dispatch('GenerateRoutes', res).then(_ => {
+                this.loading = false
+                router.addRoutes(store.getters.appendRouters)
+                this.$router.push({name: '全部的应用'})
+              }).catch(error => {
+                this.showResult(error, 'd', 'sa')
+                this.loading = false
+              })
+            }).catch(error => {
+              this.showResult(error, 'd', 'sa')
+              this.loading = false
+            })
+          } else {
             this.loading = false
-            router.addRoutes(store.getters.appendRouters)
-            this.$router.push({name: '全部的应用'})
-          }).catch(error => {
-            this.showResult(error, 'd', 'sa')
-            this.loading = false
-          })
-        }).catch(error => {
-          this.showResult(error, 'd', 'sa')
-          this.loading = false
+            return false
+          }
         })
       },
       showResult (data, success, errorTitle, callback) {
