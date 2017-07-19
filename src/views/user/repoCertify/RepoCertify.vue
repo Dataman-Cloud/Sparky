@@ -25,22 +25,24 @@
     </el-table>
 
     <el-dialog title="第三方镜像仓库" :visible.sync="dialog_repoEdit">
-      <el-form :model="form">
-        <el-form-item label="名称" prop="name" :rules="[{message: '请输入名称', trigger: 'blur'}]">
+      <el-form :model="form" ref="form">
+        <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
+          {max: 20, message: '长度不能超过20个字符', trigger: 'blur' }]">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
         <el-form-item label="镜像地址" prop="addr" :rules="[
-          {message: '请输入镜像地址', trigger: 'blur' }]">
+          {required: true, message: '请输入镜像地址', trigger: 'blur' }]">
           <el-input v-model="form.addr" placeholder="请输入镜像地址"></el-input>
         </el-form-item>
 
         <el-form-item label="用户名" prop="userName" :rules="[
-          {message: '请输入用户名', trigger: 'blur' }]">
+          {required: true, message: '请输入用户名', trigger: 'blur' }]">
           <el-input type="text" v-model="form.userName" placeholder="请输入用户名"></el-input>
         </el-form-item>
 
-        <el-form-item label="密码" prop="password">
+        <el-form-item label="密码" prop="password" :rules="[
+          {required: true, message: '请输入密码', trigger: 'blur' }]">
           <el-input type="password" v-model="form.password"></el-input>
         </el-form-item>
       </el-form>
@@ -106,13 +108,19 @@
       update () {
         let param = { id: this.form.id, repo: this.form }
         console.log(JSON.stringify(this.form))
-        this.$store.dispatch(type.FETCH_REPO_EDIT, param).then(() => {
-          this.$message({
-            message: '更新成功',
-            type: 'success',
-            onClose: this.listRepo
-          })
-          this.dialog_repoEdit = false
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.$store.dispatch(type.FETCH_REPO_EDIT, param).then(() => {
+              this.$message({
+                message: '更新成功',
+                type: 'success',
+                onClose: this.listRepo
+              })
+              this.dialog_repoEdit = false
+            })
+          } else {
+            return false
+          }
         })
       },
       repoDel (repo) {
