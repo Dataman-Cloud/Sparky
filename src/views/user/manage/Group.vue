@@ -62,7 +62,7 @@
                 <div v-for="aGroup in scopes.row.accountGroups">
                   <div v-if="aGroup.role === 'superuser' && group.id === aGroup.groupId"><span style=" font-style:italic;">超级管理员</span>
                   </div>
-                  <div v-else-if="aGroup.role === 'owner' && group.id === aGroup.groupId"><span style=" font-style:italic;">普通管理员</span>
+                  <div v-else-if="aGroup.role === 'owner' && group.id === aGroup.groupId"><span style=" font-style:italic;">组管理员</span>
                   </div>
                   <div v-else-if="aGroup.role === 'member' && group.id === aGroup.groupId"><span style=" font-style:italic;">组成员</span>
                   </div>
@@ -102,7 +102,8 @@
     <el-dialog title="添加用户组" :visible.sync="dialog_group">
       <el-form label-position="left" :model="groupForm" label-width="95px" ref="groupForm">
  			<el-form-item label="名称" prop="name" :rules="[
- 				{ required: true, message: '请输入名称', trigger: 'blur' }]">
+ 				{ required: true, message: '请输入名称', trigger: 'blur' },
+          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
  				<el-input type="text" v-model="groupForm.name" placeholder="请输名称"></el-input>
  			</el-form-item>
  			 <el-form-item label="用户描述">
