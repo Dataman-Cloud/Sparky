@@ -1,7 +1,8 @@
 <template>
   <section>
     <el-form :label-position="labelPosition" :model="formName" label-width="120px" ref="formName"  class="bodybar">
-      <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'}]">
+      <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
+          {max: 20, message: '长度不能超过20个字符', trigger: 'blur' }]">
         <el-input v-model="formName.name" placeholder="请输入名称"></el-input>
       </el-form-item>
 

@@ -27,7 +27,7 @@
           <div v-for="group in scopes.row.accountGroups">
             <div v-if="group.role === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span>
             </div>
-            <div v-else-if="group.role === 'owner'">{{group.group.name}} <span style=" font-style:italic;">普通管理员</span>
+            <div v-else-if="group.role === 'owner'">{{group.group.name}} <span style=" font-style:italic;">组管理员</span>
             </div>
             <div v-else-if="group.role === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span>
             </div>
