@@ -11,7 +11,7 @@
       <el-input v-model="formName.email"></el-input>
     </el-form-item>
 
-    <el-form-item label="用户描述">
+    <el-form-item label="用户描述" prop="title">
       <el-input type="textarea" autosize v-model="formName.desc">
       </el-input>
     </el-form-item>
@@ -35,7 +35,7 @@
         formName: {
           name: this.$route.query.user.name,
           email: this.$route.query.user.email,
-          desc: this.$route.query.user.desc,
+          desc: this.$route.query.user.title,
           id: this.$route.query.user.id
         },
         labelPosition: 'left'

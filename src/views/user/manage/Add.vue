@@ -36,8 +36,8 @@
         </el-col>
       </el-form-item>
       -->
-      <el-form-item label="用户描述" prop="desc">
-        <el-input type="textarea" autosize placeholder="请输入内容">
+      <el-form-item label="用户描述" prop="title">
+        <el-input type="textarea" v-model="formName.title" autosize placeholder="请输入内容">
         </el-input>
       </el-form-item>
       <el-form-item label="添加用户组">

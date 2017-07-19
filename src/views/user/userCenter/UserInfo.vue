@@ -14,7 +14,7 @@
             <span v-model="formName.email" style="margin: 0 40px;">{{user.email}}</span>
           </el-form-item>
           <el-form-item label="描述" prop="title" >
-            <span v-model="formName.desc" style="margin: 0 40px;">{{user.title}}</span>
+            <span v-model="formName.title" style="margin: 0 40px;">{{user.title}}</span>
           </el-form-item>
           <el-form-item label="组名 / 用户角色" prop="accountGroups" style="background: #D3DCE6;">
             <div v-for="group in user.accountGroups" style="margin: 0 40px;">
