@@ -118,23 +118,37 @@
         let params = {method: 'del', nodeIps: [node.hostName], vClusterId: this.cluster.id}
         // console.log(params)
         this.fullscreenLoading = true
-        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
+        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
           this.fullscreenLoading = false
-          this.$message({
-            message: '删除成功',
-            type: 'success',
-            onClose: this.getInfo()
-          })
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '删除成功',
+              type: 'success',
+              onClose: this.getInfo()
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       delCluster () {
         // console.log(this.cluster)
-        this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then(() => {
-          this.$message({
-            message: '删除成功',
-            type: 'success',
-            onClose: this.goList
-          })
+        this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then((data) => {
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '删除成功',
+              type: 'success',
+              onClose: this.goList
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       getAvailableNodes () {
@@ -157,14 +171,21 @@
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.cluster.id}
         this.fullscreenLoading = true
-        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
+        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
           this.fullscreenLoading = false
           this.dialogVisible = false
-          this.$message({
-            message: '添加成功',
-            type: 'success',
-            onClose: this.getInfo()
-          })
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '添加成功',
+              type: 'success',
+              onClose: this.getInfo()
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       goList () {
