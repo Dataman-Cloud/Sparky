@@ -128,12 +128,19 @@
       },
       // 删除集群
       delCluster (cluster) {
-        this.$store.dispatch(type.DEL_CLUSTER, cluster.id).then(() => {
-          this.$message({
-            message: '删除成功',
-            type: 'success',
-            onClose: this.listCluster
-          })
+        this.$store.dispatch(type.DEL_CLUSTER, cluster.id).then((data) => {
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '添加成功',
+              type: 'success',
+              onClose: this.listCluster
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       // 打开添加主机
@@ -158,13 +165,20 @@
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.vClusterId}
         this.fullscreenLoading = true
-        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then(() => {
+        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
           this.fullscreenLoading = false
           this.dialogVisible = false
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       handleClose () {
