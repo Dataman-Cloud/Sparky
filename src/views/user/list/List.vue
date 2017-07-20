@@ -356,12 +356,19 @@
         this.$router.push({path: '/system/user/add'})
       },
       userDisable (user) {
-        this.fetchUsersDisable(user.id).then(() => {
-          this.$message({
-            message: '禁止成功',
-            type: 'success',
-            onClose: this.fetchUsers
-          })
+        this.fetchUsersDisable(user.id).then((data) => {
+          if (data.resultCode === '00') {
+            this.$message({
+              message: '禁止成功',
+              type: 'success',
+              onClose: this.fetchUsers
+            })
+          } else {
+            this.$message({
+              message: data.message,
+              type: 'error'
+            })
+          }
         })
       },
       userEnable (user) {
@@ -379,12 +386,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.fetchUsersDel(user.id).then(() => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.fetchUsers
-            })
+          this.fetchUsersDel(user.id).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.fetchUsers
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
           })
         }).catch(() => {
           this.$message({

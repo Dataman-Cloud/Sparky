@@ -33,18 +33,18 @@
             <div>集群</div>
           </el-row>
           <el-table  :data="group.clusterss" highlight-current-row style="width: 100%;">
-            <el-table-column prop="vClusterLabel" label="名称" min-width="100" >
+            <el-table-column prop="vClusterLabel" label="名称" min-width="100" style="width: 30%;">
             </el-table-column>
             <!--         <el-table-column prop="vCluster.groupName" label="组名称" min-width="100" >
                      </el-table-column>
                      <el-table-column prop="vCluster.desc" label="描述" min-width="100" >
                      </el-table-column>-->
-            <el-table-column prop="createAt" label="更新时间" min-width="150">
+            <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 40%;">
               <template scope="cluster">
                 {{cluster.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
               </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="100">
+            <el-table-column label="操作" min-width="100" style="width: 30%;">
               <template scope="cluster">
                 <el-button size="mini" @click="clusterDelFromGroup(cluster.row)">移除</el-button>
               </template>
@@ -55,9 +55,9 @@
           </el-pagination>
           <div>用户</div>
           <el-table  :data="group.userss" highlight-current-row style="width: 100%;">
-            <el-table-column prop="userName" label="用户名" min-width="100" >
+            <el-table-column prop="userName" label="用户名" min-width="100" style="width: 20%;">
             </el-table-column>
-            <el-table-column prop="role" label="权限" min-width="100" >
+            <el-table-column prop="role" label="权限" min-width="100" style="width: 25%;">
               <template scope="scopes">
                 <div v-for="aGroup in scopes.row.accountGroups">
                   <div v-if="aGroup.role === 'superuser' && group.id === aGroup.groupId"><span style=" font-style:italic;">超级管理员</span>
@@ -70,12 +70,12 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="createAt" label="更新时间" min-width="150">
+            <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 35%;">
               <template scope="user">
                 {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
               </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="100">
+            <el-table-column label="操作" min-width="100" style="width: 20%;">
               <template scope="user">
                 <el-button size="mini" @click="userDelFromGroup(user.row)">移除</el-button>
               </template>
@@ -321,12 +321,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$store.dispatch(clusterType.DEL_CLUSTER, parm.id).then(() => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.fetchExpandInfo(this.groupInfo.id)
-            })
+          this.$store.dispatch(clusterType.DEL_CLUSTER, parm.id).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.fetchExpandInfo(this.groupInfo.id)
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
           })
         }).catch(() => {
           this.$message({
