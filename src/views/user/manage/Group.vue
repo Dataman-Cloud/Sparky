@@ -39,7 +39,7 @@
                      </el-table-column>
                      <el-table-column prop="vCluster.desc" label="描述" min-width="100" >
                      </el-table-column>-->
-            <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 35%;">
+            <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 40%;">
               <template scope="cluster">
                 {{cluster.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
               </template>
@@ -75,7 +75,7 @@
                 {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
               </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="100" style="width: 10%;">
+            <el-table-column label="操作" min-width="100" style="width: 20%;">
               <template scope="user">
                 <el-button size="mini" @click="userDelFromGroup(user.row)">移除</el-button>
               </template>
@@ -321,12 +321,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$store.dispatch(clusterType.DEL_CLUSTER, parm.id).then(() => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.fetchExpandInfo(this.groupInfo.id)
-            })
+          this.$store.dispatch(clusterType.DEL_CLUSTER, parm.id).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.fetchExpandInfo(this.groupInfo.id)
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
           })
         }).catch(() => {
           this.$message({
