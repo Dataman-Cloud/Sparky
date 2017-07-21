@@ -15,6 +15,7 @@
         </base-form>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
+          <el-button type="primary" @click="cancelForm">取消</el-button>
           <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
         </el-form-item>
       </el-tab-pane>
@@ -54,6 +55,9 @@ export default {
     }
   },
   methods: {
+    cancelForm: function () {
+      this.$router.push({path: '/app/list/apps'})
+    },
     transForm () {
       appUtil.transformFormToJson(this.ruleForm, this.resultForm)
     },
