@@ -39,7 +39,7 @@
 <el-form-item label="容器规格" prop="norms">
   <el-col :span="6" class="height-30 min-width">
     <label for="">CPUs</label>
-    <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01"></el-input-number>
+    <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="1"></el-input-number>
   </el-col>
   <el-col :span="6" class="height-30 min-width">
     <label for="">内存</label>
@@ -75,6 +75,12 @@
       <template v-for="(port, index) in ruleForm.ports">
         <el-col :span="24" :key="index" class="margin-bottom height-30 min-width"
                 v-show="ruleForm.network==='BRIDGE'">
+<!--            <el-form-item  prop="containerPort" class="margin-left-100" :rules="[
+                {required: true, message: '请输入端口号', trigger: 'blur'},
+                {type: 'number', message: '端口号必须为数字值'}]">
+              <el-input v-model="port.containerPort" placeholder="端口号" size="small" style="width: 120px; padding-bottom: 16px;"></el-input>
+            </el-form-item>
+          -->
           <el-input v-model="port.containerPort" placeholder="端口号" size="small" style="width: 120px; padding-bottom: 16px;"></el-input>
           <el-select v-model="port.protocol" placeholder="" size="small" style="width:100px;">
             <el-option label="tcp" value="tcp"></el-option>
@@ -213,7 +219,10 @@
       </el-row>
       <el-form-item
         v-for="(ev, index) in ruleForm.environmentVariables" class="margin-left-100" :key="index">
-        <el-input v-model="ev.key" placeholder="key" size="small" style="width: 300px;"></el-input>
+        <el-input v-model="ev.key" placeholder="key" size="small" style="width: 300px;" :rules="[
+              {required: true, message: '请输入端口号', trigger: 'blur'},
+              {type: 'number', message: '端口号必须为数字值'}
+        ]"></el-input>
         <el-input v-model="ev.value" placeholder="value" size="small" style="width: 300px;"></el-input>
         <el-button @click.prevent="removeEnvironmentVariable(ev)" size="small">删除</el-button>
       </el-form-item>

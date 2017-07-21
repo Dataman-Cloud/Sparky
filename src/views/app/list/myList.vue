@@ -249,6 +249,7 @@
         addAppGroupRule: {
           id: [
             {required: true, message: '应用组名称不可为空', trigger: 'input'},
+            { max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
             {pattern: /^[a-z0-9-]+$/, message: '应用id只能包含小写字母、数字及中划线', trigger: 'input'}
           ]
         },

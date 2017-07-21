@@ -29,6 +29,7 @@
     </el-tabs>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">更新应用</el-button>
+      <el-button type="primary" @click="cancelForm">取消</el-button>
       <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
     </el-form-item>
   </el-form>
@@ -59,6 +60,9 @@ export default {
     }
   },
   methods: {
+    cancelForm: function () {
+      this.$router.push({path: '/app/list/apps'})
+    },
     mainRender (appModel) {
       // 封装应用模版信息进行显示
       appUtil.transformJsonToForm(appModel, this.ruleForm)
