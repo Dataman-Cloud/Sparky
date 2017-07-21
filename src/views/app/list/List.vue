@@ -14,7 +14,7 @@
           -->
           <el-form-item>
             <router-link to="../list/catalogStackList">
-              <el-button type="primary">添加程序包</el-button>
+              <el-button type="primary" v-showBtn="1231">添加程序包</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>

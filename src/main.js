@@ -5,6 +5,7 @@ import App from '@/App'
 import router from './router'
 import store from './store'
 import * as filters from './filters'
+import directives from './directive'
 import NProgress from 'nprogress'
 import ElementUI from 'element-ui'
 // import 'element-ui/lib/theme-default/index.css'
@@ -21,6 +22,11 @@ Vue.use(vueMoment)
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
+})
+
+// 注册全局 Directive
+Object.keys(directives).forEach(key => {
+  Vue.directive(key, directives[key])
 })
 
 const whiteList = ['/login']
