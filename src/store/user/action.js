@@ -116,7 +116,7 @@ export default {
         Cookies.set('token', response.token)
         commit(type.PUT_TOKEN, response.token)
         commit(type.PUT_SYSRESOURCES, response.sysResources)
-        resolve(response.sysResources)
+        resolve(response)
       }).catch(err => {
         reject(err)
       })
