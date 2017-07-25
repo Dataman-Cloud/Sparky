@@ -11,7 +11,7 @@
           </el-form-item>
           <el-form-item>
             <router-link :to="{name: '添加策略'}">
-              <el-button type="primary">创建策略</el-button>
+              <el-button v-showBtn="addPolicies" type="primary">创建策略</el-button>
             </router-link>
           </el-form-item>
         </el-form>
@@ -67,9 +67,9 @@
       <el-table-column label="操作" width="150">
         <template scope="scope">
           <router-link :to="{name:'更新策略',query:{id:scope.row.id}}">
-            <el-button type="primary" size="small">更新</el-button>
+            <el-button type="primary" v-showBtn="updatePolicies"  size="small">更新</el-button>
           </router-link>
-          <el-button type="danger"  size="small" @click="removePolicy(scope.row.id)">删除</el-button>
+          <el-button type="danger" v-showBtn="delPolicies"   size="small" @click="removePolicy(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

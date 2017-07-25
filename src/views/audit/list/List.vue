@@ -78,7 +78,7 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-button type="success" @click="download">导出当页数据</el-button>
+      <el-button type="success" v-showBtn="exportAudits" @click="download">导出当页数据</el-button>
       <el-pagination :current-page.sync="currentPage" layout="prev, pager, next" @size-change="sizeChange" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
                      style="float:right;">
       </el-pagination>

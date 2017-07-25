@@ -10,7 +10,7 @@
           <el-button type="primary" @click="searchFun">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="plus" v-on:click="userAdd">新建用户</el-button>
+          <el-button type="primary" v-showBtn="userAdd" icon="plus" v-on:click="userAdd">新建用户</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -49,27 +49,27 @@
       <el-table-column label="操作" min-width="100">
         <template scope="user">
           <span v-if="user.row.status">
-            <el-button size="mini" @click="userDisable(user.row)">禁止</el-button>
+            <el-button size="mini" v-showBtn="userDisable" @click="userDisable(user.row)">禁止</el-button>
           </span>
           <span v-else>
-            <el-button size="mini" @click="userEnable(user.row)">启用</el-button>
+            <el-button size="mini" v-showBtn="userEnable" @click="userEnable(user.row)">启用</el-button>
           </span>
           <el-dropdown>
             <span class="el-dropdown-link"> <el-button size="mini">更多</el-button></span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
                 <router-link :to="{name: '用户修改', query: { user: user.row }}">
-                  <el-button size="mini" style="width: 100%;">编  辑</el-button>
+                  <el-button size="mini"  v-showBtn="userEdit" style="width: 100%;">编  辑</el-button>
                 </router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button @click="groupEdit(user.row)" size="mini" style="width: 100%;">编辑组</el-button>
+                <el-button @click="groupEdit(user.row)"  v-showBtn="groupEdit" size="mini" style="width: 100%;">编辑组</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button @click="userDel(user.row)" size="mini" style="width: 100%;">删  除</el-button>
+                <el-button @click="userDel(user.row)"  v-showBtn="userDel" size="mini" style="width: 100%;">删  除</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button @click="resetPwd(user.row)" size="mini" style="width: 100%;">修改密码</el-button>
+                <el-button @click="resetPwd(user.row)"  v-showBtn="resetPwd" size="mini" style="width: 100%;">修改密码</el-button>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

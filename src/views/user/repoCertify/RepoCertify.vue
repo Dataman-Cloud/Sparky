@@ -1,7 +1,7 @@
 ﻿<template>
 	<section>
 		<div class="top">
-      <el-button icon="plus" @click="repAdd">镜像仓库添加</el-button>
+      <el-button icon="plus" v-showBtn="repAdd" @click="repAdd">镜像仓库添加</el-button>
     </div>
 
     <el-table :data="filterRepos" highlight-current-row v-loading="listLoading" class="bodybar">
@@ -18,8 +18,8 @@
       </el-table-column>
       <el-table-column label="操作" min-width="100">
         <template scope="repos">
-          <el-button size="mini"  @click="repoEdit(repos.row)">更新</el-button>
-          <el-button size="mini"  @click="repoDel(repos.row)">删除</el-button>
+          <el-button size="mini" v-showBtn="repUpdate"  @click="repoEdit(repos.row)">更新</el-button>
+          <el-button size="mini" v-showBtn="repDel"  @click="repoDel(repos.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

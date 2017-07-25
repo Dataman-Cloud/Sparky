@@ -4,10 +4,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-button type="primary" @click = "addAppModel">创建应用模版</el-button>
+          <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模版</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
+          <el-button type="primary" v-showBtn="packagePublish" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -28,11 +28,11 @@
       </el-table-column>
       <el-table-column label="操作" width="165" show-overflow-tooltip>
         <template scope="scope">
-                <el-button v-if="!isCatalogStackCreate" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
-                <el-button v-if="!isCatalogStackCreate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
+                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
+                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogUpdate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
                 <!-- 当前不为程序包发布，并且该登录用户有操作此模板的权限 -->
-                <el-button v-if="!isCatalogStackCreate && scope.row.isRole" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
-                <el-button v-if="isCatalogStackCreate" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
+                <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
+                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,7 +154,7 @@
               v['isRole'] = true
             } else if (group.role === 'member' && this.getUserInfo.id === v.accountId) { // 为组员但为该模板的创建者
               v['isRole'] = true
-            } else if (v.groupId === 1) { // 该模版的创建者为超管
+            } else if (v.accountsName === 'admin') { // 该模版的创建者为超管
               v['isRole'] = true
             }
           }

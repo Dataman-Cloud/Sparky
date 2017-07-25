@@ -45,14 +45,23 @@
         let { dispatch } = this.$store
         this.loading = true
         dispatch(LOG_IN, this.loginForm).then(res => {
-          return dispatch('GenerateRoutes', res).then(_ => {
+          if (res.resultCode === '00') {
+            return dispatch('GenerateRoutes', res.sysResources).then(_ => {
+              this.loading = false
+              router.addRoutes(store.getters.appendRouters)
+              this.$router.push({name: '全部的应用'})
+            }).catch(error => {
+              this.showResult(error, 'd', 'sa')
+              this.loading = false
+            })
+          } else {
+            Notification({
+              title: '登录失败',
+              message: JSON.stringify(res.message),
+              type: 'error'
+            })
             this.loading = false
-            router.addRoutes(store.getters.appendRouters)
-            this.$router.push({name: '全部的应用'})
-          }).catch(error => {
-            this.showResult(error, 'd', 'sa')
-            this.loading = false
-          })
+          }
         }).catch(error => {
           this.showResult(error, 'd', 'sa')
           this.loading = false
