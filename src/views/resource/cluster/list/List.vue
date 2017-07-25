@@ -10,7 +10,7 @@
           <el-button type="primary" @click="">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="openAddCluster">新增集群</el-button>
+          <el-button type="primary" v-showBtn="addCluster" @click="openAddCluster">新增集群</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -36,8 +36,8 @@
         </el-table-column>
         <el-table-column prop="" label="操作" min-width="200" sortable>
           <template scope="cluster">
-            <el-button type="info" size="small" @click="openBox(cluster.row)">添加主机</el-button>
-            <el-button type="danger" size="small" @click="delCluster(cluster.row)">删除集群</el-button>
+            <el-button type="info" size="small" v-showBtn="addNode"  @click="openBox(cluster.row)">添加主机</el-button>
+            <el-button type="danger" size="small" v-showBtn="delNode"  @click="delCluster(cluster.row)">删除集群</el-button>
           </template>
 
         </el-table-column>

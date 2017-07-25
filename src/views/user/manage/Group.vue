@@ -1,7 +1,7 @@
 <template>
   <section class="bodybar">
     <el-row class="margin-bottom-20">
-      <el-button type="primary" icon="plus" @click="groupAdd" size="big">新建用户组</el-button>
+      <el-button type="primary" icon="plus" v-showBtn="groupAdd" @click="groupAdd" size="big">新建用户组</el-button>
     </el-row>
     <el-row>
     <el-col :span="24">
@@ -11,8 +11,8 @@
             {{group.name}}
             <div class="float-right">
               <!-- <el-button size="mini" @click="groupDesc(group)">详情</el-button> -->
-              <el-button size="mini" @click.prevent="groupEdit(group)">编辑</el-button>
-              <el-button size="mini" @click="groupDel(group)">删除</el-button>
+              <el-button size="mini" v-showBtn="groupEdit" @click.prevent="groupEdit(group)">编辑</el-button>
+              <el-button size="mini" v-showBtn="groupDel" @click="groupDel(group)">删除</el-button>
             </div>
           </template>
           <el-row style="margin: 20px;" justify="space-between" align="middle" type="flex">
@@ -25,8 +25,8 @@
               </el-tooltip>
             </el-col>
             <el-col :span="8">
-              <el-button icon="plus" @click="clusterAdd">新建集群</el-button>
-              <el-button icon="plus" @click="addUserToGroup">添加用户</el-button>
+              <el-button icon="plus" v-showBtn="clusterAdd"  @click="clusterAdd">新建集群</el-button>
+              <el-button icon="plus" v-showBtn="addUserToGroup"  @click="addUserToGroup">添加用户</el-button>
             </el-col>
           </el-row>
           <el-row>
@@ -46,7 +46,7 @@
             </el-table-column>
             <el-table-column label="操作" min-width="100" style="width: 30%;">
               <template scope="cluster">
-                <el-button size="mini" @click="clusterDelFromGroup(cluster.row)">移除</el-button>
+                <el-button size="mini" v-showBtn="clusterDelFromGroup" @click="clusterDelFromGroup(cluster.row)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -77,7 +77,7 @@
             </el-table-column>
             <el-table-column label="操作" min-width="100" style="width: 20%;">
               <template scope="user">
-                <el-button size="mini" @click="userDelFromGroup(user.row)">移除</el-button>
+                <el-button size="mini" v-showBtn="userDelFromGroup"  @click="userDelFromGroup(user.row)">移除</el-button>
               </template>
 
             </el-table-column>
