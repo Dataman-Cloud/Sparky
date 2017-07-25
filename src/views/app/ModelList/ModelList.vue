@@ -28,11 +28,11 @@
       </el-table-column>
       <el-table-column label="操作" width="165" show-overflow-tooltip>
         <template scope="scope">
-                <el-button v-if="!isCatalogStackCreate" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
-                <el-button v-if="!isCatalogStackCreate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
+                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
+                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogUpdate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
                 <!-- 当前不为程序包发布，并且该登录用户有操作此模板的权限 -->
-                <el-button v-if="!isCatalogStackCreate && scope.row.isRole" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
-                <el-button v-if="isCatalogStackCreate" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
+                <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
+                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
         </template>
       </el-table-column>
     </el-table>
