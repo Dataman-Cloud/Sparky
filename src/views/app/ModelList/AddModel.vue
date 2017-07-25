@@ -425,7 +425,7 @@ export default {
         this.isRole = true
       } else if (group.role === 'member' && this.getUserInfo.id === this.getModelInfo.accountId) { // 为组员但为该模板的创建者
         this.isRole = true
-      } else if (this.getModelInfo.groupId === 1) { // 该模版的创建者为超管
+      } else if (this.getModelInfo.accountsName === 'admin') { // 该模版的创建者为超管
         this.isRole = true
       }
     }

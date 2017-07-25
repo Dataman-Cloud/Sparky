@@ -154,7 +154,7 @@
               v['isRole'] = true
             } else if (group.role === 'member' && this.getUserInfo.id === v.accountId) { // 为组员但为该模板的创建者
               v['isRole'] = true
-            } else if (v.groupId === 1) { // 该模版的创建者为超管
+            } else if (v.accountsName === 'admin') { // 该模版的创建者为超管
               v['isRole'] = true
             }
           }
