@@ -14,7 +14,7 @@
           -->
           <el-form-item>
             <router-link to="../list/catalogStackList">
-              <el-button type="primary" v-showBtn="1231">添加程序包</el-button>
+              <el-button type="primary" >添加程序包</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>
@@ -23,7 +23,7 @@
             </router-link>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="showCreateAppGroup()">创建应用组</el-button>
+            <el-button type="primary" v-showBtn="createAppGroup" @click="showCreateAppGroup()">创建应用组</el-button>
           </el-form-item>
         </el-form>
       </el-col>
