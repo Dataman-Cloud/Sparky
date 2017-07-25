@@ -4,10 +4,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-button type="primary" @click = "addAppModel">创建应用模版</el-button>
+          <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模版</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
+          <el-button type="primary" v-showBtn="packagePublish" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
         </el-form-item>
       </el-form>
     </el-col>

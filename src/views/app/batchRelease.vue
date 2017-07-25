@@ -4,7 +4,7 @@
       <el-option v-for="item in this.appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')"
                  :key="item.id"></el-option>
     </el-select>
-    <el-button @click="updateAPPList">更新</el-button>
+    <el-button v-showBtn="batchRelease" @click="updateAPPList">更新</el-button>
     <el-table
       highlight-current-row v-loading="loading"
       ref="multipleTable"

@@ -5,10 +5,10 @@ import axios from './http'
 
 export function login (userName, password) {
   let data = {
-    userName,
-    password
+    'userName': userName,
+    'password': password
   }
-  return axios.post(`/jborg/accounts/login/${userName}/${password}`, data)
+  return axios.post(`/jborg/accounts/login`, data)
 }
 
 export function logout () {
