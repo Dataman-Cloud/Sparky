@@ -104,7 +104,7 @@
           </el-table-column>
           <el-table-column label="操作" min-width="180">
             <template scope="scope">
-              <el-button type="warning"  size="mini" @click="stop(scope.row.id)">停止</el-button>
+              <el-button type="warning" v-showBtn="stopApp"  size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
@@ -114,17 +114,17 @@
                   <!--</router-link>-->
                   <!--</el-dropdown-item>-->
                   <el-dropdown-item>
-                    <el-button type="danger" icon="delete" size="small" @click="removeModel(scope.row.id)">删除
+                    <el-button v-showBtn="delApp" type="danger" icon="delete" size="small" @click="removeModel(scope.row.id)">删除
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small"
+                    <el-button v-showBtn="extendApp" @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small"
                                style="width: 60px;">扩展
                     </el-button>
 
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
+                    <el-button v-showBtn="changeAppOwner" @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
                                style="width: 60px;">
                       更新用户
                     </el-button>
@@ -133,7 +133,7 @@
               </el-dropdown>
 
               <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
-                <el-button type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
+                <el-button v-showBtn="updatePackage" type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
               </span>
 
             </template>
@@ -238,7 +238,7 @@
                   <el-dropdown-item>
                     <el-button v-showBtn="changeAppOwner" @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
                                style="width: 60px;">
-                      修改用户
+                      更新用户
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>

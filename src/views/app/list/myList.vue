@@ -9,16 +9,16 @@
           </el-form-item>
           <el-form-item>
             <router-link to="../list/catalogStackList">
-              <el-button type="primary">添加程序包</el-button>
+              <el-button type="primary"  v-showBtn="addPackage">添加程序包</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>
             <router-link to="../addImg">
-              <el-button type="primary">添加应用</el-button>
+              <el-button type="primary" v-showBtn="addAPP">添加应用</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="showCreateAppGroup()">创建应用组</el-button>
+            <el-button type="primary" v-showBtn="createAppGroup" @click="showCreateAppGroup()">创建应用组</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -99,35 +99,35 @@
           </el-table-column>
           <el-table-column label="操作" min-width="200">
             <template scope="scope">
-              <el-button type="warning" size="mini" @click="stop(scope.row.id)">停止</el-button>
+              <el-button type="warning" v-showBtn="stopApp" size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
                     <router-link :to="{name:'修改镜像',query:{aid:scope.row.id}}">
-                      <el-button type="primary" icon="edit" size="small">修改</el-button>
+                      <el-button  v-showBtn="editApp" type="primary" icon="edit" size="small">更新</el-button>
                     </router-link>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button type="danger" icon="delete" size="small" @click="removeModel(scope.row.id)">删除
+                    <el-button type="danger" icon="delete" size="small" v-showBtn="delApp" @click="removeModel(scope.row.id)">删除
                     </el-button>
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small" style="width: 60px;">扩展
+                    <el-button v-showBtn="extendApp" @click="showExtend(scope.row.id, scope.row.instances)" type="success" size="small" style="width: 60px;">扩展
                     </el-button>
 
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
+                    <el-button v-showBtn="changeAppOwner" @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
                                style="width: 60px;">
-                      修改用户
+                      更新用户
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
 
               <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
-                <el-button type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
+                <el-button v-showBtn="updatePackage" type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
               </span>
 
             </template>
@@ -172,7 +172,7 @@
     </el-dialog>
 
     <el-dialog
-      title="修改用户"
+      title="更新用户"
       :visible.sync="editDialogVisible"
       :before-close="handleClose">
       <el-select v-model="userId" placeholder="请选择用户">
