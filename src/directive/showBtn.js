@@ -11,6 +11,7 @@ export default {
         for (let s of sys) {
           if (s.type === '1' && s.resourceName === name) {
             el.setAttribute('style', '')
+            break
           }
         }
       }
