@@ -18,9 +18,9 @@
       <el-form-item label="应用状态" v-bind:style="smallLable">
         <span>{{appInfo.status }}</span>
       </el-form-item>
-      <el-form-item label="访问地址" v-bind:style="smallLable">
+<!--      <el-form-item label="访问地址" v-bind:style="smallLable">
         <span>-</span>
-      </el-form-item>
+      </el-form-item> -->
       <br clear="all">
       <el-form-item label="最近更新时间" style="margin-bottom: 20px;">
         <span>{{appInfo.version | moment('YYYY-MM-DD HH:mm:ss') }}</span>
