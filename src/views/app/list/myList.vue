@@ -45,20 +45,27 @@
           </el-row>
         </template>
         <el-table :data="item.apps" v-loading="false" style="width: 100%;" v-if="item.apps.length > 0">
-          <el-table-column prop="id" label="名称" min-width="100" sortable>
+          <el-table-column prop="id" label="名称" min-width="200" sortable>
             <template scope="app">
               <router-link :to="{name: '应用实例信息', query:{id : app.row.id}}">{{app.row.id | getName}}</router-link>
             </template>
           </el-table-column>
-          <el-table-column label="所属" width="100" prop="owner">
+          <el-table-column label="所属" width="150" prop="owner">
           </el-table-column>
-          <el-table-column label="当前状态" width="130" prop="status" sortable>
+
+          <!--add by 2017年8月2日-->
+          <el-table-column label="CPU" width="80" prop="cpus">
+          </el-table-column>
+          <el-table-column label="内存" width="80" prop="mem">
+          </el-table-column>
+
+          <el-table-column label="当前状态" width="130" prop="status">
           </el-table-column>
           <el-table-column prop="vclusterName" label="集群" min-width="100" sortable>
           </el-table-column>
-          <el-table-column prop="instances" label="实例" min-width="70" sortable>
+          <el-table-column prop="instances" label="实例" min-width="80" sortable>
           </el-table-column>
-          <el-table-column label="健康状态" min-width="120" sortable>
+          <el-table-column label="健康状态" min-width="130" sortable>
             <template scope="test3">
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">
@@ -95,9 +102,9 @@
 
             </template>
           </el-table-column>
-          <el-table-column label="版本" min-width="200" prop="version" sortable>
+          <el-table-column label="版本" min-width="250" prop="version" sortable>
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
+          <el-table-column label="操作" min-width="180">
             <template scope="scope">
               <el-button type="warning" v-showBtn="stopApp" size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
