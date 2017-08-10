@@ -128,19 +128,24 @@
       },
       // 删除集群
       delCluster (cluster) {
-        this.$store.dispatch(type.DEL_CLUSTER, cluster.id).then((data) => {
-          if (data.resultCode === '00') {
-            this.$message({
-              message: '添加成功',
-              type: 'success',
-              onClose: this.listCluster
-            })
-          } else {
-            this.$message({
-              message: data.message,
-              type: 'error'
-            })
-          }
+        this.$confirm(`是否删除集群`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          // 确定后请求删除接口
+          this.$store.dispatch(type.DEL_CLUSTER, cluster.id).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.listCluster
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
+          })
         })
       },
       // 打开添加主机

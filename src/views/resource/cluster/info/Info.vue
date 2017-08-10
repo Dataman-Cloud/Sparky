@@ -117,38 +117,48 @@
       delNode (index, node) {
         let params = {method: 'del', nodeIps: [node.hostName], vClusterId: this.cluster.id}
         // console.log(params)
-        this.fullscreenLoading = true
-        this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
-          this.fullscreenLoading = false
-          if (data.resultCode === '00') {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.getInfo()
-            })
-          } else {
-            this.$message({
-              message: data.message,
-              type: 'error'
-            })
-          }
+        this.$confirm(`是否删除${node.hostName}`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          // 确定后请求删除接口
+          this.fullscreenLoading = true
+          this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
+            this.fullscreenLoading = false
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.getInfo()
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
+          })
         })
       },
       delCluster () {
         // console.log(this.cluster)
-        this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then((data) => {
-          if (data.resultCode === '00') {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.goList
-            })
-          } else {
-            this.$message({
-              message: data.message,
-              type: 'error'
-            })
-          }
+        this.$confirm(`是否删除集群`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          // 确定后请求删除接口
+          this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.goList
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
+          })
         })
       },
       getAvailableNodes () {
@@ -189,7 +199,7 @@
         })
       },
       goList () {
-        this.$router.push('/resouces/cluster/list')
+        this.$router.push('/resource/cluster/list')
       }
     },
     mounted () {
