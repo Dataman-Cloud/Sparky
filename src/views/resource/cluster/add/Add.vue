@@ -62,7 +62,8 @@
               if (data.resultCode === '00') {
                 this.$message({
                   message: '添加成功',
-                  type: 'success'
+                  type: 'success',
+                  onClose: this.goList
                 })
               } else {
                 this.$message({
@@ -83,6 +84,9 @@
       },
       listGroup () {
         return this.$store.dispatch(userType.FETCH_GROUPS)
+      },
+      goList () {
+        this.$router.push('/resource/cluster/list')
       }
     },
     mounted () {
