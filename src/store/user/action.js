@@ -113,9 +113,6 @@ export default {
   [type.LOG_IN] ({ commit }, { userName, password }) {
     return new Promise((resolve, reject) => {
       api.login(userName, password).then(response => {
-        Cookies.set('token', response.token)
-        commit(type.PUT_TOKEN, response.token)
-        commit(type.PUT_SYSRESOURCES, response.sysResources)
         resolve(response)
       }).catch(err => {
         reject(err)
