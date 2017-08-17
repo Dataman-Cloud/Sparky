@@ -20,9 +20,10 @@
 <script>
   // import * as user from 'api/user'
   import { Notification } from 'element-ui'
-  import { LOG_IN } from 'store/user/mutations_types'
+  import { LOG_IN, PUT_TOKEN, PUT_SYSRESOURCES } from 'store/user/mutations_types'
   import router from 'router'
   import store from 'store'
+  import Cookies from 'js-cookie'
 
   export default {
     data () {
@@ -44,11 +45,14 @@
     },
     methods: {
       login (ev) {
-        let { dispatch } = this.$store
+        let { dispatch, commit } = this.$store
         this.loading = true
         dispatch(LOG_IN, this.loginForm).then(res => {
           if (res.resultCode === '00') {
             return dispatch('GenerateRoutes', res.sysResources).then(_ => {
+              Cookies.set('token', res.token)
+              commit(PUT_TOKEN, res.token)
+              commit(PUT_SYSRESOURCES, res.sysResources)
               this.loading = false
               router.addRoutes(store.getters.appendRouters)
               this.$router.push({name: '全部的应用'})

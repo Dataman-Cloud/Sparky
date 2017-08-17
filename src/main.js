@@ -7,6 +7,7 @@ import store from './store'
 import * as filters from './filters'
 import directives from './directive'
 import NProgress from 'nprogress'
+import Cookies from 'js-cookie'
 import ElementUI from 'element-ui'
 // import 'element-ui/lib/theme-default/index.css'
 import './styles/index.css' // 全局css样式
@@ -32,7 +33,7 @@ Object.keys(directives).forEach(key => {
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  if (store.getters.token) {
+  if (Cookies.get('token')) {
     if (to.path === '/login') {
       next({name: '全部的应用'})
     } else {
