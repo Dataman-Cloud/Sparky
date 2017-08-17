@@ -66,10 +66,9 @@ export default {
     mainRender (appModel) {
       // 封装应用模版信息进行显示
       appUtil.transformJsonToForm(appModel, this.ruleForm)
-      console.log(this.ruleForm)
     },
     transForm () {
-      appUtil.transformFormToJson(this.ruleForm, this.resultForm)
+      return appUtil.transformFormToJson(this.ruleForm, this.resultForm)
     },
     resetForm () {
       this.$refs['ruleForm'].resetFields()

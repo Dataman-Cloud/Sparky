@@ -8,7 +8,7 @@
           </el-form-item>
           <el-form-item label="应用组" prop="group" slot="appGroup">
             <el-select v-model="ruleForm.group" :disabled="false" placeholder="请选择应用组">
-              <el-option v-for="item in this.appgroups" :label="item.id | replaceSprit"
+              <el-option v-for="item in appgroups" :label="item.id | replaceSprit"
                          :value="item.id | replaceSprit" :key="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -59,7 +59,7 @@ export default {
       this.$router.push({path: '/app/list/apps'})
     },
     transForm () {
-      appUtil.transformFormToJson(this.ruleForm, this.resultForm)
+      return appUtil.transformFormToJson(this.ruleForm, this.resultForm)
     },
     resetForm () {
       this.$refs['ruleForm'].resetFields()

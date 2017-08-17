@@ -315,7 +315,10 @@
         default: true
       },
       ruleForm: {
-        type: Object
+        type: Object,
+        default: function () {
+          return appConf.ruleForm()
+        }
       }
     },
     data () {
