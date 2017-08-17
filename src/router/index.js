@@ -23,6 +23,7 @@ const NodeList = _import('resource/node/list/List')
 const NodeInfo = _import('resource/node/info/Info')
 const InstanceInfo = _import('resource/node/instance/Info')
 const MetricsSnapshot = _import('resource/metricsSnapshot/Snapshot')
+const Network = _import('resource/network/IpamPool')
 const UserInfo = _import('user/userCenter/UserInfo')
 const Chgpwd = _import('user/userCenter/ChgPwd')
 const RepoCertify = _import('user/repoCertify/RepoCertify')
@@ -186,6 +187,11 @@ export const asyncRouterMap = [
         component: InstanceInfo,
         meta: {},
         hidden: true
+      },
+      {
+        path: 'network',
+        name: '网络',
+        component: Network
       },
       {
         path: 'metricsSnapshot',

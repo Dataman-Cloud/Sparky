@@ -12,6 +12,7 @@ import model from './model'
 import elastic from './elastic'
 import permission from './permission'
 import getters from './getters'
+import ipam from './ipam'
 
 Vue.use(Vuex)
 
@@ -27,7 +28,8 @@ export default new Vuex.Store({
     audit,
     model,
     elastic,
-    permission
+    permission,
+    ipam
   },
   getters
 })
