@@ -39,7 +39,7 @@ function transformFormToJson (normalForm, jsonForm) {
   if (normalForm.f5Pool != null) {
     jsonForm.env.F5_POOL_NAME = normalForm.f5Pool
   }
-  if (normalForm.environmentVariables.length > 0) {
+  if (normalForm.environmentVariables && normalForm.environmentVariables.length > 0) {
     for (let obj of normalForm.environmentVariables) {
       jsonForm.env[obj.key] = obj.value
     }
