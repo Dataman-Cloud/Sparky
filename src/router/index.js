@@ -7,6 +7,7 @@ const _import = require('./_import_' + process.env.NODE_ENV)
 // so only in production use Lazy Loading
 
 const Login = _import('Login')
+const Graph = _import('graph/Graph')
 const AppList = _import('app/list/List')
 const MyAppList = _import('app/list/myList')
 const AppModelList = _import('app/ModelList/ModelList')
@@ -48,6 +49,20 @@ export const constantRouterMap = [
     name: 'Login',
     component: Login,
     hidden: true
+  },
+  {
+    path: '/graph',
+    component: Layout,
+    name: '首页',
+    redirect: {name: '资源概览'},
+    iconCls: 'el-icon-message', // 图标样式class
+    children: [
+      {
+        path: 'index',
+        name: '资源概览',
+        component: Graph
+      }
+    ]
   },
   {
     path: '/app',
@@ -274,6 +289,6 @@ export const asyncRouterMap = [
   {
     path: '*',
     hidden: true,
-    redirect: {name: '全部的应用'}
+    redirect: {name: '资源概览'}
   }
 ]

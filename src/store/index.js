@@ -1,6 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import user from './user'
+import graph from './graph'
 import app from './app'
 import image from './image'
 import clusters from './clusters'
@@ -18,6 +19,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     user,
+    graph,
     app,
     image,
     clusters,
