@@ -84,6 +84,11 @@
         activeName: 'first'
       }
     },
+    watch: {
+      graphInfo () {
+        this.showPlat()
+      }
+    },
     computed: {
       ...mapState({
         graphInfo (state) {
