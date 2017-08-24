@@ -111,7 +111,7 @@
 //        this.initMonitor()
         let cpuUsage = document.getElementById('cpuUsage')
         this.cpuChart = echarts.init(cpuUsage, null, {width: 500, height: 300})
-        this.cpuChart.setOption({
+        let option = {
           title: {text: 'CPU 使用率', x: 'center'},
           tooltip: {},
           legend: {
@@ -127,10 +127,17 @@
               {value: 75, name: '未使用量'}
             ]
           }]
-        })
+        }
+        if (this.graphInfo && this.graphInfo.platformResource) {
+          option.series[0].data = [
+            {value: this.graphInfo.platformResource.cpuUtilizationRate, name: '已使用量'},
+            {value: (1 - this.graphInfo.platformResource.cpuUtilizationRate).toFixed(2), name: '未使用量'}
+          ]
+        }
+        this.cpuChart.setOption(option)
         let memUsage = document.getElementById('memUsage')
         this.memoryChart = echarts.init(memUsage, null, {width: 500, height: 300})
-        this.memoryChart.setOption({
+        let memOption = {
           title: {text: '内存使用率', x: 'center'},
           tooltip: {},
           legend: {
@@ -146,12 +153,19 @@
               {value: 75, name: '未使用量'}
             ]
           }]
-        })
+        }
+        if (this.graphInfo && this.graphInfo.platformResource) {
+          memOption.series[0].data = [
+            {value: this.graphInfo.platformResource.memUtilizationRate, name: '已使用量'},
+            {value: 10 - this.graphInfo.platformResource.memUtilizationRate, name: '未使用量'}
+          ]
+        }
+        this.memoryChart.setOption(memOption)
       },
       showHost (tab) {
         let hostRec = document.getElementById('hostRec')
         this.hostChart = echarts.init(hostRec, null, {width: 600, height: 400})
-        this.hostChart.setOption({
+        let hostOption = {
           title: {text: '主机资源使用情况'},
           tooltip: {},
           legend: {
@@ -177,7 +191,20 @@
             type: 'bar',
             data: [2.6, 7.0, 9.5, 28.2]
           }]
-        })
+        }
+        if (this.graphInfo && this.graphInfo.hostResources) {
+      //    forEach()
+          hostOption.xAxis[0].data = [
+            {value: this.graphInfo.hostResources.ip}
+          ]
+          hostOption.series[0].data = [
+            {value: this.graphInfo.hostResources.cpuUtilizationRate, name: '已使用量'}
+          ]
+          hostOption.series[1].data = [
+            {value: this.graphInfo.hostResources.memUtilizationRate, name: '已使用量'}
+          ]
+        }
+        this.hostChart.setOption(hostOption)
       },
       showAppGroup (tab) {
         let appRec = document.getElementById('appRec')
@@ -311,7 +338,7 @@
 
 <style scoped>
   .monitorDiv {
-    width: 500px;
-    height: 300px;
+    width: 700px;
+    height: 500px;
   }
 </style>
