@@ -150,7 +150,7 @@
         let memUsage = document.getElementById('memUsage')
         this.memoryChart = echarts.init(memUsage, null, {width: 500, height: 300})
         let memOption = {
-          title: {text: '内存使用率', x: 'center'},
+          title: {text: '内存使用率(GB)', x: 'center'},
           tooltip: {},
           legend: {
             orient: 'vertical',
@@ -168,8 +168,8 @@
         }
         if (this.graphInfo && this.graphInfo.platformResource) {
           memOption.series[0].data = [
-            {value: this.graphInfo.platformResource.memUtilizationRate, name: '已使用量'},
-            {value: 10 - this.graphInfo.platformResource.memUtilizationRate, name: '未使用量'}
+            {value: (this.graphInfo.platformResource.memUtilizationRate).toFixed(2), name: '已使用量'},
+            {value: (this.graphInfo.platformResource.memTotal - this.graphInfo.platformResource.memUtilizationRate).toFixed(2), name: '未使用量'}
           ]
         }
         this.memoryChart.setOption(memOption)
