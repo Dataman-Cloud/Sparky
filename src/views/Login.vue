@@ -55,7 +55,7 @@
               commit(PUT_SYSRESOURCES, res.sysResources)
               this.loading = false
               router.addRoutes(store.getters.appendRouters)
-              this.$router.push({name: '全部的应用'})
+              this.$router.push({name: '资源概览'})
             }).catch(error => {
               this.showResult(error, 'd', 'sa')
               this.loading = false
