@@ -139,6 +139,8 @@
           <el-select v-model="userForm.role" placeholder="角色类型">
             <el-option label="组管理员" value="owner"></el-option>
             <el-option label="组成员" value="member"></el-option>
+            <el-option label="LDAP管理员" value="default"></el-option>
+            <el-option label="其他" value="orther"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
