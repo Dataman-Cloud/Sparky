@@ -66,6 +66,10 @@
                   </div>
                   <div v-else-if="aGroup.role === 'member' && group.id === aGroup.groupId"><span style=" font-style:italic;">组成员</span>
                   </div>
+                  <div v-else-if="aGroup.role === 'default' && group.id === aGroup.groupId"><span style=" font-style:italic;">LDAP管理员</span>
+                  </div>
+                  <div v-else-if="aGroup.role === 'orther' && group.id === aGroup.groupId"><span style=" font-style:italic;">其他</span>
+                  </div>
                   <div v-else></div>
                 </div>
               </template>

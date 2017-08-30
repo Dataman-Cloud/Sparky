@@ -31,6 +31,10 @@
             </div>
             <div v-else-if="group.role === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span>
             </div>
+            <div v-else-if="group.role === 'default'">{{group.group.name}} <span style=" font-style:italic;">LDAP管理员</span>
+            </div>
+            <div v-else-if="group.role === 'orther'">{{group.group.name}} <span style=" font-style:italic;">其他</span>
+            </div>
             <div v-else></div>
           </div>
         </template>
@@ -121,6 +125,8 @@
             <el-select v-model="e_form.role" placeholder="组中角色" style="margin-left: 30px;">
               <el-option label="普通管理员" value="owner"></el-option>
               <el-option label="组成员" value="member"></el-option>
+              <el-option label="LDAP管理员" value="default"></el-option>
+              <el-option label="其他" value="orther"></el-option>
             </el-select>
             <el-button type="text" @click="addGroup">添加</el-button>
           </el-form-item>

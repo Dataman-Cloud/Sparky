@@ -43,12 +43,12 @@
       </el-table-column>
       <el-table-column prop="" label="CPU(使用量/总量)" min-width="150" sortable>
         <template scope="node">
-          {{node.row.cpuTotal}}/{{node.row.cpuUsed}}
+          {{node.row.cpuUsed}}/{{node.row.cpuTotal}}
         </template>
       </el-table-column>
       <el-table-column prop="" label="内存(使用量/总量)" min-width="150" sortable>
         <template scope="node">
-          {{node.row.memTotal}}M/{{node.row.memUsed}}M
+          {{node.row.memUsed}}M/{{node.row.memTotal}}M
         </template>
       </el-table-column>
       <el-table-column prop="updatedAt" label="注册时间" min-width="150" sortable>

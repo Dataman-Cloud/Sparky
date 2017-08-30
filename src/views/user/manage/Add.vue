@@ -74,6 +74,8 @@
           <el-select v-model="group.role" placeholder="组中角色">
             <el-option label="组管理员" value="owner"></el-option>
             <el-option label="组成员" value="member"></el-option>
+            <el-option label="LDAP管理员" value="default"></el-option>
+            <el-option label="其他" value="orther"></el-option>
           </el-select>
         </el-form-item>
         <el-button type="text" @click="delGroup('group')">删除</el-button>

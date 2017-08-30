@@ -63,7 +63,16 @@ export const constantRouterMap = [
         component: Graph
       }
     ]
-  },
+  }
+]
+
+export default new Router({
+  // mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+
+export const asyncRouterMap = [
   {
     path: '/app',
     component: Layout,
@@ -146,16 +155,7 @@ export const constantRouterMap = [
         component: BatchRelease
       }
     ]
-  }
-]
-
-export default new Router({
-  // mode: 'history',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
-
-export const asyncRouterMap = [
+  },
   {
     path: '/resource',
     component: Layout,
