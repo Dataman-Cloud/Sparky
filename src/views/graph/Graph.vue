@@ -14,6 +14,41 @@
       <span class="platNum">应用： {{graphInfo.platformResource.appNum}}</span><span class="platNum">容器： {{graphInfo.platformResource.containerNum}}</span>
     </el-row>
 
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <div id="cpuUsage" class="monitorDiv"></div>
+      </el-col>
+      <el-col :span="12">
+        <div id="memUsage" class="monitorDiv"></div>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="18">
+        <div id="hostRec" class="monitorDiv"></div>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <div id="appRec" class="monitorDiv"></div>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="18">
+        <div id="cpuRec" class="monitorDiv"></div>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="18">
+        <div id="memRec" class="monitorDiv"></div>
+      </el-col>
+    </el-row>
+
+<!--
+
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="平台概览" name="first" id="platformResource" style="margin-top: 20px;">
         <el-row :gutter="20">
@@ -54,6 +89,7 @@
         </el-row>
       </el-tab-pane>
     </el-tabs>
+-->
 
 
   </section>
@@ -87,6 +123,10 @@
     watch: {
       graphInfo () {
         this.showPlat()
+        this.showHost()
+        this.showAppGroup()
+        this.showCpuTopTen()
+        this.showMemTopTen()
       }
     },
     computed: {
@@ -100,7 +140,7 @@
       ...mapActions({
         fetchGraph: type.FETCH_GRAPH
       }),
-      handleClick (tab) {
+  /*    handleClick (tab) {
 //        this.closeSse()
         switch (tab.$el.id) {
           case 'platformResource' :
@@ -119,7 +159,7 @@
             this.showMemTopTen()
             break
         }
-      },
+      }, */
       showPlat () {
         let cpuUsage = document.getElementById('cpuUsage')
         this.cpuChart = echarts.init(cpuUsage, null, {width: 500, height: 300})
@@ -224,7 +264,7 @@
           title: {text: '应用组资源使用占比'},
           tooltip: {},
           legend: {
-            x: 'right',
+            x: 'center',
             y: 'bottom',
             data: ['app1', 'app2', 'app3', 'app4', 'app5']
           },
@@ -380,6 +420,10 @@
     mounted () {
       this.fetchGraph()
       this.showPlat()
+      this.showHost()
+      this.showAppGroup()
+      this.showCpuTopTen()
+      this.showMemTopTen()
     }
   }
 </script>
@@ -387,7 +431,7 @@
 <style scoped>
   .monitorDiv {
     width: 700px;
-    height: 500px;
+    height: 450px;
   }
   .platNum {
     margin-left: 10px;
