@@ -14,5 +14,7 @@ export default {
     state.ipam.ipPoolInfo = payload
   },
   [type.CREATE_NET] (state, payload) {
+  },
+  [type.RELEASE_IP] (state, payload) {
   }
 }

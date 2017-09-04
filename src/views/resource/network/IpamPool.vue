@@ -15,7 +15,9 @@
         <el-form-item>
           <el-button type="primary"  @click="openIpamPool">IP池信息</el-button>
         </el-form-item>
-
+        <el-form-item>
+          <el-button type="primary"  @click="releaseIp">刷新IP</el-button>
+        </el-form-item>
       </el-form>
     </el-col>
 
@@ -379,6 +381,27 @@
       },
       openIpamPool () {
         this.ipamPoolVisible = true
+      },
+      releaseIp () {
+        this.$confirm(`是否刷新`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          // 确定后请求删除接口
+          this.$store.dispatch(type.RELEASE_IP).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '刷新成功',
+                type: 'success',
+                onClose: this.getIpPoolInfo
+              })
+            } else {
+              this.$message({
+                message: data.message,
+                type: 'error'
+              })
+            }
+          })
+        })
       }
     },
     mounted () {

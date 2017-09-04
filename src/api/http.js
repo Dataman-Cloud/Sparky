@@ -29,6 +29,7 @@ axios.interceptors.response.use(
     return response.data
   },
   error => {
+    console.dir(error)
     if (error.response) {
       switch (error.response.status) {
         case 401:

@@ -23,3 +23,8 @@ export function netIps (params) {
 export function createNet (params) {
   return axios.post(`/jborg/ipam/net`, params)
 }
+
+// 创建网络
+export function releaseIp () {
+  return axios.get(`/jborg/ipam/releaseIp`)
+}

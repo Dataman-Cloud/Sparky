@@ -28,6 +28,8 @@ export default {
   },
   [type.CREATE_NET] (context, playload) {
     return api.createNet(playload)
+  },
+  [type.RELEASE_IP] (context) {
+    return api.releaseIp()
   }
-
 }
