@@ -15,36 +15,50 @@
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="12">
-        <div id="cpuUsage" class="monitorDiv"></div>
-      </el-col>
-      <el-col :span="12">
-        <div id="memUsage" class="monitorDiv"></div>
-      </el-col>
+      <div>
+        <el-col :span="12">
+          <div id="cpuUsage" class="monitorDiv"></div>
+        </el-col>
+        <el-col :span="12">
+          <div id="memUsage" class="monitorDiv"></div>
+        </el-col>
+      </div>
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="18">
-        <div id="hostRec" class="monitorDiv"></div>
-      </el-col>
+      <span class="fontStyle"><strong>主机资源使用情况</strong></span>
+      <div>
+        <el-col :span="18">
+          <div id="hostRec" class="monitorDiv"></div>
+        </el-col>
+      </div>
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="24">
-        <div id="appRec" class="monitorDiv"></div>
-      </el-col>
+      <span class="fontStyle"><strong>应用组资源使用情况</strong></span>
+      <div>
+        <el-col :span="24">
+          <div id="appRec" class="monitorDiv"></div>
+        </el-col>
+      </div>
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="18">
-        <div id="cpuRec" class="monitorDiv"></div>
-      </el-col>
+      <span class="fontStyle"><strong>CPU使用TOP10</strong></span>
+      <div>
+        <el-col :span="18">
+          <div id="cpuRec" class="monitorDiv"></div>
+        </el-col>
+      </div>
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="18">
-        <div id="memRec" class="monitorDiv"></div>
-      </el-col>
+      <span class="fontStyle"><strong>内存使用TOP10</strong></span>
+      <div>
+        <el-col :span="18">
+          <div id="memRec" class="monitorDiv"></div>
+        </el-col>
+      </div>
     </el-row>
 
 <!--
@@ -168,7 +182,7 @@
           tooltip: {},
           legend: {
             orient: 'vertical',
-            x: 'left',
+            x: 'right',
             data: ['已使用量', '未使用量']
           },
           series: [{
@@ -194,7 +208,7 @@
           tooltip: {},
           legend: {
             orient: 'vertical',
-            x: 'left',
+            x: 'right',
             data: ['已使用量', '未使用量']
           },
           series: [{
@@ -218,9 +232,10 @@
         let hostRec = document.getElementById('hostRec')
         this.hostChart = echarts.init(hostRec, null, {width: 600, height: 400})
         let hostOption = {
-          title: {text: '主机资源使用情况'},
+          title: {},
           tooltip: {},
           legend: {
+            x: 'right',
             data: ['CPU', '内存']
           },
           xAxis: [
@@ -261,7 +276,7 @@
         let appRec = document.getElementById('appRec')
         this.appGroupChart = echarts.init(appRec, null, {width: 900, height: 400})
         let appOption = {
-          title: {text: '应用组资源使用占比'},
+          title: {},
           tooltip: {},
           legend: {
             x: 'center',
@@ -334,9 +349,10 @@
         let cpuRec = document.getElementById('cpuRec')
         this.cpuTopTenChart = echarts.init(cpuRec, null, {width: 600, height: 400})
         let cpuTopTenOption = {
-          title: {text: 'CPU使用率TOP10应用'},
+          title: {},
           tooltip: {},
           legend: {
+            x: 'right',
             data: ['CPU', '内存']
           },
           xAxis: [
@@ -377,9 +393,10 @@
         let memRec = document.getElementById('memRec')
         this.memTopTenChart = echarts.init(memRec, null, {width: 600, height: 400})
         let memTopTenOption = {
-          title: {text: '内存使用率TOP10应用'},
+          title: {},
           tooltip: {},
           legend: {
+            x: 'right',
             data: ['CPU', '内存']
           },
           xAxis: [
@@ -429,6 +446,11 @@
 </script>
 
 <style scoped>
+  .fontStyle {
+    width: 200px;
+    margin: 0 0 10px 10px;
+    color: #475669;
+  }
   .monitorDiv {
     width: 700px;
     height: 450px;
