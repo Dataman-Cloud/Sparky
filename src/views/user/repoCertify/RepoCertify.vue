@@ -89,7 +89,7 @@
     },
     methods: {
       repAdd () {
-        this.$router.push({path: '/center/user/repoAdd'})
+        this.$router.push({name: '镜像仓库添加'})
       },
       listRepo () {
         return this.$store.dispatch(type.FETCH_REPOS)
