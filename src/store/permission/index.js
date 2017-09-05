@@ -1,6 +1,9 @@
 import { asyncRouterMap, constantRouterMap } from 'src/router'
 
 function IsInSysResource (resources, route) {
+  if (route.hidden) {
+    return true
+  }
   if (route && route.name) {
     return resources.some(resource => resource.type === '0' && route.name === resource.resourceName)
   }
