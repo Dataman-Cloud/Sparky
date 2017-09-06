@@ -51,8 +51,10 @@ export function nodeInstanceLogs (params) {
 // 获取主机上指定容器的日志 ws
 export function nodeInstanceLogsWS (params) {
   let {nodeIp, instanceId} = params
+  let hostname = window.location.hostname
+  let port = window.location.port
   // let token = localStorage.getItem('token')
-  let url = `ws://${nodeIp}:2375/containers/${instanceId}/attach/ws?logs=0&stream=1&stdin=1&stdout=1&stderr=1`
+  let url = `ws://${hostname}:${port}/jborg/logs?ws_nodeip=${nodeIp}&ws_cid=${instanceId}`
   return new WebSocket(url)
 }
 
