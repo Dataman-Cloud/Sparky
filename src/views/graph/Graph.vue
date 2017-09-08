@@ -9,7 +9,7 @@
 -->
 
     <el-row class="margin-bottom-20" style="margin-top: 20px;">
-      <span>集群： {{graphInfo.platformResource.clusterNum}}</span><span class="platNum">主机数： {{graphInfo.platformResource.hostNum}}</span>
+      <span class="platNum">集群： {{graphInfo.platformResource.clusterNum}}</span><span class="platNum">主机数： {{graphInfo.platformResource.hostNum}}</span>
       <span class="platNum">应用组： {{graphInfo.platformResource.appGroupNum}}</span>
       <span class="platNum">应用： {{graphInfo.platformResource.appNum}}</span><span class="platNum">容器： {{graphInfo.platformResource.containerNum}}</span>
     </el-row>
@@ -17,25 +17,28 @@
     <el-row :gutter="20">
       <div>
         <el-col :span="12">
-          <div id="cpuUsage" class="monitorDiv"></div>
+          <div id="cpuUsage" style="height: 350px"></div>
         </el-col>
         <el-col :span="12">
-          <div id="memUsage" class="monitorDiv"></div>
+          <div id="memUsage" style="height: 350px"></div>
         </el-col>
       </div>
     </el-row>
 
-    <el-row :gutter="20">
-      <span class="fontStyle"><strong>主机资源使用情况</strong></span>
+    <el-row :gutter="20" style="background: #E5E9F2; ; border-radius: 15px;">
+      <div style="background: #D3DCE6"><span class="fontStyle"><strong>主机</strong></span></div>
       <div>
-        <el-col :span="18">
+        <el-col :span="12">
           <div id="hostRec" class="monitorDiv"></div>
         </el-col>
+        <el-col :span="12">
+          <div id="hostMemRec" class="monitorDiv"></div>
+        </el-col>
       </div>
     </el-row>
 
     <el-row :gutter="20">
-      <span class="fontStyle"><strong>应用组资源使用情况</strong></span>
+      <span class="fontStyle"><strong>应用组</strong></span>
       <div>
         <el-col :span="24">
           <div id="appRec" class="monitorDiv"></div>
@@ -43,68 +46,17 @@
       </div>
     </el-row>
 
-    <el-row :gutter="20">
-      <span class="fontStyle"><strong>CPU使用TOP10</strong></span>
+    <el-row :gutter="20" style="background: #E5E9F2; ; border-radius: 15px;">
+      <div style="background: #D3DCE6"><span class="fontStyle"><strong>CPU/内存使用TOP10</strong></span></div>
       <div>
-        <el-col :span="18">
+        <el-col :span="12">
           <div id="cpuRec" class="monitorDiv"></div>
         </el-col>
-      </div>
-    </el-row>
-
-    <el-row :gutter="20">
-      <span class="fontStyle"><strong>内存使用TOP10</strong></span>
-      <div>
-        <el-col :span="18">
+        <el-col :span="12">
           <div id="memRec" class="monitorDiv"></div>
         </el-col>
       </div>
     </el-row>
-
-<!--
-
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="平台概览" name="first" id="platformResource" style="margin-top: 20px;">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <div id="cpuUsage" class="monitorDiv"></div>
-          </el-col>
-          <el-col :span="12">
-            <div id="memUsage" class="monitorDiv"></div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="主机资源" name="second" id="hostResources">
-        <el-row :gutter="20">
-          <el-col :span="18">
-            <div id="hostRec" class="monitorDiv"></div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="应用组资源" name="third" id="appGroupResources">
-        <el-row :gutter="20">
-          <el-col :span="24">
-            <div id="appRec" class="monitorDiv"></div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="CPU使用TOP10" name="fourth" id="appResourcesCpuTopTen">
-        <el-row :gutter="20">
-          <el-col :span="18">
-            <div id="cpuRec" class="monitorDiv"></div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="内存使用TOP10" name="fifth" id="appResourcesMemTopTen">
-        <el-row :gutter="20">
-          <el-col :span="18">
-            <div id="memRec" class="monitorDiv"></div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-    </el-tabs>
--->
-
 
   </section>
 </template>
@@ -128,6 +80,7 @@
         cpuChart: null,
         memoryChart: null,
         hostChart: null,
+        hostMemChart: null,
         appGroupChart: null,
         cpuTopTenChart: null,
         memTopTenChart: null,
@@ -179,7 +132,10 @@
         this.cpuChart = echarts.init(cpuUsage, null, {width: 500, height: 300})
         let option = {
           title: {text: 'CPU 使用率', x: 'center'},
-          tooltip: {},
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {d}%'
+          },
           legend: {
             orient: 'vertical',
             x: 'right',
@@ -192,20 +148,24 @@
               {value: 25, name: '已使用量'},
               {value: 75, name: '未使用量'}
             ]
-          }]
+          }],
+          color: ['#61a0a8', '#d48265']
         }
         if (this.graphInfo && this.graphInfo.platformResource) {
           option.series[0].data = [
-            {value: this.graphInfo.platformResource.cpuUtilizationRate, name: '已使用量'},
-            {value: (1 - this.graphInfo.platformResource.cpuUtilizationRate).toFixed(2), name: '未使用量'}
+            {value: (this.graphInfo.platformResource.cpuUtilizationRate) * 100, name: '已使用量'},
+            {value: (1 - this.graphInfo.platformResource.cpuUtilizationRate) * 100, name: '未使用量'}
           ]
         }
         this.cpuChart.setOption(option)
         let memUsage = document.getElementById('memUsage')
         this.memoryChart = echarts.init(memUsage, null, {width: 500, height: 300})
         let memOption = {
-          title: {text: '内存使用率(GB)', x: 'center'},
-          tooltip: {},
+          title: {text: '内存使用率', x: 'center'},
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
           legend: {
             orient: 'vertical',
             x: 'right',
@@ -218,29 +178,36 @@
               {value: 25, name: '已使用量'},
               {value: 75, name: '未使用量'}
             ]
-          }]
+          }],
+          color: ['#61a0a8', '#d48265']
         }
         if (this.graphInfo && this.graphInfo.platformResource) {
           memOption.series[0].data = [
-            {value: (this.graphInfo.platformResource.memUtilizationRate).toFixed(2), name: '已使用量'},
-            {value: (this.graphInfo.platformResource.memTotal - this.graphInfo.platformResource.memUtilizationRate).toFixed(2), name: '未使用量'}
+            {value: this.graphInfo.platformResource.memUsed, name: '已使用量'},
+            {value: this.graphInfo.platformResource.memTotal - this.graphInfo.platformResource.memUsed, name: '未使用量'}
           ]
         }
         this.memoryChart.setOption(memOption)
       },
       showHost () {
         let hostRec = document.getElementById('hostRec')
-        this.hostChart = echarts.init(hostRec, null, {width: 600, height: 400})
+        this.hostChart = echarts.init(hostRec, null, {width: 500, height: 400})
         let hostOption = {
-          title: {},
-          tooltip: {},
+          title: {text: 'CPU使用情况(核)', x: 'center'},
+          tooltip: {
+            trigger: 'axis'
+          },
           legend: {
             x: 'right',
-            data: ['CPU', '内存']
+            data: ['CPU']
           },
           xAxis: [
             {
               type: 'category',
+              axisLabel: {
+                interval: 0,
+                rotate: 40
+              },
               data: ['192.168.11.11', '192.168.11.12', '192.168.11.13', '192.168.11.14']
             }
           ],
@@ -253,38 +220,75 @@
             name: 'CPU',
             type: 'bar',
             data: [2.0, 4.9, 7.0, 23.2]
-          }, {
-            name: '内存',
-            type: 'bar',
-            data: [2.6, 7.0, 9.5, 28.2]
-          }]
+          }],
+          color: ['#d48265']
         }
         if (this.graphInfo && this.graphInfo.hostResources && Array.isArray(this.graphInfo.hostResources) && this.graphInfo.hostResources.length > 0) {
           let host = this.graphInfo.hostResources
           let hostIp = hostOption.xAxis[0].data = []
           let cpuData = hostOption.series[0].data = []
-          let memData = hostOption.series[1].data = []
           for (let h of host) {
             hostIp.push(h.ip)
-            cpuData.push(h.cpuUtilizationRate)
-            memData.push(h.memUtilizationRate)
+            cpuData.push(h.cpuUsed)
           }
         }
         this.hostChart.setOption(hostOption)
+        let hostMemRec = document.getElementById('hostMemRec')
+        this.hostMemChart = echarts.init(hostMemRec, null, {width: 500, height: 400})
+        let hostMemOption = {
+          title: {text: ' 内存使用情况(GB)', x: 'center'},
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            x: 'right',
+            data: ['内存']
+          },
+          xAxis: [
+            {
+              type: 'category',
+              axisLabel: {
+                interval: 0,
+                rotate: 40
+              },
+              data: ['192.168.11.11', '192.168.11.12', '192.168.11.13', '192.168.11.14']
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [{
+            name: '内存',
+            type: 'bar',
+            data: [2.6, 7.0, 9.5, 28.2]
+          }],
+          color: ['#61a0a8']
+        }
+        if (this.graphInfo && this.graphInfo.hostResources && Array.isArray(this.graphInfo.hostResources) && this.graphInfo.hostResources.length > 0) {
+          let host = this.graphInfo.hostResources
+          let hostIp = hostMemOption.xAxis[0].data = []
+          let memData = hostMemOption.series[0].data = []
+          for (let h of host) {
+            hostIp.push(h.ip)
+            memData.push(h.memUsed)
+          }
+        }
+        this.hostMemChart.setOption(hostMemOption)
       },
       showAppGroup () {
         let appRec = document.getElementById('appRec')
         this.appGroupChart = echarts.init(appRec, null, {width: 900, height: 400})
         let appOption = {
           title: {},
-          tooltip: {},
-          legend: {
-            x: 'center',
-            y: 'bottom',
-            data: ['app1', 'app2', 'app3', 'app4', 'app5']
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
+          legend: {},
           series: [{
-            name: 'CPU使用率',
+            name: 'CPU使用',
             type: 'pie',
             radius: [20, 110],
             center: ['25%', 200],
@@ -293,10 +297,10 @@
             itemStyle: {
               normal: {
                 label: {
-                  show: false
+                  show: true
                 },
                 labelLine: {
-                  show: false
+                  show: true
                 }
               },
               emphasis: {
@@ -316,7 +320,7 @@
               {value: 20, name: 'app5'}
             ]
           }, {
-            name: '内存使用率',
+            name: '内存使用',
             type: 'pie',
             radius: [30, 110],
             center: ['75%', 200],
@@ -334,30 +338,34 @@
         }
         if (this.graphInfo && this.graphInfo.appGroupResources && Array.isArray(this.graphInfo.appGroupResources) && this.graphInfo.appGroupResources.length > 0) {
           let appGroup = this.graphInfo.appGroupResources
-          let legend = appOption.legend.data = []
+ //         let legend = appOption.legend.data = []
           let cpuData = appOption.series[0].data = []
           let memData = appOption.series[1].data = []
           for (let app of appGroup) {
-            legend.push(app.appGroupId)
-            cpuData.push({value: app.cpuUtilizationRate.toFixed(2), name: app.appGroupId})
-            memData.push({value: app.memUtilizationRate, name: app.appGroupId})
+       //     legend.push(app.appGroupId)
+            cpuData.push({value: app.cpuAllocation, name: app.appGroupId})
+            memData.push({value: app.memAllocation, name: app.appGroupId})
           }
         }
         this.appGroupChart.setOption(appOption)
       },
       showCpuTopTen () {
         let cpuRec = document.getElementById('cpuRec')
-        this.cpuTopTenChart = echarts.init(cpuRec, null, {width: 600, height: 400})
+        this.cpuTopTenChart = echarts.init(cpuRec, null, {width: 500, height: 400})
         let cpuTopTenOption = {
-          title: {},
+          title: {text: ' CPU使用情况', x: 'center'},
           tooltip: {},
           legend: {
             x: 'right',
-            data: ['CPU', '内存']
+            data: ['CPU']
           },
           xAxis: [
             {
               type: 'category',
+              axisLabel: {
+                interval: 0,
+                rotate: 40
+              },
               data: ['192.168.11.11', '192.168.11.12', '192.168.11.13', '192.168.11.14']
             }
           ],
@@ -370,38 +378,37 @@
             name: 'CPU',
             type: 'bar',
             data: [2.0, 4.9, 7.0, 23.2]
-          }, {
-            name: '内存',
-            type: 'bar',
-            data: [2.6, 7.0, 9.5, 28.2]
-          }]
+          }],
+          color: ['#d48265']
         }
         if (this.graphInfo && this.graphInfo.appResourcesCpuTopTen && Array.isArray(this.graphInfo.appResourcesCpuTopTen) && this.graphInfo.appResourcesCpuTopTen.length > 0) {
           let cpuTopTen = this.graphInfo.appResourcesCpuTopTen
           let xAxis = cpuTopTenOption.xAxis[0].data = []
           let cpuData = cpuTopTenOption.series[0].data = []
-          let memData = cpuTopTenOption.series[1].data = []
           for (let app of cpuTopTen) {
             xAxis.push(app.appId)
-            cpuData.push(app.cpuUtilizationRate)
-            memData.push(app.memUtilizationRate)
+            cpuData.push(app.cpuAllocation)
           }
         }
         this.cpuTopTenChart.setOption(cpuTopTenOption)
       },
       showMemTopTen () {
         let memRec = document.getElementById('memRec')
-        this.memTopTenChart = echarts.init(memRec, null, {width: 600, height: 400})
+        this.memTopTenChart = echarts.init(memRec, null, {width: 500, height: 400})
         let memTopTenOption = {
-          title: {},
+          title: {text: ' 内存使用情况(GB)', x: 'center'},
           tooltip: {},
           legend: {
             x: 'right',
-            data: ['CPU', '内存']
+            data: ['内存']
           },
           xAxis: [
             {
               type: 'category',
+              axisLabel: {
+                interval: 0,
+                rotate: 40
+              },
               data: ['192.168.11.11', '192.168.11.12', '192.168.11.13', '192.168.11.14']
             }
           ],
@@ -410,25 +417,20 @@
               type: 'value'
             }
           ],
-          series: [ {
-            name: 'CPU',
-            type: 'bar',
-            data: [2.0, 4.9, 7.0, 23.2]
-          }, {
+          series: [{
             name: '内存',
             type: 'bar',
             data: [2.6, 7.0, 9.5, 28.2]
-          }]
+          }],
+          color: ['#61a0a8']
         }
         if (this.graphInfo && this.graphInfo.appResourcesMemTopTen && Array.isArray(this.graphInfo.appResourcesMemTopTen) && this.graphInfo.appResourcesMemTopTen.length > 0) {
           let memTopTen = this.graphInfo.appResourcesMemTopTen
           let xAxis = memTopTenOption.xAxis[0].data = []
-          let cpuData = memTopTenOption.series[0].data = []
-          let memData = memTopTenOption.series[1].data = []
+          let memData = memTopTenOption.series[0].data = []
           for (let app of memTopTen) {
             xAxis.push(app.appId)
-            cpuData.push(app.cpuUtilizationRate)
-            memData.push(app.memUtilizationRate)
+            memData.push(app.memAllocation)
           }
         }
         this.memTopTenChart.setOption(memTopTenOption)
@@ -452,10 +454,11 @@
     color: #475669;
   }
   .monitorDiv {
-    width: 700px;
+    width: 600px;
     height: 450px;
   }
   .platNum {
     margin-left: 10px;
+    font-weight: bold;
   }
 </style>
