@@ -41,13 +41,13 @@
       <span class="fontStyle"><strong>应用组</strong></span>
       <div>
         <el-col :span="24">
-          <div id="appRec" class="monitorDiv"></div>
+          <div id="appRec" class="monitorDiv" style="left: 100px;"></div>
         </el-col>
       </div>
     </el-row>
 
     <el-row :gutter="20" style="background: #E5E9F2; ; border-radius: 15px;">
-      <div style="background: #D3DCE6"><span class="fontStyle"><strong>CPU/内存使用TOP10</strong></span></div>
+      <div style="background: #D3DCE6"><span class="fontStyle"><strong>应用</strong></span></div>
       <div>
         <el-col :span="12">
           <div id="cpuRec" class="monitorDiv"></div>
@@ -136,11 +136,7 @@
             trigger: 'item',
             formatter: '{a} <br/>{b} : {d}%'
           },
-          legend: {
-            orient: 'vertical',
-            x: 'right',
-            data: ['已使用量', '未使用量']
-          },
+          legend: {},
           series: [{
             name: 'cpu使用',
             type: 'pie',
@@ -166,11 +162,7 @@
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
-          legend: {
-            orient: 'vertical',
-            x: 'right',
-            data: ['已使用量', '未使用量']
-          },
+          legend: {},
           series: [{
             name: '内存使用',
             type: 'pie',
@@ -197,10 +189,7 @@
           tooltip: {
             trigger: 'axis'
           },
-          legend: {
-            x: 'right',
-            data: ['CPU']
-          },
+          legend: {},
           xAxis: [
             {
               type: 'category',
@@ -240,10 +229,7 @@
           tooltip: {
             trigger: 'axis'
           },
-          legend: {
-            x: 'right',
-            data: ['内存']
-          },
+          legend: {},
           xAxis: [
             {
               type: 'category',
@@ -279,9 +265,9 @@
       },
       showAppGroup () {
         let appRec = document.getElementById('appRec')
-        this.appGroupChart = echarts.init(appRec, null, {width: 900, height: 400})
+        this.appGroupChart = echarts.init(appRec, null, {width: 1100, height: 450})
         let appOption = {
-          title: {},
+          title: {text: ' 应用组使用情况', x: 'center'},
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -355,10 +341,7 @@
         let cpuTopTenOption = {
           title: {text: ' CPU使用情况', x: 'center'},
           tooltip: {},
-          legend: {
-            x: 'right',
-            data: ['CPU']
-          },
+          legend: {},
           xAxis: [
             {
               type: 'category',
@@ -398,10 +381,7 @@
         let memTopTenOption = {
           title: {text: ' 内存使用情况(GB)', x: 'center'},
           tooltip: {},
-          legend: {
-            x: 'right',
-            data: ['内存']
-          },
+          legend: {},
           xAxis: [
             {
               type: 'category',
