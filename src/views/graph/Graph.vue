@@ -40,8 +40,11 @@
     <el-row :gutter="20">
       <span class="fontStyle"><strong>应用组</strong></span>
       <div>
-        <el-col :span="24">
+        <el-col :span="12">
           <div id="appRec" class="monitorDiv" style="left: 100px;"></div>
+        </el-col>
+        <el-col :span="12">
+          <div id="appMemRec" class="monitorDiv" style="left: 100px;"></div>
         </el-col>
       </div>
     </el-row>
@@ -82,6 +85,7 @@
         hostChart: null,
         hostMemChart: null,
         appGroupChart: null,
+        appGroupMemChart: null,
         cpuTopTenChart: null,
         memTopTenChart: null,
         activeName: 'first'
@@ -107,26 +111,6 @@
       ...mapActions({
         fetchGraph: type.FETCH_GRAPH
       }),
-  /*    handleClick (tab) {
-//        this.closeSse()
-        switch (tab.$el.id) {
-          case 'platformResource' :
-            this.showPlat()
-            break
-          case 'hostResources' :
-            this.showHost()
-            break
-          case 'appGroupResources' :
-            this.showAppGroup()
-            break
-          case 'appResourcesCpuTopTen' :
-            this.showCpuTopTen()
-            break
-          case 'appResourcesMemTopTen' :
-            this.showMemTopTen()
-            break
-        }
-      }, */
       showPlat () {
         let cpuUsage = document.getElementById('cpuUsage')
         this.cpuChart = echarts.init(cpuUsage, null, {width: 500, height: 300})
@@ -265,9 +249,9 @@
       },
       showAppGroup () {
         let appRec = document.getElementById('appRec')
-        this.appGroupChart = echarts.init(appRec, null, {width: 1100, height: 450})
+        this.appGroupChart = echarts.init(appRec, null, {width: 500, height: 400})
         let appOption = {
-          title: {text: ' 应用组使用情况', x: 'center'},
+          title: {text: 'CPU使用情况', x: 'center'},
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -305,14 +289,54 @@
               {value: 23.2, name: 'app4'},
               {value: 20, name: 'app5'}
             ]
-          }, {
+          }]
+        }
+        if (this.graphInfo && this.graphInfo.appGroupResources && Array.isArray(this.graphInfo.appGroupResources) && this.graphInfo.appGroupResources.length > 0) {
+          let appGroup = this.graphInfo.appGroupResources
+ //         let legend = appOption.legend.data = []
+          let cpuData = appOption.series[0].data = []
+  //        let memData = appOption.series[1].data = []
+          for (let app of appGroup) {
+       //     legend.push(app.appGroupId)
+            cpuData.push({value: app.cpuAllocation, name: app.appGroupId})
+       //     memData.push({value: app.memAllocation, name: app.appGroupId})
+          }
+        }
+        this.appGroupChart.setOption(appOption)
+        let appMemRec = document.getElementById('appMemRec')
+        this.appGroupMemChart = echarts.init(appMemRec, null, {width: 500, height: 400})
+        let appMemOption = {
+          title: {text: '内存使用情况', x: 'center'},
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          legend: {},
+          series: [{
             name: '内存使用',
             type: 'pie',
-            radius: [30, 110],
-            center: ['75%', 200],
-            roseType: 'area',
-            x: '60%',               // for funnel
-            sort: 'ascending',     // for funnel
+            radius: [20, 110],
+            center: ['25%', 200],
+            roseType: 'radius',
+            width: '50%',
+            itemStyle: {
+              normal: {
+                label: {
+                  show: true
+                },
+                labelLine: {
+                  show: true
+                }
+              },
+              emphasis: {
+                label: {
+                  show: true
+                },
+                labelLine: {
+                  show: true
+                }
+              }
+            },
             data: [
               {value: 2.6, name: 'app1'},
               {value: 9.5, name: 'app2'},
@@ -324,16 +348,12 @@
         }
         if (this.graphInfo && this.graphInfo.appGroupResources && Array.isArray(this.graphInfo.appGroupResources) && this.graphInfo.appGroupResources.length > 0) {
           let appGroup = this.graphInfo.appGroupResources
- //         let legend = appOption.legend.data = []
-          let cpuData = appOption.series[0].data = []
-          let memData = appOption.series[1].data = []
+          let memData = appMemOption.series[0].data = []
           for (let app of appGroup) {
-       //     legend.push(app.appGroupId)
-            cpuData.push({value: app.cpuAllocation, name: app.appGroupId})
             memData.push({value: app.memAllocation, name: app.appGroupId})
           }
         }
-        this.appGroupChart.setOption(appOption)
+        this.appGroupMemChart.setOption(appMemOption)
       },
       showCpuTopTen () {
         let cpuRec = document.getElementById('cpuRec')
