@@ -2,28 +2,15 @@
   <div>
     <!-- 正常添加或修改模版的表单 -->
     <el-form :model="ruleForm" v-if="!catalogStackCreateForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <div v-if="catalogStackCreate" style="background: #F9FAFC; padding: 10px 0; border-radius: 15px;">
-        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
-          <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
-          {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
-        </el-form-item>
-        <el-form-item label="描述" prop="desc" style="width:800px;">
-          <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
-        </el-form-item>
-      </div>
-      <div v-else>
-        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
-          <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
-          {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
-        </el-form-item>
-        <el-form-item label="描述" prop="desc" style="width:800px;">
-          <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
-        </el-form-item>
-      </div>
+      <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
+        <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
+      </el-form-item>
+      <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
+        {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
+      </el-form-item>
+      <el-form-item label="描述" prop="desc" style="width:800px;">
+        <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
+      </el-form-item>
     <base-form :isEdit='false' :ruleForm="ruleForm">
       <el-form-item label="程序包挂载" prop="procedureMount" style="width: 400px;" slot="mount">
         <el-input v-model="ruleForm.procedureMount" placeholder="容器路径"></el-input>
@@ -32,13 +19,11 @@
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate && isRole">{{updateOrCreate}}</el-button>
       <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">下一步</el-button>
-      <el-button type="primary" @click="cancelForm" v-if="catalogStackCreate">上一步</el-button>
       <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
     </el-form-item>
       </el-form>
 
     <el-form :model="cscForm" v-if="catalogStackCreateForm" :rules="cscFormRules" ref="cscForm" label-width="100px" class="demo-ruleForm">
-      <div style="background: #EFF2F7; padding: 10px 0; border-radius: 15px;">
       <el-form-item label="模版名称" style="width: 400px;" >
         <el-input v-model="ruleForm.name" v-bind:disabled="true" ></el-input>
       </el-form-item>
@@ -48,7 +33,6 @@
       <el-form-item label="描述" style="width:800px;">
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="true" ></el-input>
       </el-form-item><!-- -->
-      </div>
       <el-form-item label="选择应用组" prop="appsGroup"  >
         <el-select v-model="cscForm.appsGroup" v-bind:disabled="cscForm.success" placeholder="请选择应用组" >
           <el-option v-for="item in appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')" :key="item.id"></el-option>
@@ -447,9 +431,6 @@ export default {
     }
   },
   methods: {
-    cancelForm: function () {
-      this.$router.go(-1)
-    },
     resetForm () {
       this.$refs['ruleForm'].resetFields()
     },
@@ -738,11 +719,4 @@ export default {
 </script>
 
 <style lang="css">
-  .line {
-    height:1px;
-    border:none;
-    width: 80%;
-    align: left;
-    border-top:1px dashed  #0066CC;
-  }
 </style>

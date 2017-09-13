@@ -6,9 +6,9 @@
         <el-form-item>
           <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模版</el-button>
         </el-form-item>
-<!--        <el-form-item>
+        <el-form-item>
           <el-button type="primary" v-showBtn="packagePublish" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
     </el-col>
     <!--列表-->
@@ -31,21 +31,8 @@
                 <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
                 <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogUpdate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
                 <!-- 当前不为程序包发布，并且该登录用户有操作此模板的权限 -->
-
-          <el-dropdown>
-            <span class="el-dropdown-link"> <el-button size="mini" style="margin-left: 7px;">更多</el-button></span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
                 <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-button v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-
- <!--               <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
-                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button> -->
+                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
         </template>
       </el-table-column>
     </el-table>

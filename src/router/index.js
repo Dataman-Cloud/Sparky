@@ -55,7 +55,7 @@ export const constantRouterMap = [
     component: Layout,
     name: '首页',
     redirect: {name: '资源概览'},
-    iconCls: 'el-icon-picture', // 图标样式
+    iconCls: 'el-icon-picture', // 图标样式class
     children: [
       {
         path: 'index',
