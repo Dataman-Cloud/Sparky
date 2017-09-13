@@ -261,7 +261,7 @@
             name: 'CPU使用',
             type: 'pie',
             radius: [20, 110],
-            center: ['25%', 200],
+            center: ['50%', 200],
             roseType: 'radius',
             width: '50%',
             itemStyle: {
@@ -316,7 +316,7 @@
             name: '内存使用',
             type: 'pie',
             radius: [20, 110],
-            center: ['25%', 200],
+            center: ['50%', 200],
             roseType: 'radius',
             width: '50%',
             itemStyle: {
