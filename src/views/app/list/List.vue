@@ -289,10 +289,10 @@
 
     <el-dialog
       title="创建应用组"
-      :visible.sync="createAppGroupDialogVisisble"
+      :visible.sync="createAppGroupDialogVisisble" size="tiny"
     >
       <el-form :model="addAppGroupForm" ref="addAppGroupForm" :rules="addAppGroupRule">
-        <el-form-item label="应用名称" prop="id">
+        <el-form-item label="应用组名称" prop="id">
           <el-input v-model="addAppGroupForm.id" @input="checkForm('addAppGroupForm')"></el-input>
         </el-form-item>
       </el-form>
