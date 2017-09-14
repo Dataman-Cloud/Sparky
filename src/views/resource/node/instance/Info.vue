@@ -21,37 +21,43 @@
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="基础信息" name="tab1">
-        <el-form label-position="left" inline class="demo-table-expand">
+        <el-form label-position="right" inline class="demo-table-expand">
           <el-form-item label="镜像名称" v-bind:style="bigLable">
-            <span v-if="instance.Config !== undefined">{{instance.Config.Image }}</span>
+            <span v-if="instance.Config !== undefined"  class="contest">{{instance.Config.Image }}</span>
           </el-form-item>
           <el-form-item label="摘要" v-bind:style="bigLable">
-            <span>{{instance.Image }}</span>
+            <span  class="contest">{{instance.Image }}</span>
+          </el-form-item>
+          <el-form-item label="容器主机名" v-bind:style="bigLable">
+            <span  class="contest">{{instance.Config.Hostname }}</span>
+          </el-form-item>
+          <el-form-item label="网络模式" v-bind:style="bigLable">
+            <span  class="contest">{{instance.HostConfig.NetworkMode }}</span>
           </el-form-item>
           <el-form-item label="hostname 文件" v-bind:style="bigLable">
-            <span>{{instance.HostnamePath }}</span>
+            <span  class="contest">{{instance.HostnamePath }}</span>
           </el-form-item>
           <el-form-item label="hosts 文件" v-bind:style="bigLable">
-            <span>{{instance.HostsPath }}</span>
+            <span  class="contest">{{instance.HostsPath }}</span>
           </el-form-item>
           <el-form-item label="log 文件" v-bind:style="bigLable">
-            <span>{{instance.LogPath }}</span>
+            <span  class="contest">{{instance.LogPath }}</span>
           </el-form-item>
           <el-form-item label="resolv.conf 文件" v-bind:style="bigLable">
-            <span>{{instance.ResolvConfPath }}</span>
+            <span  class="contest">{{instance.ResolvConfPath }}</span>
           </el-form-item>
         </el-form>
 
 
-        <el-col :span="24" class="breadcrumb-container">
-          <strong class="title">环境变量</strong>
-        </el-col>
-        <el-table :data="envarr" highlight-current-row style="width: 100%;">
-          <el-table-column label="key" prop="key" sortable>
-          </el-table-column>
-          <el-table-column prop="value" label="value" sortable>
-          </el-table-column>
-        </el-table>
+        <!--        <el-col :span="24" class="breadcrumb-container">
+                  <strong class="title">环境变量</strong>
+                </el-col>
+                <el-table :data="envarr" highlight-current-row style="width: 100%;">
+                  <el-table-column label="key" prop="key" sortable>
+                  </el-table-column>
+                  <el-table-column prop="value" label="value" sortable>
+                  </el-table-column>
+                </el-table> -->
       </el-tab-pane>
       <el-tab-pane label="容器日志" name="tab2" id="logTab">
         <div id="logdiv">
@@ -420,6 +426,9 @@
 
 
 <style scoped>
+  .contest {
+    margin-left: 40px;
+  }
   .demo-table-expand {
     font-size: 0;
   }

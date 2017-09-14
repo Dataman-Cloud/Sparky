@@ -18,9 +18,9 @@
       <el-form-item label="应用状态" v-bind:style="smallLable">
         <span>{{appInfo.status }}</span>
       </el-form-item>
-<!--      <el-form-item label="访问地址" v-bind:style="smallLable">
-        <span>-</span>
-      </el-form-item> -->
+      <!--      <el-form-item label="访问地址" v-bind:style="smallLable">
+              <span>-</span>
+            </el-form-item> -->
       <br clear="all">
       <el-form-item label="最近更新时间" style="margin-bottom: 20px;">
         <span>{{appInfo.version | moment('YYYY-MM-DD HH:mm:ss') }}</span>
@@ -31,7 +31,7 @@
       <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button>
       <el-button type="primary" @click="dialogVisible = true">扩展</el-button>
       <el-button type="primary" @click="delApp">删除</el-button>
-<!--      <el-button type="primary">更新</el-button> -->
+      <!--      <el-button type="primary">更新</el-button> -->
     </el-form>
 
     <el-tabs v-model="activeName">
@@ -161,10 +161,10 @@
 
       <el-tab-pane label="调试" name="third">
 
-        <el-table :data="lastTaskFailureArr" highlight-current-row border style="width: 100%">
+        <el-table :data="lastTaskFailureArr" highlight-current-row border style="width: 100%;">
           <el-table-column prop="key" label="key" min-width="100" sortable>
           </el-table-column>
-          <el-table-column prop="value" label="value" min-width="400" sortable>
+          <el-table-column prop="value" label="value" min-width="400" min-height="60" show-overflow-tooltip >
           </el-table-column>
         </el-table>
 
@@ -230,7 +230,7 @@
         /*
          import {DEFAULT_BASE_URL} from '@/config'
          download: `DEFAULT_BASE_URL/jborg/file/download/`, // 下载文件的接
-        */
+         */
         download: `${window.location.protocol}//${window.location.host}/jborg/file/download/`, // 下载文件的接
         page: 1, // 默认当前第1页
         pageSize: 10, // 一页显示几条数据
@@ -574,7 +574,7 @@
               if (data.resultCode !== '00') {
                 this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
               } else {
-                  /* -----封装json数据 ----------- */
+                /* -----封装json数据 ----------- */
                 let parJSON = this.versionsInfo
                 parJSON['id'] = parJSON['id'].substring(1, parJSON['id'].length)
                 // 删除version，不删报错
