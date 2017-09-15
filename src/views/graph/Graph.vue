@@ -1,12 +1,12 @@
 ﻿<template>
   <section>
-<!--
-    <el-row class="margin-bottom-20" style="margin-top: 20px;">
-      <el-button type="primary" icon="plus" @click="" size="big">陆家嘴DC</el-button>
-      <el-button type="primary" icon="plus" @click="" size="big">外高桥DC</el-button>
-      <el-button type="primary" icon="plus" @click="" size="big">异地DC</el-button>
-    </el-row>
--->
+    <!--
+        <el-row class="margin-bottom-20" style="margin-top: 20px;">
+          <el-button type="primary" icon="plus" @click="" size="big">陆家嘴DC</el-button>
+          <el-button type="primary" icon="plus" @click="" size="big">外高桥DC</el-button>
+          <el-button type="primary" icon="plus" @click="" size="big">异地DC</el-button>
+        </el-row>
+    -->
 
     <el-row class="margin-bottom-20" style="margin-top: 20px;">
       <span class="platNum">集群： {{graphInfo.platformResource.clusterNum}}</span><span class="platNum">主机数： {{graphInfo.platformResource.hostNum}}</span>
@@ -115,12 +115,17 @@
         let cpuUsage = document.getElementById('cpuUsage')
         this.cpuChart = echarts.init(cpuUsage, null, {width: 500, height: 300})
         let option = {
-          title: {text: 'CPU 使用率', x: 'center'},
+          title: {text: '平台CPU使用率', x: 'center', padding: [0, 0, 20, 0]},
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {d}%'
           },
           legend: {},
+          label: {
+            normal: {
+              formatter: '{b}: ({d}%)'
+            }
+          },
           series: [{
             name: 'cpu使用',
             type: 'pie',
@@ -141,12 +146,17 @@
         let memUsage = document.getElementById('memUsage')
         this.memoryChart = echarts.init(memUsage, null, {width: 500, height: 300})
         let memOption = {
-          title: {text: '内存使用率', x: 'center'},
+          title: {text: '平台内存使用率', x: 'center'},
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
           legend: {},
+          label: {
+            normal: {
+              formatter: '{b}: ({d}%)'
+            }
+          },
           series: [{
             name: '内存使用',
             type: 'pie',
@@ -169,7 +179,7 @@
         let hostRec = document.getElementById('hostRec')
         this.hostChart = echarts.init(hostRec, null, {width: 500, height: 400})
         let hostOption = {
-          title: {text: 'CPU使用情况(核)', x: 'center'},
+          title: {text: 'CPU使用情况', x: 'center'},
           tooltip: {
             trigger: 'axis'
           },
@@ -257,6 +267,11 @@
             formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
           legend: {},
+          label: {
+            normal: {
+              formatter: '{b}: ({d}%)'
+            }
+          },
           series: [{
             name: 'CPU使用',
             type: 'pie',
@@ -293,13 +308,13 @@
         }
         if (this.graphInfo && this.graphInfo.appGroupResources && Array.isArray(this.graphInfo.appGroupResources) && this.graphInfo.appGroupResources.length > 0) {
           let appGroup = this.graphInfo.appGroupResources
- //         let legend = appOption.legend.data = []
+          //         let legend = appOption.legend.data = []
           let cpuData = appOption.series[0].data = []
-  //        let memData = appOption.series[1].data = []
+          //        let memData = appOption.series[1].data = []
           for (let app of appGroup) {
-       //     legend.push(app.appGroupId)
+            //     legend.push(app.appGroupId)
             cpuData.push({value: app.cpuAllocation, name: app.appGroupId})
-       //     memData.push({value: app.memAllocation, name: app.appGroupId})
+            //     memData.push({value: app.memAllocation, name: app.appGroupId})
           }
         }
         this.appGroupChart.setOption(appOption)
@@ -312,6 +327,11 @@
             formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
           legend: {},
+          label: {
+            normal: {
+              formatter: '{b}: ({d}%)'
+            }
+          },
           series: [{
             name: '内存使用',
             type: 'pie',
@@ -357,11 +377,12 @@
       },
       showCpuTopTen () {
         let cpuRec = document.getElementById('cpuRec')
-        this.cpuTopTenChart = echarts.init(cpuRec, null, {width: 500, height: 400})
+        this.cpuTopTenChart = echarts.init(cpuRec, null, {width: 500, height: 450})
         let cpuTopTenOption = {
-          title: {text: ' CPU使用情况', x: 'center'},
+          title: {text: ' CPU使用TOP10', x: 'center'},
           tooltip: {},
           legend: {},
+          grid: {y2: 120},
           xAxis: [
             {
               type: 'category',
@@ -397,11 +418,12 @@
       },
       showMemTopTen () {
         let memRec = document.getElementById('memRec')
-        this.memTopTenChart = echarts.init(memRec, null, {width: 500, height: 400})
+        this.memTopTenChart = echarts.init(memRec, null, {width: 500, height: 450})
         let memTopTenOption = {
-          title: {text: ' 内存使用情况(GB)', x: 'center'},
+          title: {text: ' 内存使用TOP10(GB)', x: 'center'},
           tooltip: {},
           legend: {},
+          grid: {y2: 120},
           xAxis: [
             {
               type: 'category',
@@ -455,7 +477,7 @@
   }
   .monitorDiv {
     width: 600px;
-    height: 450px;
+    height: 500px;
   }
   .platNum {
     margin-left: 10px;
