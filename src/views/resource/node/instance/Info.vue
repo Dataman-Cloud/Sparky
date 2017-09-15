@@ -178,25 +178,25 @@
       },
       showLog (tab) {
         let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
-        this.currsse = api.nodeInstanceLogs(param)
-        // this.currsse = api.nodeInstanceLogsWS(param)
+        // this.currsse = api.nodeInstanceLogs(param)
+        this.currsse = api.nodeInstanceLogsWS(param)
         this.currsse.onopen = function (event) {
           console.log('连接成功')
         }
-        this.currsse.addEventListener('container-logs', function (event) {
-          let logdiv = document.getElementById("logdiv")
-          let p = document.createElement("p")
-          p.innerHTML = event.data
-          logdiv.appendChild(p)
-          logdiv.scrollTop = logdiv.scrollHeight - 350
-        }, false)
-//        this.currsse.onmessage = function (event) {
+//        this.currsse.addEventListener('container-logs', function (event) {
 //          let logdiv = document.getElementById("logdiv")
 //          let p = document.createElement("p")
 //          p.innerHTML = event.data
 //          logdiv.appendChild(p)
 //          logdiv.scrollTop = logdiv.scrollHeight - 350
-//        }
+//        }, false)
+        this.currsse.onmessage = function (event) {
+          let logdiv = document.getElementById("logdiv")
+          let p = document.createElement("p")
+          p.innerHTML = event.data
+          logdiv.appendChild(p)
+          logdiv.scrollTop = logdiv.scrollHeight - 350
+        }
         this.currsse.onerror = function (event) {
           console.log('连接失败')
         }
