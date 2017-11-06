@@ -10,11 +10,14 @@
              class="bodybar">
       <el-form-item label="用户名" prop="userName" :rules="[
           { required: true, message: '请输入用户名', trigger: 'blur' },
+          {pattern: /^[A-Za-z0-9]+$/, message: '用户名只能包含字母和数字', trigger: 'blur'},
           {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
         <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input>
       </el-form-item>
 
-      <el-form-item label="姓名" prop="name" :rules="[{required: true, message: '请输入姓名', trigger: 'blur'}]">
+      <el-form-item label="姓名" prop="name" :rules="[
+        {required: true, message: '请输入姓名', trigger: 'blur'},
+        {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '名称只能包含字母、数字和中文字符', trigger: 'blur'}]">
         <el-input v-model="formName.name" placeholder="请输入姓名"></el-input>
       </el-form-item>
 
@@ -30,18 +33,24 @@
       <el-form-item label="确认密码" prop="chkpwd">
         <el-input type="password" v-model="formName.chkpwd" placeholder="请确认密码"></el-input>
       </el-form-item>
-      <!--
-      <el-form-item label="超级管理员">
-        <el-col :span="8">
-          <el-checkbox v-model="checked">备选项</el-checkbox>
+
+            <el-form-item label="用户角色" prop="roleId" :rules="[
+                { required: true, message: ''}]">
+              <el-col :span="18">
+                <el-radio-group v-model="formName.roleId" v-for="(item, index) in UserRoles" :key="index">
+                    <el-radio :label="item.id" style="padding-right: 5px;">{{item.name}}</el-radio>
+                <!--  <el-radio :label="1">管理员</el-radio>
+                  <el-radio :label="2">成员</el-radio>
+                  <el-radio :label="3">游客</el-radio> -->
+          </el-radio-group>
         </el-col>
       </el-form-item>
-      -->
+
       <el-form-item label="用户描述" prop="title">
         <el-input type="textarea" v-model="formName.title" autosize placeholder="请输入内容">
         </el-input>
       </el-form-item>
-      <el-form-item label="添加用户组">
+<!--      <el-form-item label="添加用户组">
         <el-button type="primary" icon="plus" @click="addGroups" size="mini" class="sub-title">添加组</el-button>
       </el-form-item>
       <el-form-item v-for="(group, index) in formName.accountGroups" :title="group" :key="index">
@@ -60,11 +69,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-<!--
+&lt;!&ndash;
         <el-select v-model="group.role" placeholder="组中角色" style="margin-left: 30px;" v-if="group.groupId === 1">
           <el-option label="超级管理员" value="superuser"></el-option>
         </el-select>
-        -->
+        &ndash;&gt;
         <el-form-item label="组角色" label-width="50" class="addGroup"
                       :key="group.index"
                       :prop="'accountGroups.' + index + '.role'"
@@ -79,7 +88,7 @@
           </el-select>
         </el-form-item>
         <el-button type="text" @click="delGroup('group')">删除</el-button>
-      </el-form-item>
+      </el-form-item>-->
       <div class="btn">
         <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">创建</el-button>
         <el-button @click="cancelForm">取消</el-button>
@@ -93,6 +102,7 @@
 <script>
   import {mapState, mapActions} from 'vuex'
   import * as type from '../../../store/user/mutations_types'
+  import * as roleType from '../../../store/roles/mutations_types'
   import { Notification } from 'element-ui'
 
   export default {
@@ -123,6 +133,7 @@
           email: '',
           password: '',
           chkpwd: '',
+          roleId: 1,
           accountGroups: [{
             groupId: '',
             role: ''
@@ -138,8 +149,8 @@
           ]
         },
         beDisabled: true,
-        labelPosition: 'left',
-        checked: false
+        labelPosition: 'left'
+     //   radio: '2'
       }
     },
     computed: {
@@ -152,12 +163,19 @@
         },
         group_optionsTotal1 (state) {
           return state.user.groups.total
+        },
+        UserRoles (state) {
+          return state.roles.roles.roles
+        },
+        UserRolesTotal (state) {
+          return state.roles.roles.total
         }
       })
     },
     methods: {
       ...mapActions({
-        fetchGroups: type.FETCH_GROUPS
+        fetchGroups: type.FETCH_GROUPS,
+        fetchRoles: roleType.FETCH_ROLES
       }),
       cancelForm: function () {
         this.$router.push({path: '/system/user/list'})
@@ -216,6 +234,7 @@
     },
     mounted () {
       this.fetchGroups()
+      this.fetchRoles()
     }
   }
 </script>

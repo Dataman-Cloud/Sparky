@@ -4,17 +4,29 @@
     <el-row>
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters" ref="test">
+<!--
+          <span><strong>选择marathon:</strong></span>
+          <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading">
+            <el-option
+              v-for="item in marathonList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+-->
+
           <el-form-item>
-            <el-input v-model="filters.name" placeholder="应用名称"></el-input>
+            <el-input v-model="filters.name" placeholder="应用名称" icon="search"></el-input>
           </el-form-item>
           <el-form-item>
             <router-link to="../list/catalogStackList">
-              <el-button type="primary"  v-showBtn="addPackage">添加程序包</el-button>
+              <el-button type="primary"  v-showBtn="addPackage">程序包发布</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>
             <router-link to="../addImg">
-              <el-button type="primary" v-showBtn="addAPP">添加应用</el-button>
+              <el-button type="primary" v-showBtn="addAPP">镜像发布</el-button>
             </router-link>
           </el-form-item>
           <el-form-item>
@@ -31,6 +43,7 @@
       <el-col :span="4">操作</el-col>
     </el-row>
     <el-collapse accordion v-model="activeSelfGroup">
+     <!-- <div v-if="activeSelfGroup"> -->
       <el-collapse-item v-for="item in appgroups" :key="item.id" :name="item.id">
         <template slot="title">
           <el-row style="float: right;width:95%">
@@ -45,36 +58,36 @@
           </el-row>
         </template>
         <el-table :data="item.apps" v-loading="false" style="width: 100%;" v-if="item.apps.length > 0">
-          <el-table-column prop="id" label="名称" min-width="200" sortable>
+          <el-table-column prop="id" label="名称" min-width="220" sortable>
             <template scope="app">
-              <router-link :to="{name: '应用实例信息', query:{id : app.row.id}}">{{app.row.id | getName}}</router-link>
+              <router-link :to="{name: '应用实例信息', params: parseId(app.row.id)}">{{app.row.id | getName}}</router-link>
             </template>
           </el-table-column>
-          <el-table-column label="所属" width="150" prop="owner">
+          <el-table-column label="所属" min-width="150" prop="owner">
           </el-table-column>
 
           <!--add by 2017年8月2日-->
-          <el-table-column label="CPU" width="80" prop="cpus">
+          <el-table-column label="CPU" min-width="120" prop="cpus" sortable>
           </el-table-column>
-          <el-table-column label="内存" width="80" prop="mem">
+          <el-table-column label="内存" min-width="170" prop="mem" sortable>
           </el-table-column>
 
-          <el-table-column label="当前状态" width="130" prop="status">
+          <el-table-column label="当前状态" min-width="150" prop="status">
           </el-table-column>
-          <el-table-column prop="vclusterName" label="集群" min-width="100" sortable>
+<!--          <el-table-column prop="vclusterName" label="集群" min-width="200">
+          </el-table-column> -->
+          <el-table-column prop="instances" label="实例" min-width="120" sortable>
           </el-table-column>
-          <el-table-column prop="instances" label="实例" min-width="80" sortable>
-          </el-table-column>
-          <el-table-column label="健康状态" min-width="130" sortable>
+          <el-table-column label="健康状态" min-width="200">
             <template scope="test3">
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">
                   <span>
                     数量：{{test3.row.healthy}}  状态:healthy<br/>
                   </span>
-                  <span>
+                <!--  <span>
                     数量：{{test3.row.running}}  状态:running<br/>
-                  </span>
+                  </span> -->
                   <span>
                     数量：{{test3.row.staged}}  状态:staged<br/>
                   </span>
@@ -104,7 +117,7 @@
           </el-table-column>
           <el-table-column label="版本" min-width="250" prop="version" sortable>
           </el-table-column>
-          <el-table-column label="操作" min-width="180">
+          <el-table-column label="操作" min-width="250">
             <template scope="scope">
               <el-button type="warning" v-showBtn="stopApp" size="mini" @click="stop(scope.row.id)">停止</el-button>
               <el-dropdown>
@@ -125,16 +138,16 @@
 
                   </el-dropdown-item>
                   <el-dropdown-item>
-                    <el-button v-showBtn="changeAppOwner" @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
+                   <!-- <el-button v-showBtn="changeAppOwner" @click="showEdit(scope.row.labels.USER_ID,scope.row)" type="info" size="mini"
                                style="width: 60px;">
                       更新用户
-                    </el-button>
+                    </el-button> -->
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
 
               <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
-                <el-button v-showBtn="updatePackage" type="info" size="small" @click="packageEdit(scope.row)">程序包更新</el-button>
+                <el-button v-showBtn="updatePackage" type="info" size="mini" @click="packageEdit(scope.row)">程序包更新</el-button>
               </span>
 
             </template>
@@ -149,13 +162,15 @@
         <!--</el-pagination>-->
         <!--</el-col>-->
       </el-collapse-item>
+     <!-- </div> -->
+    <!--  <div v-else style="text-align: center;">暂无数据</div> -->
     </el-collapse>
 
     <el-dialog
       title="扩展"
       size="tiny"
-      :visible.sync="dialogVisible"
-      :before-close="handleClose">
+      :visible.sync="dialogVisible">
+      <!-- :before-close="handleClose"> -->
       <el-input-number v-model="instances" size="small" :min="0" :step="1"></el-input-number>
       <span slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取 消</el-button>
@@ -163,18 +178,27 @@
   </span>
     </el-dialog>
 
-    <el-dialog
+    <el-dialog size="tiny"
       title="创建应用组"
       :visible.sync="createAppGroupDialogVisisble"
     >
       <el-form :model="addAppGroupForm" ref="addAppGroupForm" :rules="addAppGroupRule">
-        <el-form-item label="应用名称" prop="id">
+        <el-select v-model="addAppGroupForm.groupCreateListVal" placeholder="请选择应用组">
+          <el-option
+            v-for="item in groupCreateList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+
+<!--       <el-form-item label="应用组名称" prop="id">
           <el-input v-model="addAppGroupForm.id" @input="checkForm('addAppGroupForm')"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
               <el-button @click="createAppGroupDialogVisisble = false">取 消</el-button>
-    <el-button type="primary" :disabled="createable" @click="createAppGroup()">确 定</el-button>
+    <el-button type="primary" @click="createAppGroup(addAppGroupForm)">确 定</el-button>
   </span>
     </el-dialog>
 
@@ -247,21 +271,38 @@
     },
     data () {
       return {
+        options: [{
+          value: 'marathon-1',
+          label: 'marathon-1'
+        }, {
+          value: 'marathon-app',
+          label: 'marathon-app'
+        }, {
+          value: 'marathon-wx',
+          label: 'marathon-wx'
+        }],
+        value: '',
+        fullscreenLoading: false,
+        groupCreateListVal: '',
+        marathonVal: '',
         filters: {
           name: ''
         },
         addAppGroupForm: {
-          id: null
+          id: null,
+          groupCreateListVal: ''
         },
         addAppGroupRule: {
           id: [
             {required: true, message: '应用组名称不可为空', trigger: 'input'},
             { max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
-            {pattern: /^[a-z0-9-]+$/, message: '应用id只能包含小写字母、数字及中划线', trigger: 'input'}
+            {pattern: /^[a-z0-9-]+$/, message: '应用组名称只能包含小写字母、数字及中划线', trigger: 'input'}
           ]
         },
         rules: {
-          PACKAGE_VERSION: [{ required: true, message: '版本不能为空', trigger: 'blur' }]
+          PACKAGE_VERSION: [{ required: true, message: '版本不能为空', trigger: 'blur' },
+            { max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
+            {pattern: /^[A-Za-z0-9\\.]+$/, message: '版本只能包含字母、数字和小数点', trigger: 'blur'}]
         },
         p_form: {
           PACKAGE_VERSION: '',
@@ -269,11 +310,11 @@
         },
         dialog_packageEdit: false,
 //        uploadFileAction: 'http://localhost:8088/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
-        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', //  上传的文件路径
         uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
         uploadFile: false, // 是否立即上传
         IsShowUploadAddButton: false,
-        createable: true,
+     //  createable: true,
         dialogVisible: false,
         editDialogVisible: false,
         createAppGroupDialogVisisble: false,
@@ -286,6 +327,16 @@
         listLoading: false,
         prefix: LABEL_PREFIX,
         interval: null
+      }
+    },
+    watch: {
+      marathonVal (curval, oldval) {
+//        console.log(88888888888)
+        window.localStorage.setItem('marathonName', curval)
+        this.fullscreenLoading = true
+        setTimeout(() => {
+          this.fullscreenLoading = false
+        }, 500)
       }
     },
     computed: {
@@ -307,6 +358,12 @@
         }
       },
       ...mapState({
+/*        marathonList (state) {
+          return state.appgroups.marathonNameVoList
+        }, */
+        groupCreateList (state) {
+          return state.appgroups.groupCreateList
+        },
         curGroupId (state) {
           return state.user.aboutme.currentGroupID
         },
@@ -392,11 +449,12 @@
     methods: {
       update (formName) {
         this.$refs[formName].validate((valid) => {
-          if (valid) {
+          if (valid && this.$refs.upload.uploadFiles && this.$refs.upload.uploadFiles.length > 0) {
             // 提交文件上传
             this.$refs.upload.submit()
+          } else if (valid) {
+            this.$message.error('请选择文件')
           }
-          this.dialog_packageEdit = false
         })
       },
       packageEdit (para) {
@@ -570,7 +628,7 @@
           'aid': window.btoa(aid),
           'params': {'instances': 0}
         }).then((data) => {
-          this.showResult(data, '停止应用成功!', '停止应用出错')
+          this.showResult(data, '停止应用中', '停止应用出错')
         })
       },
       showExtend (appId, instances) {
@@ -583,7 +641,7 @@
           'aid': window.btoa(this.currentId),
           'params': {'instances': this.instances}
         }).then((data) => {
-          this.showResult(data, '扩展应用成功!', '扩展应用出错',
+          this.showResult(data, '扩展应用中', '扩展应用出错',
             () => {
               this.listLoading = true
               this.listApp()
@@ -637,10 +695,12 @@
         this.addAppGroupForm.id = null
         this.createAppGroupDialogVisisble = true
       },
-      createAppGroup () {
+      createAppGroup (parm) {
+        console.log(JSON.stringify(parm.groupCreateListVal))
+        let groupCreateId = parm.groupCreateListVal
         let topThis = this
-        this.$store.dispatch(appgroupTypes.ADD_APPGROUP, {'id': this.addAppGroupForm.id}).then((data) => {
-          topThis.showResult(data, '创建应用组成功', '创建应用组出错', () => {
+        this.$store.dispatch(appgroupTypes.ADD_APPGROUP, {'id': groupCreateId}).then((data) => {
+          topThis.showResult(data, '创建应用组成功', '创建应用组失败', () => {
             this.listApp()
             this.createAppGroupDialogVisisble = false
           })
@@ -685,11 +745,20 @@
             type: 'error'
           })
         }
+      },
+      parseId (id) {
+        if (id) {
+          let params = id.split('/')
+          return {
+            group: params[1],
+            name: params[2]
+          }
+        }
       }
     },
     mounted () {
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
-        this.interval = setInterval(this.listApp, 50000)
+        this.interval = setInterval(this.listApp, 5000)
         this.listApp()
       })
     },
@@ -744,7 +813,7 @@
 
   .progress .unknown {
     height: 100%;
-    background-color: #929599;
+    background-color: #2a2c30;
   }
 
   .progress .staged {
@@ -759,7 +828,7 @@
 
   .progress .unscheduled {
     height: 100%;
-    background-color: #2a2c30;
+    background-color: #929599;
   }
 
   .input-number-fix {

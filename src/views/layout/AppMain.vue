@@ -21,7 +21,6 @@ export default {
 
 <style lang="css" scoped>
 .content-wrapper {
-  background-color: #fff;
   box-sizing: border-box;
 }
 </style>

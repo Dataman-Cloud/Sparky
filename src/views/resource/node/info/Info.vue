@@ -197,11 +197,17 @@
       delImage (iamge) {
         let param = {nodeIp: this.$route.query.nodeIp, imageId: iamge.imageId}
         // console.log(param)
-        return this.$store.dispatch(type.DEL_NODE_IMAGE, param).then(() => {
-          this.$message({
-            message: '删除成功',
-            type: 'success',
-            onClose: this.getNodeImages
+        this.$confirm('此操作将永久删除该镜像信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          return this.$store.dispatch(type.DEL_NODE_IMAGE, param).then(() => {
+            this.$message({
+              message: '删除中',
+              type: 'success',
+              onClose: this.getNodeImages
+            })
           })
         })
       }

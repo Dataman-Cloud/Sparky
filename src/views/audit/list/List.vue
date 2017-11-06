@@ -1,9 +1,9 @@
 <template>
   <section>
     <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;background:#fff;box-shadow:0 0 20px rgba(0,0,0,.06)">
       <el-form ref="selectForm" :model="selectForm" label-width="80px">
-      <el-form-item prop="" style="margin-left: -85px;" >
+      <el-form-item prop="" style="margin-left: -85px;padding-left:10px" >
         <el-select @change="targettypesGetOptions" v-model="selectForm.targettypes" placeholder="对象类型" style="width: 110px" >
           <el-option v-for="item in getTargettypes" :label="item.key"  :value="item.value" :key="item.value"></el-option>
         </el-select>
@@ -19,6 +19,7 @@
           type="datetimerange"
           :picker-options="pickerOptions2"
           placeholder="选择时间范围"
+          :editable="editable"
           align="right" >
         </el-date-picker>
         <el-input placeholder="请求信息（关键字）" v-model="selectForm.rquest" style="width: 150px"></el-input>
@@ -61,24 +62,25 @@
           </el-row>
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="操作时间" min-width="65" sortable>
+      <el-table-column prop="createdAt" label="操作时间"  min-width="65" sortable>
         <template scope="props">
           {{props.row.createdAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
-      <el-table-column prop="operation" label="对象类型" width="130" sortable :formatter="getOperationChinese" >
+      <el-table-column prop="operation" label="对象类型"  min-width="55" sortable :formatter="getOperationChinese" >
       </el-table-column>
-      <el-table-column prop="objectType" label="操作类型" width="150" sortable :formatter="getobjectTypeChinese">
+      <el-table-column prop="objectType" label="操作类型" sortable :formatter="getobjectTypeChinese" min-width="85" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="operator" label="操作人" min-width="70" sortable>
+      <el-table-column prop="operator" label="操作人" min-width="65" sortable>
       </el-table-column>
-      <el-table-column prop="resultMessage.message" label="请求结果" min-width="70" sortable show-overflow-tooltip>
+      <el-table-column prop="resultMessage.message" label="请求结果" min-width="85" show-overflow-tooltip>
       </el-table-column>
     </el-table>
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-button type="success" v-showBtn="exportAudits" @click="download">导出当页数据</el-button>
+      <el-button type="success" v-showBtn="exportAudits" @click="download('')">导出当页数据</el-button>&nbsp;
+      <el-button type="success" v-showBtn="exportAudits" @click="download('all')">导出全部数据</el-button>
       <el-pagination :current-page.sync="currentPage" layout="prev, pager, next" @size-change="sizeChange" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
                      style="float:right;">
       </el-pagination>
@@ -127,6 +129,14 @@
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
               picker.$emit('pick', [start, end])
             }
+          }, {
+            text: '最近30天',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
           }]
         },
         selectForm: {
@@ -142,6 +152,7 @@
           page: 1, // 当前第几页数据
           size: 10// 每页多少条
         },
+        editable: false,
         page: 1, // 默认当前第1页
         pageSize: 10, // 一页显示几条数据
         currentPage: 1, // 每次点击查询按钮都从此页数开始查，默认从第1页开始
@@ -240,9 +251,9 @@
       filterAudits: function () {
         // console.log(this.apps.slice((this.page - 1) * this.pageSize, this.page * this.pageSize))
         // 从已有数组中返回元素
-        console.log('------------------------------------------llllllllllllllllllllllll')
+/*        console.log('------------------------------------------llllllllllllllllllllllll')
         console.log(this.total)
-        console.log(this.getAudit)
+        console.log(this.getAudit) */
         /*
         if (this.getAudit.length !== 0) {
           return this.getAudit.audits.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
@@ -287,12 +298,16 @@
       sizeChange (val) {
         alert(val)
       },
-      submitPar () {
+      submitPar (parm) {
         let par = ``
         // 当前页数和每页数量
         this.selectForm.size = this.pageSize
         this.selectForm.page = this.page
-        par += `size=${this.selectForm.size}&page=${this.selectForm.page}`
+        if (parm === 'all') {
+          par += `size=${this.total}&page=${this.selectForm.page}`
+        } else {
+          par += `size=${this.selectForm.size}&page=${this.selectForm.page}`
+        }
 
         // 时间范围转换
         if (this.selectForm.timeExtent.length !== 0) {
@@ -334,14 +349,23 @@
           }
         })
       },
-      download () {
-        // 设置默认时间范围为前一周
+      download (parm) {
+        if (this.getAudit.length < 1) {
+          this.$message.error('无数据')
+          return false
+        }
+        //  设置默认时间范围为前一周
         const end = new Date()
         const start = new Date()
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
         this.selectForm.timeExtent = [start, end]
         // 发起请求
-        let url = window.location.protocol + `/jborg/audits/exportExcel?${this.submitPar()}`
+        let url = window.location.protocol
+        if (parm === 'all') {
+          url += `/jborg/audits/exportExcel?${this.submitPar('all')}`
+        } else {
+          url += `/jborg/audits/exportExcel?${this.submitPar('')}`
+        }
         let $a = document.createElement('a')
         $a.target = '_blank'
         $a.href = url
@@ -354,7 +378,7 @@
 //        this.$store.dispatch(auditType.FETCH_AUDIT_DOWNLOAD, {param: this.submitPar()})
 //          .then(data => {
 //            this.downloadFile('112', data)
-//          })
+//         })
       },
       queryErrorMsg (data, msg) {
         if (data.resultCode !== '00') {

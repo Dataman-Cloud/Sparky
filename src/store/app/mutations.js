@@ -33,5 +33,12 @@ export default {
   },
   [type.FETCH_APP_VERSION_INFO] (state, payload) {
     state.apps.appVersionInfo = payload
+  },
+  // 根据appid获取ACL规则
+  [type.GET_APPACL_BY_APPID] (state, payload) {
+    // let parm = JSON.parse(payload)
+    // console.log(111)
+    // console.log(payload)
+    state.appAcl = payload
   }
 }

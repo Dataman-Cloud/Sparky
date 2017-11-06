@@ -1,10 +1,8 @@
 <template>
-  <header style="background-color: rgb(32, 160, 255);">
-    <div class="logo logo-width">
-      {{sysName}}
-    </div>
+  <header>
+    <div class="logo logo-width"><img src="../../assets/pufa.png" alt=""></div>
     <div class="header-operations">
-      <el-select v-model="selectGroup" placeholder="请选择" class="groupsInfo" @change="switchGroup">
+<!--      <el-select v-model="selectGroup" placeholder="请选择" class="groupsInfo" @change="switchGroup">
         <el-option
           v-for="item in myGroups"
           :label="item.group.name"
@@ -13,9 +11,20 @@
           <span style="float: left">{{ item.group.name }}</span>
           <span v-if="item.role.role !== 'superuser'" style="float: right; color: #8492a6; font-size: 13px">{{ item.role.role }}</span>
         </el-option>
-      </el-select>
+      </el-select> -->
+
+     <!-- <span><strong>选择marathon:</strong></span> -->
+      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading">
+        <el-option
+          v-for="item in marathonList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select> &nbsp;
+
       <el-dropdown trigger="hover" class="userinfo">
-        <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}</span>
+        <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}<i class="el-icon-caret-bottom" style="margin-left:10px;font-size:12px"></i></span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
@@ -30,32 +39,51 @@ import * as user from 'api/user'
 import * as userType from 'store/user/mutations_types'
 import * as appType from 'store/app/mutations_types'
 import store from 'store'
-import router from 'router'
+import * as appgroupTypes from 'store/appgroups/mutations_types'
+// import router from 'router'
 
 export default {
   data () {
     return {
-      sysName: 'DM/OS',
-      selectGroup: this.$store.state.user.aboutme.currentGroupId
+      fullscreenLoading: false,
+      marathonVal: 'marathon-app-172.30.131.25:6080',
+      sysName: 'DM/OS'
+//      selectGroup: this.$store.state.user.aboutme.currentGroupId
+    }
+  },
+  watch: {
+    marathonVal (curval, oldval) {
+//      console.log(88888888888)
+      window.localStorage.setItem('marathonName', curval)
+      this.fullscreenLoading = true
+      setTimeout(() => {
+        this.fullscreenLoading = false
+      }, 1000)
+      this.$router.push({ name: '我的应用' })
     }
   },
   methods: {
-    //  退出登录
+    // 退出登录
     logout: function () {
-      let toLogin = () => router.replace({
+      /*      let toLogin = () => router.replace({
         name: 'Login',
         query: {redirect: router.currentRoute.fullPath}
-      })
+      }) */
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
           location.reload()
         })
       }).catch(() => {
-        toLogin()
+        //   toLogin()
+      })
+    },
+    listApp () {
+      this.$store.dispatch(appType.FETCH_QUEUE).then(() => {
+        this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
       })
     },
     switchGroup () {
-      let { dispatch } = store
+      let {dispatch} = store
       user.switchGroup(this.selectGroup)
         .then(data => {
           dispatch(userType.PUT_SYSRESOURCES, data.sysResources).then(() =>
@@ -74,6 +102,9 @@ export default {
   },
   computed: {
     ...mapState({
+      marathonList (state) {
+        return state.appgroups.marathonNameVoList
+      },
       aboutMe (state) {
         return state.user.aboutme
       },
@@ -81,6 +112,9 @@ export default {
         return state.user.aboutme.accountGroups || []
       }
     })
+  },
+  mounted () {
+    this.listApp()
   }
 }
 </script>
@@ -102,13 +136,16 @@ header {
   }
 
   .header-operations {
+    width: calc(100% - 261px);
+    line-height: 48px;
     margin: 0;
     display: inline-block;
     float: right;
     padding-right: 30px;
     height: 100%;
-    align-items: center;
-    display: flex;
+    text-align: right;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
 
   .groupsInfo {
@@ -120,7 +157,8 @@ header {
 
     .userinfo-inner {
       cursor: pointer;
-      color: #fff;
+      color: #343838;
+      font-size: 20px;
 
       img {
         width: 40px;
@@ -134,18 +172,16 @@ header {
   }
   .logo {
     height: 48px;
-    line-height: 48px;
     font-size: 22px;
     border-right-width: 1px;
     border-right-style: solid;
     display: inline-block;
-    text-align: center;
     border-color: white;
-
+    background: #1b2d3e;
     img {
-      width: 40px;
-      float: left;
-      margin: 10px 10px 10px 18px;
+      width: 150px;
+      display: block;
+      margin: 5px auto;
     }
 
     .txt {

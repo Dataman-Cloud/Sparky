@@ -16,13 +16,14 @@
           <el-form-item label="描述" prop="title" >
             <span v-model="formName.title" style="margin: 0 40px;">{{user.title}}</span>
           </el-form-item>
-          <el-form-item label="组名 / 用户角色" prop="accountGroups" style="background: #D3DCE6;">
-            <div v-for="group in user.accountGroups" style="margin: 0 40px;">
+          <el-form-item label="组名 / 用户角色" prop="roleName" style="background: #D3DCE6;">
+            <span v-model="formName.roleName" style="margin: 0 40px;">{{user.roleName}}</span>
+          <!--  <div v-for="group in user.accountGroups" style="margin: 0 40px;">
               <div v-if="group.role === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span></div>
               <div v-else-if="group.role === 'owner'">{{group.group.name}} <span style=" font-style:italic;">普通管理员</span></div>
               <div v-else-if="group.role === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span></div>
               <div v-else></div>
-            </div>
+            </div> -->
           </el-form-item>
         </el-form>
       </el-tab-pane>

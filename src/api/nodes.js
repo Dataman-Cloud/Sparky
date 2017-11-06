@@ -1,10 +1,10 @@
 /* eslint-disable no-multiple-empty-lines */
 import axios from './http'
 import store from 'store'
-
+export const CONSULMARATHONSERVICENAME = ''
 // 获取所有的主机
 export function listNodes () {
-  return axios.get('/jborg/nodes/')
+  return axios.get(`/jborg/nodes/?consulMarathonServiceName=${CONSULMARATHONSERVICENAME}`)
 }
 
 // 获取资源统计信息

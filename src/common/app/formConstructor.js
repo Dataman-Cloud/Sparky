@@ -1,6 +1,7 @@
 import Image from '@/common/model/Image'
 import Container from '@/common/model/Container'
 import Docker from '@/common/model/Docker'
+import Labels from '@/common/model/Labels'
 
 function ruleForm () {
   return {
@@ -9,10 +10,13 @@ function ruleForm () {
     force: false,
     base: undefined,
     baseOption: [],
-    vcluster: undefined,
-    master: undefined,
+    vcluster: 'default_cluster',
+    master: [],
     group: undefined,
     network: 'BRIDGE',
+    NEED_HAPROXY: false, // HAPORXY
+    CURRENT_VERSION: '', // 程序包版本
+    PACKAGE_TYPE: undefined, // 程序包发布包类型
     cpus: 0,
     memory: 0,
     hardDrive: 0,
@@ -45,7 +49,8 @@ function resultForm () {
     undefined,
     [],
     undefined,
-    undefined
+    undefined,
+    new Labels(false)
   )
 }
 
@@ -58,7 +63,8 @@ function modelForm () {
     force: false,
     base: '',
     vcluster: undefined,
-    master: undefined,
+    master: [],
+    NEED_HAPROXY: false,
     network: 'BRIDGE',
     cpus: 0,
     memory: 0,

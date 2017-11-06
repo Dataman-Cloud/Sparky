@@ -9,7 +9,7 @@ import * as Terminal from 'xterm'
 // import * as Fit from 'xterm/dist/addons/fit.js'
 // import {DEFAULT_BASE_URL} from '@/config'
 import 'xterm/dist/xterm.css'
-import store from 'store'
+// import store from 'store'
 
 export default {
   props: {
@@ -26,22 +26,14 @@ export default {
   methods: {
     buildUrl (params) {
       // let domain = DEFAULT_BASE_URL.replace(/http/, 'ws')
-      let domain = 'ws://192.168.199.22:5015'
-      let uri = 'v1/nodes/$node_ip/instances/$instance_id/terminal'
-      let url = domain + '/' + uri
-      if (params) {
-        for (let key in params) {
-          if (params.hasOwnProperty(key)) {
-            url = url.replace('$' + key, params[key])
-          }
-        }
-      }
+      let uri = 'jborg/terminal?ws_nodeip=' + this.nodeIp + '&ws_cid=' + this.instanceId
+      let url = 'ws://' + window.location.host + '/' + uri
       this.url = url
     },
     openWebSocket () {
       let terminalContainer = document.getElementById('terminal')
-      let token = store.getters.token
-      this.ws = new WebSocket(`${this.url}?Authorization=${token}`)
+      // let token = store.getters.token
+      this.ws = new WebSocket(`${this.url}`) //  ?Authorization=${token}
       let autoReconnect = -1
       let wsError
       let pingTimer
@@ -58,10 +50,12 @@ export default {
         if (typeof term !== 'undefined') {
           term.destroy()
         }
+        Terminal.loadAddon('fit')
         term = new Terminal({cursorBlink: true})
         term.on('resize', (size) => {
+          console.log(size)
           if (this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send('2' + JSON.stringify({columns: size.cols, rows: size.rows}))
+            this.ws.send(JSON.stringify({type: 'TERMINAL_RESIZE', columns: size.cols, rows: size.rows})) // 2
           }
           setTimeout(() => {
             term.showOverlay(size.cols + 'x' + size.rows)
@@ -69,10 +63,17 @@ export default {
         })
         term.on('data', (data) => {
           if (this.ws.readyState === WebSocket.OPEN) {
-            this.ws.send('0' + data)
+            let parma = {type: 'TERMINAL_COMMAND', command: data}
+            this.ws.send(JSON.stringify(parma))
           }
         })
         term.on('open', () => {
+          console.log('term open')
+          let param = {type: 'TERMINAL_INIT'}
+          this.ws.send(JSON.stringify(param))
+          param = {type: 'TERMINAL_READY'}
+          this.ws.send(JSON.stringify(param))
+
           window.addEventListener('resize', () => {
             clearTimeout(window.resizedFinished)
             window.resizedFinished = setTimeout(() => {
@@ -90,28 +91,10 @@ export default {
       }
 
       this.ws.onmessage = (event) => {
-        var data = event.data.slice(1)
-        switch (event.data[0]) {
-          case '0':
-            term.write(window.atob(data))
-            break
-          case '1':
-            // pong
-            break
-          case '2':
-            document.title = data
-            break
-          case '3':
-            let preferences = JSON.parse(data)
-            Object.keys(preferences).forEach((key) => {
-              console.log('Setting ' + key + ': ' + preferences[key])
-              term.setOption(key, preferences[key])
-            })
-            break
-          case '4':
-            autoReconnect = JSON.parse(data)
-            console.log('Enabling reconnect: ' + autoReconnect + ' seconds')
-            break
+        let data = JSON.parse(event.data)
+        switch (data.type) {
+          case 'TERMINAL_PRINT':
+            term.write(data.text)
         }
       }
       this.ws.onclose = (event) => {
@@ -158,6 +141,9 @@ export default {
 
 <style scoped>
 .terminal-parent {
-  height: 300px;
+  height: 600px;
+}
+#terminal{
+  height: 600px;
 }
 </style>

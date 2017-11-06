@@ -21,3 +21,7 @@ export const FETCH_APP_VERSION_INFO = 'FETCH_APP_VERSION_INFO'
 
 // add by likai
 export const GET_FILTER_APPS = 'GET_FILTER_APPS'
+
+export const GET_APPACL_BY_APPID = 'GET_APPACL_BY_APPID'
+export const UPDATE_APPACL = 'UPDATE_APPACL'
+export const DEL_APPACL = 'DEL_APPACL'

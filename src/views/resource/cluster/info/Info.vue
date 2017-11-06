@@ -72,7 +72,7 @@
     <el-dialog
       title="添加主机"
       :visible.sync="dialogVisible"
-      size="small">
+      size="mini">
       <el-transfer v-model="checkNodeIps" :data="availableNodes" :titles="titles"></el-transfer>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -112,16 +112,16 @@
     methods: {
       getInfo () {
         console.log(this.$route.query.clusterId)
-        return this.$store.dispatch(type.CLUSTER_INFO, this.$route.query.clusterId)
+        this.$store.dispatch(type.CLUSTER_INFO, this.$route.query.clusterId)
       },
       delNode (index, node) {
         let params = {method: 'del', nodeIps: [node.hostName], vClusterId: this.cluster.id}
-        // console.log(params)
+        console.log(params)
         this.$confirm(`是否删除${node.hostName}`, '提示', {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 确定后请求删除接口
-          this.fullscreenLoading = true
+      //    this.fullscreenLoading = true
           this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
             this.fullscreenLoading = false
             if (data.resultCode === '00') {
@@ -133,7 +133,8 @@
             } else {
               this.$message({
                 message: data.message,
-                type: 'error'
+                type: 'error',
+                onClose: this.getInfo()
               })
             }
           })
@@ -180,7 +181,7 @@
           return
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.cluster.id}
-        this.fullscreenLoading = true
+  //      this.fullscreenLoading = true
         this.$store.dispatch(type.CHANGE_CLUSTER_NODE, params).then((data) => {
           this.fullscreenLoading = false
           this.dialogVisible = false
@@ -193,7 +194,8 @@
           } else {
             this.$message({
               message: data.message,
-              type: 'error'
+              type: 'error',
+              onClose: this.getInfo()
             })
           }
         })
@@ -203,12 +205,12 @@
       }
     },
     mounted () {
-      this.interval = setInterval(this.getInfo, 3000)
+  //    this.interval = setInterval(this.getInfo, 3000)
       this.getInfo()
-    },
-    beforeDestroy: function () {
-      clearInterval(this.interval)
     }
+/*    beforeDestroy: function () {
+      clearInterval(this.interval)
+    } */
   }
 </script>
 

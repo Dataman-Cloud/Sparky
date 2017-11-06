@@ -2,7 +2,8 @@
 <section>
   <el-form :label-position="labelPosition" :model="formName" label-width="85px" ref="formName" class="bodybar">
     <el-form-item label="姓名" prop="name" :rules="[{required: true, message: '请输入姓名', trigger: 'blur'},
-          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
+          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
+          {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '名称只能包含字母、数字和中文字符', trigger: 'blur'}]">
       <el-input v-model="formName.name"></el-input>
     </el-form-item>
 
@@ -10,6 +11,14 @@
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }]">
       <el-input v-model="formName.email"></el-input>
+    </el-form-item>
+
+    <el-form-item label="用户角色" prop="roleId" required>
+      <el-col :span="18">
+        <el-radio-group v-model="formName.roleId" v-for="(item, index) in UserRoles" :key="index">
+          <el-radio :label="item.id" style="padding-right: 5px;">{{item.name}}</el-radio>
+        </el-radio-group>
+      </el-col>
     </el-form-item>
 
     <el-form-item label="用户描述" prop="title">
@@ -27,8 +36,9 @@
 </template>
 
 <script>
-//  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import * as type from '../../../store/user/mutations_types'
+  import * as roleType from '../../../store/roles/mutations_types'
 
   export default {
     data () {
@@ -37,26 +47,35 @@
           name: this.$route.query.user.name,
           email: this.$route.query.user.email,
           desc: this.$route.query.user.title,
+          roleId: 1,
           id: this.$route.query.user.id
         },
         labelPosition: 'left'
       }
     },
     computed: {
-//      ...mapState({
-//        userinfo (state) {
-//          return state.user.userinfo
-//        }
-//      })
+      ...mapState({
+        UserRoles (state) {
+          return state.roles.roles.roles
+        },
+        UserRolesTotal (state) {
+          return state.roles.roles.total
+        },
+        roleId (state) {
+          return state.roles.roleId
+        }
+      })
     },
     methods: {
+      ...mapActions({
+        fetchRoles: roleType.FETCH_ROLES
+      }),
       cancelForm: function () {
         this.$router.push({path: '/system/user/list'})
       },
       submitForm: function (user) {
         this.$refs.formName.validate((valid) => {
           if (valid) {
-            console.log(JSON.stringify(user))
 //           this.$route.query.user = this.formName.user
 //            this.$route.query.user.email = this.formName.email
 //            this.$route.query.user.desc = this.formName.desc
@@ -71,14 +90,16 @@
             return false
           }
         })
+      },
+      roleInfo: function () {
+        this.$store.dispatch(roleType.FETCH_ROLEID_BY_USERID, this.$route.query.user.id).then((data) => {
+          this.formName.roleId = data.data
+        })
       }
-//      userinfo () {
-//        console.log(this.$route.query.user.userId)
-//        return this.$store.dispatch(type.USER_INFO, this.$route.query.user.userId)
-//      }
     },
     mounted () {
-
+      this.fetchRoles()
+      this.roleInfo()
     }
   }
 </script>

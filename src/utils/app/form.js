@@ -12,14 +12,32 @@ function transformFormToJson (normalForm, jsonForm) {
   jsonForm.mem = normalForm.memory
   jsonForm.disk = normalForm.hardDrive
   jsonForm.instances = normalForm.dockerNum
+  // add by 2017-10-19
+  jsonForm.labels = {}
+/*  if (normalForm.HAPROXY_PROTOCOL_TYPE) {
+    jsonForm.labels.HAPROXY_PROTOCOL_TYPE = normalForm.HAPROXY_PROTOCOL_TYPE // !== undefined ? normalForm.HAPROXY_PROTOCOL_TYPE : {}
+  } */
+  // jsonForm.labels.NEED_HAPROXY = normalForm.NEED_HAPROXY
+  if (normalForm.NEED_HAPROXY) {
+    jsonForm.labels.NEED_HAPROXY = 'true'
+  } else {
+    jsonForm.labels.NEED_HAPROXY = 'false'
+  }
+  if (normalForm.CURRENT_VERSION) {
+    jsonForm.labels.CURRENT_VERSION = normalForm.CURRENT_VERSION
+  }
+  if (normalForm.PACKAGE_TYPE) {
+    jsonForm.labels.PACKAGE_TYPE = normalForm.PACKAGE_TYPE
+  }
   if (normalForm.vcluster) {
     constraints.push(['vcluster', 'LIKE', normalForm.vcluster])
   }
   if (normalForm.dockerProportion) {
     constraints.push(['hostname', 'UNIQUE'])
   }
-  if (normalForm.master) {
-    constraints.push(['hostname', 'LIKE', normalForm.master])
+  if (normalForm.master && normalForm.master.length > 0) {
+    let host = normalForm.master.toString()
+    constraints.push(['hostname', 'LIKE', host.replace(/,/g, '|')])
   }
   if (normalForm.image != null) {
     docker.image = normalForm.image
@@ -73,14 +91,28 @@ function transformJsonToForm (appModel, normalForm) {
   normalForm.disk = appModel.disk // 硬盘
   normalForm.dockerNum = appModel.instances // 容器个数
   for (let constraint of appModel.constraints) {
-    if (constraint[0].toUpperCase() === 'UNIQUE') {
+    if (constraint[1].toUpperCase() === 'UNIQUE') {
       normalForm.dockerProportion = true
       normalForm.dockerProportionDefault = true
     } else if (constraint[0].toUpperCase() === 'HOSTNAME') {
-      normalForm.master = constraint[2]
+      if (constraint[2] !== undefined) {
+        let hosts = constraint[2].split('|')
+        for (var host of hosts) {
+          normalForm.master.push(host)
+        }
+      }
     }
   }
-  normalForm.f5Pool = appModel.env['F5_POOL_NAME']// F5 Pool 名称
+  normalForm.f5Pool = appModel.env['F5_POOL_NAME'] // F5 Pool 名称
+  normalForm.CURRENT_VERSION = appModel.labels['CURRENT_VERSION'] // 程序包版本
+  if (appModel.labels['NEED_HAPROXY'] === 'true') {
+    normalForm.NEED_HAPROXY = true
+  }
+  if (appModel.labels['NEED_HAPROXY'] === 'false') {
+    normalForm.NEED_HAPROXY = false
+  }
+  // normalForm.NEED_HAPROXY = appModel.labels['NEED_HAPROXY'] === 'true'// HAPROXY
+  normalForm.PACKAGE_TYPE = appModel.labels['PACKAGE_TYPE'] // 程序包发布包类型
   normalForm.procedureMount = appModel.labels['PACKAGE_VOLUME']// 程序包挂载点
   normalForm.cmd = appModel.cmd // CMD命令
   //  自定义端口号

@@ -8,10 +8,10 @@
                          :value="item.appId"></el-option>
           </el-select>
         </el-form-item>
-      <el-form-item label="告警规则" required>
+      <el-form-item label="告警规则" required style="display: inline;">
           <el-col :span="6">
             <el-form-item  prop="type">
-              <el-select v-model="ruleForm.type">
+              <el-select v-model="ruleForm.type" @change="onTypeChange">
                 <el-option label="响应时间" value="响应时间"></el-option>
                 <el-option label="F5连接数" value="F5连接数"></el-option>
                 <el-option label="CPU使用量" value="CPU使用量"></el-option>
@@ -19,7 +19,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-        <el-col class="line" :span="1"></el-col>
+       <!-- <el-col class="line" :span="1"></el-col> -->
           <el-col :span="6">
             <el-form-item prop="operator">
               <el-select v-model="ruleForm.operator" >
@@ -28,13 +28,17 @@
               </el-select>
             </el-form-item>
           </el-col>
-        <el-col class="line" :span="1"></el-col>
+       <!-- <el-col class="line" :span="1"></el-col> -->
           <el-col :span="6">
             <el-form-item  prop="setValue">
               <el-input v-model="ruleForm.setValue" placeholder="设置值" ></el-input>
             </el-form-item>
+
           </el-col>
-      </el-form-item>
+        <el-col :span="1">
+          {{this.setValueUnit}}
+        </el-col>
+      </el-form-item> <br />
       <el-form-item  label="请求路径" prop="requesturi" v-if="ruleForm.type === '响应时间'">
         <el-input v-model="ruleForm.requesturi" placeholder="请求路径http://"></el-input>
       </el-form-item>
@@ -78,8 +82,8 @@
         <el-input v-model="ruleForm.id"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">{{this.updateOrCreate}}</el-button>
         <el-button @click="onCancel">取消</el-button>
+        <el-button type="primary" @click="onSubmit">{{this.updateOrCreate}}</el-button>
       </el-form-item>
     </el-form>
   </section>
@@ -93,6 +97,7 @@
     data () {
       return {
         updateOrCreate: '立即创建',
+        setValueUnit: '',
         ruleForm: {
           id: '',
           app_id: '',
@@ -103,7 +108,7 @@
           monitor_cycle: '',
           threshold: '',
           status: false,
-          action: '',
+          action: 1,
           min_instance: 1,
           max_instance: 1,
           step: 1,
@@ -250,6 +255,23 @@
       },
       onCancel () {
         this.$router.push({path: '/elastic/list/policies'})
+      },
+      onTypeChange (type) {
+        if (type) {
+          let unit = ''
+          if (type === '响应时间') {
+            unit = 's'
+          } else if (type === 'F5连接数') {
+            unit = '个'
+          } else if (type === 'CPU使用量') {
+            unit = '核'
+          } else if (type === '容器已用内存') {
+            unit = 'MB'
+          }
+          this.setValueUnit = unit
+        } else {
+          this.setValueUnit = ''
+        }
       }
     }
   }

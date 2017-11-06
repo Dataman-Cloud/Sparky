@@ -28,8 +28,8 @@
       <br clear="all">
 
       <el-button type="primary" @click="stopApp">停止</el-button>
-      <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button>
-      <el-button type="primary" @click="dialogVisible = true">扩展</el-button>
+     <!-- <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button> -->
+      <el-button type="primary" @click="extendDialogVisible">扩展</el-button>
       <el-button type="primary" @click="delApp">删除</el-button>
 <!--      <el-button type="primary">更新</el-button> -->
     </el-form>
@@ -40,8 +40,8 @@
 
         <el-col :span="24" v-bind:style="{marginBottom:'10px'}">
           <el-button type="primary" v-on:click="init">刷新</el-button>
-          <el-button type="primary" v-show="selectIds.length" v-on:click="kill">KILL&RESTART</el-button>
-          <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">KILL&CANCEL</el-button>
+          <el-button type="primary" v-show="selectIds.length" v-on:click="kill">重启实例</el-button>
+          <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">删除实例</el-button>
         </el-col>
 
         <el-table :data="tasks" highlight-current-row border ref="multipleTable" style="width: 100%"
@@ -60,26 +60,26 @@
           </el-table-column>
           <el-table-column prop="host" label="IP" min-width="150" sortable>
           </el-table-column>
-          <el-table-column prop="ports" label="端口" min-width="100" sortable>
+          <el-table-column prop="ports" label="端口" min-width="130" sortable>
           </el-table-column>
-          <el-table-column prop="taskHealth" label="健康" min-width="100" sortable>
+          <el-table-column prop="taskHealth" label="健康" min-width="130" sortable>
           </el-table-column>
-          <el-table-column prop="taskStatus" label="状态" min-width="100" sortable>
+          <el-table-column prop="taskStatus" label="状态" min-width="130" sortable>
           </el-table-column>
-          <el-table-column prop="version" label="版本" min-width="200" sortable>
+          <el-table-column prop="stagedAt" label="版本" min-width="250" sortable>
             <template scope="scope">
-              {{scope.row.version | moment('YYYY-MM-DD HH:mm:ss')}}
+              {{scope.row.stagedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
           </el-table-column>
-          <el-table-column prop="startedAt" label="更新时间" min-width="200" sortable>
+          <el-table-column prop="startedAt" label="更新时间" min-width="220" sortable>
             <template scope="scope">
               {{scope.row.startedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
           </el-table-column>
-          <el-table-column label="日志" min-width="150" sortable>
+          <el-table-column label="日志" min-width="180" sortable>
             <template scope="scope">
-              <a :href="getStderr(scope.row.id)" target="_blank">stderr</a>
-              <a :href="getStdout(scope.row.id)" target="_blank">stdout</a>
+              <a :href="getStderr(scope.row.id)" target="_blank"><el-button size="mini">stderr</el-button></a> &nbsp;
+              <a :href="getStdout(scope.row.id)" target="_blank"><el-button size="mini">stdout</el-button></a>
             </template>
           </el-table-column>
 
@@ -98,7 +98,8 @@
               <span slot="title">{{version === appInfo.version ? '当前版本' : version}}</span>
               <template slot="action">
                 <el-button type="primary" icon="edit" size="mini" @click="versionAppUpdate(version)">编辑</el-button>
-                <el-button type="primary" icon="caret-right" size="mini" @click="versionDeployment(version)">部署</el-button>
+                <el-button type="primary" icon="caret-right" size="mini" @click="versionDeployment(version)"
+                           v-if="version !== appInfo.version">部署</el-button>
               </template>
               <!-- v-if="version === appInfo.version"  -->
               <template slot="content">
@@ -130,9 +131,9 @@
                   <el-form-item label="映射端口">
                     <span v-if="versionAPPInfo.labels !== undefined">{{versionAPPInfo.labels.BORG_FRONTEND_MAP_PORT }}</span>
                   </el-form-item>
-                  <el-form-item label="仓库认证">
+            <!--      <el-form-item label="仓库认证">
                     <span>{{versionAPPInfo.uris }}</span>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="环境变量">
                     <span>{{versionAPPInfo.envJson }}</span>
                   </el-form-item>
@@ -161,17 +162,67 @@
 
       <el-tab-pane label="调试" name="third">
 
-        <el-table :data="lastTaskFailureArr" highlight-current-row border style="width: 100%">
-          <el-table-column prop="key" label="key" min-width="100" sortable>
+        <el-table :data="lastTaskFailureArr" highlight-current-row border style="width: 100%;">
+          <el-table-column prop="key" min-width="300"  label="Last Task Failure">
           </el-table-column>
-          <el-table-column prop="value" label="value" min-width="400" sortable>
+          <el-table-column prop="value" min-width="1400" show-overflow-tooltip >
           </el-table-column>
         </el-table>
 
       </el-tab-pane>
 
+      <el-tab-pane label="转发规则" name="forth">
+        <div style="margin-bottom: 20px;">
+          <el-button type="primary" size="small" @click="bambooBtn">查看bamboo</el-button>
+        <!--  <span style="margin-left: 20px;">{{bamboo}}</span> -->
+        </div>
+        <el-table :data="httpType" highlight-current-row border ref="multipleTable" style="width: 100%">
+            <el-table-column prop="Id" label="Id" min-width="600" >
+            </el-table-column>
+            <el-table-column prop="Acl" label="Acl" min-width="600">
+              <template scope="scope">
+                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" min-width="450" sortable>
+              <template scope="scope">
+                <el-button size="mini" @click="editAppRule(scope.row)">编辑</el-button> &nbsp;
+
+                <el-button size="mini" @click="delAppAcl(scope.row)" v-show="scope.row.Acl">删除</el-button>
+              </template>
+            </el-table-column>
+        </el-table>
+        <!--<el-col :span="24" class="toolbar">
+          <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
+                         style="float:right;">
+          </el-pagination>
+        </el-col>-->
+      </el-tab-pane>
+
     </el-tabs>
 
+    <el-dialog title="修改规则" :visible.sync="dialog_editAppRule" size="tiny">
+      <el-form :model="appForm" ref="appForm">
+        <el-form-item label="AppID" prop="Id">
+          <el-input v-model="appForm.Id" v-bind:disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="Acl" prop="Acl" :rules="[
+          { required: true, message: '请添加ACL规则', trigger: 'blur'}]">
+<!--          <el-input v-model="appForm.Acl"  required></el-input> -->
+          <el-input placeholder="请输入Acl规则" v-model="appForm.Acl">
+            <template slot="prepend">path_beg -i </template>
+          </el-input>
+        </el-form-item>
+        <span>ACL 规则示例 <br/>
+              路径前缀：path_beg -i /app-group/app1 (不能仅为/)</span>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog_editAppRule = false">取 消</el-button>
+        <el-button type="primary" @click="updateAcl(appForm)">确 定</el-button>
+      </div>
+
+    </el-dialog>
 
     <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
       <el-select v-model="userId" placeholder="请选择所属用户">
@@ -184,7 +235,7 @@
     </el-dialog>
 
     <el-dialog title="扩展" :visible.sync="dialogVisible" size="tiny">
-      <el-input-number v-model="instancesNum" size="small" :min="0" :step="1"></el-input-number>
+      <el-input-number v-model="instancesNums" size="small" :min="0" :step="1"></el-input-number>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="extend()">确 定</el-button>
@@ -209,6 +260,10 @@
     },
     data () {
       return {
+        appForm: {
+          Id: '',
+          Acl: null
+        },
         smallLable: {
           width: '30%'
         },
@@ -226,6 +281,8 @@
           margin: '0px',
           lineHeight: '18px'
         },
+        dialog_editAppRule: false,
+        bamboo: '',
         activeName: 'first',
         /*
          import {DEFAULT_BASE_URL} from '@/config'
@@ -243,8 +300,10 @@
         userId: null,
         editDialogVisible: false,
         instancesNum: 0,
+        instancesNums: 0,
         dialogVisible: false,
-        versionAPPInfo: undefined
+        versionAPPInfo: undefined,
+        appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
       }
     },
     computed: {
@@ -264,9 +323,27 @@
           this.versionAPPInfo = appinfo
           return appinfo
         },
+        httpType (state) {
+          let httpTypes = []
+         /* if (this.appInfo.labels.HAPROXY_PROTOCOL_TYPE !== 'https') {
+            return httpTypes
+          } */
+//          let json = state.app.appAcl
+          let value = JSON.parse(state.app.appAcl.data)
+          value.Acl = value.Acl.substring(12, value.Acl.length)
+          httpTypes.push(value)
+          return httpTypes
+        },
+        getBamboo (state) {
+          return state.app.appAcl.bamboo
+        },
         tasks (state) {
           let arr = state.app.apps.currApp.tasks || []
-          // console.log(arr.length)
+//          console.log(11111111111)
+//          console.log(JSON.stringify(state.app.apps.currApp))
+          this.healthy = 0
+          this.unhealthy = 0
+          this.unknown = 0
           for (let task of arr) {
             let taskStatus = this.getTaskStatus(task)
             task.taskStatus = taskStatus
@@ -299,7 +376,8 @@
           return state.user.users.users
         },
         total (state) {
-          // 获取元素个数
+          //  获取元素个数
+      //    console.log(state.app.apps.currContainers)
           return Object.getOwnPropertyNames(state.app.apps.currContainers).length - 1
         },
         versionsInfo (state) {
@@ -308,23 +386,89 @@
       })
     },
     methods: {
+      bambooBtn () {
+        this.bamboo = this.getBamboo
+        let $a = document.createElement('a')
+        $a.target = '_blank'
+        $a.href = this.getBamboo
+        let evt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false
+        })
+        $a.dispatchEvent(evt)
+      },
+      extendDialogVisible () {
+        this.instancesNums = this.instancesNum
+        this.dialogVisible = true
+      },
+      delAppAcl (parm) {
+        let aid = parm.Id
+        this.$confirm('是否删除此应用的Acl?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$store.dispatch(type.DEL_APPACL, window.btoa(aid)).then((data) => {
+            if (data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.activeName = 'first'
+            } else {
+              Notification({
+                title: '删除出错',
+                message: JSON.stringify(data.message),
+                type: 'error'
+              })
+            }
+          })
+        })
+      },
+      updateAcl (parm) {
+        var pattern = /^\/*$/
+        var pattern1 = /^(\/){2,}\w+$/
+        if (parm.Acl === '/' || pattern.test(parm.Acl) || pattern1.test(parm.Acl)) {
+          return false
+        } else {
+          this.$refs.appForm.validate((valid) => {
+            if (valid) {
+              this.$store.dispatch(type.UPDATE_APPACL, {Id: parm.Id, Acl: 'path_beg -i ' + parm.Acl}).then(() => {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success'
+                })
+                this.dialog_editAppRule = false
+                this.getAppAcl()
+                this.activeName = 'first'
+              })
+            }
+          })
+        }
+      },
+      editAppRule (para) {
+        this.dialog_editAppRule = true
+        this.appForm.Id = para.Id
+        this.appForm.Acl = para.Acl
+      },
+      getAppAcl () {
+        return this.$store.dispatch(type.GET_APPACL_BY_APPID, this.appIdEncoded)
+      },
       handleCurrentChange (val) {
         this.page = val
       },
       getAppInfo () {
-        let aid = window.btoa(this.$route.query.id)
-        return this.$store.dispatch(type.FETCH_APP_INFO, aid)
+        return this.$store.dispatch(type.FETCH_APP_INFO, this.appIdEncoded)
       },
       getQueue () {
         return this.$store.dispatch(type.FETCH_QUEUE)
       },
       getAppVersions () {
-        let aid = window.btoa(this.$route.query.id)
-        return this.$store.dispatch(type.FETCH_APP_VERSIONS, aid)
+        return this.$store.dispatch(type.FETCH_APP_VERSIONS, this.appIdEncoded)
       },
       getAppContainers () {
-        let aid = window.btoa(this.$route.query.id)
-        return this.$store.dispatch(type.FETCH_APP_CONTAINERS, aid)
+        return this.$store.dispatch(type.FETCH_APP_CONTAINERS, this.appIdEncoded)
       },
       getInstanceId (taskId) {
 //        console.log('*********************containers=' + this.containers.length + ':::::::::::::::::' + JSON.stringify(this.containers))
@@ -420,6 +564,15 @@
             break
         }
       },
+      aclLink (parm) {
+        let url = ''
+        if (parm.Acl.startsWith('/')) {
+          url = 'http://' + this.getBamboo + parm.Acl
+        } else {
+          url = 'http://' + this.getBamboo + '/' + parm.Acl
+        }
+        return url
+      },
       getIPAddr (para) {
         let ip = para.host
         let port = para.ports
@@ -455,13 +608,13 @@
 //      },
       kill () {
         let param = {ids: this.selectIds}
-        this.$confirm('是否确认kill选中的实例?', '提示', {
+        this.$confirm('是否确认重启选中的实例?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$store.dispatch(type.KILL_TASK, param).then(() => {
-            this.$message({message: 'kill success', type: 'success'})
+            this.$message({message: '重启中', type: 'success'})
             this.init()
           })
         }).catch(() => {
@@ -470,13 +623,13 @@
       },
       killCancel () {
         let param = {ids: this.selectIds}
-        this.$confirm('是否确认kill选中的实例并scale应用?', '提示', {
+        this.$confirm('是否确认删除选中的实例?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$store.dispatch(type.KILL_TASK_SCALE, param).then(() => {
-            this.$message({message: 'kill success', type: 'success'})
+            this.$message({message: '删除中', type: 'success'})
             this.init()
           })
         }).catch(() => {
@@ -511,7 +664,7 @@
       },
       extend () {
         let myMessage = this.$message
-        let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': this.instancesNum}}
+        let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': this.instancesNums}}
         this.$store.dispatch(type.UPDATE_APP, param).then((data) => {
           if (data.resultCode === '00') {
             myMessage({type: 'success', message: '扩展成功!'})
@@ -541,7 +694,11 @@
         this.getAppInfo()
         this.getAppContainers()
         this.getQueue()
-//        this.initSelect()
+        this.getAppAcl()
+//        if (this.appInfo.labels.HAPROXY_PROTOCOL_TYPE === 'https') {
+//          this.getAppAcl()
+//        }
+//       this.initSelect()
       },
       // 根据版本查询应用信息
       expandList (index) {
@@ -566,40 +723,46 @@
       },
       // 根据版本部署应用
       versionDeployment (version) {
-        // 对比当前的版本信息
-        if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
-          // 查询该版本的应用信息
-          this.$store.dispatch(type.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.appInfo.id), 'vid': window.btoa(version)})
-            .then((data) => {
-              if (data.resultCode !== '00') {
-                this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
-              } else {
-                  /* -----封装json数据 ----------- */
-                let parJSON = this.versionsInfo
-                parJSON['id'] = parJSON['id'].substring(1, parJSON['id'].length)
-                // 删除version，不删报错
-                delete (parJSON['version'])
-                this.$store.dispatch(appTypes.UPDATE_APP, {
-                  'aid': window.btoa(this.versionAPPInfo.id),
-                  'params': parJSON
-                }).then(data => {
-                  console.log('***************************返回结果' + JSON.stringify(data))
-                  if (data.resultCode === '00') {
-                    this.$message({
-                      type: 'success',
-                      message: '部署应用成功!'
-                    })
-                  } else {
-                    Notification({
-                      title: '部署应用出错',
-                      message: JSON.stringify(data.message),
-                      type: 'error'
-                    })
-                  }
-                })
-              }
-            })
-        }
+        this.$confirm(`是否部署此版本?`, '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+        }).then(() => {
+          // 对比当前的版本信息
+          if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
+            // 查询该版本的应用信息
+            this.$store.dispatch(type.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.appInfo.id), 'vid': window.btoa(version)})
+              .then((data) => {
+                if (data.resultCode !== '00') {
+                  this.$message({type: 'error', message: '查询该版本应用信息失败!', onClose: this.goAppList})
+                } else {
+                  /!* -----封装json数据 ----------- *!/
+                  let parJSON = this.versionsInfo
+                  parJSON['id'] = parJSON['id'].substring(1, parJSON['id'].length)
+                  // 删除version，不删报错
+                  delete (parJSON['version'])
+                  this.$store.dispatch(appTypes.UPDATE_APP, {
+                    'aid': window.btoa(this.versionAPPInfo.id),
+                    'params': parJSON
+                  }).then(data => {
+                    //        console.log('***************************返回结果' + JSON.stringify(data))
+                    if (data.resultCode === '00') {
+                      this.$message({
+                        type: 'success',
+                        message: '部署应用成功!'
+                        //  onClose: this.activeName = 'first'
+                      })
+                      this.activeName = 'first'
+                    } else {
+                      Notification({
+                        title: '部署应用出错',
+                        message: JSON.stringify(data.message),
+                        type: 'error'
+                      })
+                    }
+                  })
+                }
+              })
+          }
+        })
       },
       versionAppUpdate (version) {
         this.$router.push({path: '/app/versionAppUpdate', query: {'aid': this.appInfo.id, 'vid': version}})
@@ -609,7 +772,7 @@
       this.init()
       this.getAppVersions()
       this.getUsers()
-//      this.interval = setInterval(() => this.init(), 30000)
+      this.interval = setInterval(() => this.init(), 5000)
     },
     beforeDestroy: function () {
       clearInterval(this.interval)

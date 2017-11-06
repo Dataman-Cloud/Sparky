@@ -7,6 +7,8 @@ import mutations from './mutations'
 const state = {
   arr: [],
   unversion: [],
+  marathonNameVoList: [],
+  groupCreateList: [],
   total: 0,
   selfGroups: []
 }

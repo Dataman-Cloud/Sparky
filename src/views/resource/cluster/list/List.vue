@@ -29,9 +29,9 @@
         </el-table-column>
         <el-table-column prop="groupName" label="组名称" min-width="100" sortable>
         </el-table-column>
-        <el-table-column prop="updatedAt" label="更新时间" min-width="100" sortable>
+        <el-table-column prop="createAt" label="创建时间" min-width="100" sortable>
           <template scope="cluster">
-            {{cluster.row.updatedAt | moment("YYYY/MM/DD hh:mm:ss")}}
+            {{cluster.row.createdAt | moment("YYYY/MM/DD hh:mm:ss")}}
           </template>
         </el-table-column>
         <el-table-column prop="" label="操作" min-width="200" sortable>
@@ -47,7 +47,7 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total"
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="15" :total="total"
                      style="float:right;">
       </el-pagination>
     </el-col>
@@ -56,7 +56,7 @@
     <el-dialog
       title="添加主机"
       :visible.sync="dialogVisible"
-      size="small"
+      size="mini"
       :before-close="handleClose">
       <el-transfer v-model="checkNodeIps" :data="availableNodes" :titles="titles"></el-transfer>
       <span slot="footer" class="dialog-footer">
@@ -107,7 +107,7 @@
               return reg.test(cluster.vClusterLabel)
             })
           }
-          return this.clusters.slice((this.page - 1) * 20, this.page * 20)
+          return this.clusters.slice((this.page - 1) * 15, this.page * 15)
         }
         return null
       }

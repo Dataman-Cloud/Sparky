@@ -30,6 +30,7 @@
     top: 0px;
     bottom: 0px;
     width: 100%;
+    background-color: #f6f7fc;
   }
 
   .el-submenu [class^=fa] {
@@ -43,7 +44,7 @@
   }
 
   .toolbar {
-    background: #f2f2f2;
+    background: #f0f2f9;
     padding: 10px;
     //border:1px solid #dfe6ec;
     margin: 10px 0px;

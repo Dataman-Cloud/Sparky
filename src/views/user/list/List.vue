@@ -17,47 +17,55 @@
 
     <!--列表-->
     <el-table :data="filterUsers" highlight-current-row v-loading="listLoading" style="width: 100%;">
-      <el-table-column prop="userName" label="用户名" min-width="100" sortable>
+      <el-table-column prop="userName" label="用户名" min-width="80" sortable>
       </el-table-column>
       <el-table-column prop="name" label="姓名" min-width="100" sortable>
       </el-table-column>
 
-      <el-table-column prop="accountGroups" label="组名 / 用户角色" min-width="150">
-        <template scope="scopes">
+      <el-table-column prop="roleName" label="组名 / 用户角色" min-width="150">
+        <!-- <template scope="scopes">
           <div v-for="group in scopes.row.accountGroups">
-            <div v-if="group.role === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span>
+            <div v-if="group.roleId === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span>
             </div>
-            <div v-else-if="group.role === 'owner'">{{group.group.name}} <span style=" font-style:italic;">组管理员</span>
+            <div v-else-if="group.roleId === 'owner'">{{group.group.name}} <span style=" font-style:italic;">组管理员</span>
             </div>
-            <div v-else-if="group.role === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span>
+            <div v-else-if="group.roleId === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span>
             </div>
-            <div v-else-if="group.role === 'default'">{{group.group.name}} <span style=" font-style:italic;">LDAP管理员</span>
+            <div v-else-if="group.roleId === 'default'">{{group.group.name}} <span style=" font-style:italic;">LDAP管理员</span>
             </div>
-            <div v-else-if="group.role === 'orther'">{{group.group.name}} <span style=" font-style:italic;">其他</span>
+            <div v-else-if="group.roleId === 'orther'">{{group.group.name}} <span style=" font-style:italic;">其他</span>
             </div>
             <div v-else></div>
           </div>
-        </template>
+        </template> -->
       </el-table-column>
 
-      <el-table-column prop="status" label="用户状态" min-width="100">
+      <el-table-column prop="status" label="用户状态" min-width="50">
         <template scope="user">
           {{user.row.status ? '正常' : '禁用'}}
         </template>
       </el-table-column>
-      <el-table-column prop="createAt" label="更新时间" min-width="150">
+      <el-table-column prop="status" label="LDAP用户" min-width="50">
+        <template scope="user">
+          {{user.row.isLdap ? '是' : '否'}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="createAt" label="创建时间" min-width="150">
         <template scope="user">
           {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="100">
         <template scope="user">
-          <span v-if="user.row.status">
-            <el-button size="mini" v-showBtn="userDisable" @click="userDisable(user.row)">禁止</el-button>
-          </span>
-          <span v-else>
-            <el-button size="mini" v-showBtn="userEnable" @click="userEnable(user.row)">启用</el-button>
-          </span>
+          <el-button size="mini" v-showBtn="userDisable" @click="userDisableOrEnable(user.row)">{{user.row.status ? '禁止' : '启用'}}</el-button>
+
+          <!--<span v-if="user.row.status==1">-->
+            <!--<el-button size="mini" v-showBtn="userDisable" @click="userDisable(user.row)">禁止</el-button>-->
+          <!--</span>-->
+          <!--<span v-else>-->
+            <!--<el-button size="mini" v-showBtn="userEnable" @click="userEnable(user.row)">启用</el-button>-->
+          <!--</span>-->
+
           <el-dropdown>
             <span class="el-dropdown-link"> <el-button size="mini">更多</el-button></span>
             <el-dropdown-menu slot="dropdown">
@@ -66,9 +74,9 @@
                   <el-button size="mini"  v-showBtn="userEdit" style="width: 100%;">编  辑</el-button>
                 </router-link>
               </el-dropdown-item>
-              <el-dropdown-item>
+            <!--  <el-dropdown-item>
                 <el-button @click="groupEdit(user.row)"  v-showBtn="groupEdit" size="mini" style="width: 100%;">编辑组</el-button>
-              </el-dropdown-item>
+              </el-dropdown-item> -->
               <el-dropdown-item>
                 <el-button @click="userDel(user.row)"  v-showBtn="userDel" size="mini" style="width: 100%;">删  除</el-button>
               </el-dropdown-item>
@@ -89,7 +97,7 @@
     </el-col>
 
     <el-dialog title="重置密码" :visible.sync="dialog_resetPwd">
-      <el-form :model="u_form" :rules="rules" ref="u_form">
+      <el-form :model="u_form" :rules="pwdRules" ref="u_form">
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="u_form.password"></el-input>
         </el-form-item>
@@ -105,7 +113,7 @@
 
     </el-dialog>
 
-    <el-dialog title="编辑用户组" :visible.sync="dialog_groupEdit" @close="editGroupClose">
+  <!--  <el-dialog title="编辑用户组" :visible.sync="dialog_groupEdit" @close="editGroupClose">
       <el-form :model="e_form" :rules="rules" ref="e_form">
         <el-form-item label="添加组">
           <el-form-item>
@@ -117,11 +125,11 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <!--
+            &lt;!&ndash;
             <el-select v-model="e_form.role" placeholder="组中角色" style="margin-left: 30px;" v-if="e_form.groupId === 1">
               <el-option label="超级管理员" value="superuser"></el-option>
             </el-select>
-            -->
+            &ndash;&gt;
             <el-select v-model="e_form.role" placeholder="组中角色" style="margin-left: 30px;">
               <el-option label="普通管理员" value="owner"></el-option>
               <el-option label="组成员" value="member"></el-option>
@@ -158,7 +166,7 @@
         <el-button @click="dialog_groupEdit = false">取 消</el-button>
         <el-button type="primary" @click="dialog_groupEdit = false">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
   </section>
 </template>
@@ -170,7 +178,7 @@
   export default {
     data () {
       var validatePass = (rule, value, callback) => {
-        if (value === '') {
+        if (value === '' || value === undefined) {
           callback(new Error('请输入密码'))
         } else {
           if (this.u_form.chkpwd !== '') {
@@ -180,7 +188,7 @@
         }
       }
       var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
+        if (value === '' || value === undefined) {
           callback(new Error('请再次输入密码'))
         } else if (value !== this.u_form.password) {
           callback(new Error('两次输入密码不一致!'))
@@ -204,7 +212,7 @@
         filters: {
           name: ''
         },
-        rules: {
+        pwdRules: {
           password: [
             {required: true, validator: validatePass, trigger: 'blur'},
             {pattern: /((?=.*[A-Z])(?=.*[A-Za-z0-9]))^.{8,16}$/, message: '密码必须包含大写字母，长度为8-16位。', trigger: 'blur'}
@@ -360,6 +368,13 @@
       },
       userAdd () {
         this.$router.push({path: '/system/user/add'})
+      },
+      userDisableOrEnable (user) { // add by zcc
+        if (user.status === 1) {
+          this.userDisable(user)
+        } else {
+          this.userEnable(user)
+        }
       },
       userDisable (user) {
         this.fetchUsersDisable(user.id).then((data) => {

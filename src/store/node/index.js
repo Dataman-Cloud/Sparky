@@ -14,6 +14,7 @@ const state = {
       name: '',
       state: {},
       config: {
+        Hostname: '',
         env: []
       },
       driver: '',

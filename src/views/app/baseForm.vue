@@ -11,20 +11,20 @@
       <el-input v-model="ruleForm.image"></el-input>
       <el-checkbox label="强制拉取镜像" v-model="ruleForm.force" name="force"></el-checkbox>
     </el-form-item>
-    <el-form-item label="仓库认证" prop="base">
-      <el-select v-model="ruleForm.base" placeholder="请选择仓库">
+<!--    <el-form-item label="仓库认证" prop="base">
+      <el-select v-model="ruleForm.base" placeholder="请选择仓库" clearable>
         <el-option v-for="item in this.repos" :label="item.name" :value="item.accountId"
                    :key="item.accountId"></el-option>
       </el-select>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item label="选择集群" prop="vcluster">
-      <el-select v-model="ruleForm.vcluster" @change="vclusterChanger" :disabled="isEdit" placeholder="请选择集群">
+      <el-select v-model="ruleForm.vcluster" @change="vclusterChanger(lag)" :disabled="isEdit" placeholder="请选择集群">
         <el-option v-for="item in this.mutation.clusters" :label="item.vClusterLabel"
                    :value="item.vClusterLabel" :key="item.vClusterLabel"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="选择主机" prop="master">
-      <el-select v-model="ruleForm.master" placeholder="请选择主机">
+      <el-select v-model="ruleForm.master" placeholder="请选择主机" multiple>
         <el-option v-for="item in this.node" :label="item.hostName" :value="item.hostName"
                    :key="item.hostName"></el-option>
       </el-select>
@@ -39,15 +39,15 @@
     <el-form-item label="容器规格" prop="norms">
       <el-col :span="6" class="height-30 min-width">
         <label for="">CPUs</label>
-        <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="1"></el-input-number>
+        <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="1"></el-input-number>核
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">内存</label>
-        <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1"></el-input-number>
+        <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1" :max="10240"></el-input-number>MB
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">硬盘</label>
-        <el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1"></el-input-number>
+        <el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1" :max="10240"></el-input-number>MB
       </el-col>
     </el-form-item>
     <el-form-item label="容器个数" prop="dockerNum"
@@ -57,8 +57,18 @@
     </el-form-item>
 
     <el-form-item label="F5 Pool名称" style="width: 400px;">
-      <el-input v-model="ruleForm.f5Pool"></el-input>
+      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
     </el-form-item>
+
+   <!-- <el-form-item label="负载均衡" prop="NEED_HAPROXY">
+      <el-switch v-model="ruleForm.NEED_HAPROXY" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      &lt;!&ndash; <el-select v-model="ruleForm.NEED_HAPROXY" placeholder="&#45;&#45;请选择&#45;&#45;" clearable>
+        <el-option v-for="item in netTypes"
+                   :label="item.label"
+                   :value="item.value"
+                   :key="item.value"></el-option>
+      </el-select>  &ndash;&gt;
+    </el-form-item>-->
     <slot name="mount"></slot>
     <!--<el-form-item label="程序包挂载" prop="procedureMount" style="width: 400px;">-->
     <!--<el-input v-model="ruleForm.procedureMount"></el-input>-->
@@ -126,6 +136,8 @@
                 <div class=" height-30">
                   <el-select @change="healthProtocolChange(h)" v-model="h.protocol" size="small"
                              style="width: 100px;">
+                    <el-option label="MESOS_HTTP" value="MESOS_HTTP" ></el-option>
+                    <el-option label="MESOS_TCP" value="MESOS_TCP" ></el-option>
                     <el-option label="HTTP" value="HTTP"></el-option>
                     <el-option label="TCP" value="TCP"></el-option>
                   </el-select>
@@ -323,6 +335,15 @@
     },
     data () {
       return {
+        netTypes: [{
+          value: 'https',
+          label: 'https'
+        }, {
+          value: 'http',
+          label: 'http'
+        }],
+        maxLength: 50,
+        lag: false,
         activeName: 'formModel',
         showCodeMirror: false,
         showForm: ''
@@ -447,9 +468,21 @@
       resetForm (formName) {
         return
       },
-      vclusterChanger () {
-        // 切换集群后清空已选的master
-        this.ruleForm.master = undefined
+      vclusterChanger (lag) {
+        //  切换集群后清空已选的master
+      //   this.ruleForm.master = undefined
+        /* // 正常
+        if (!lag) {
+          this.lag = true
+        } else {
+          this.ruleForm.master = []
+        }
+        */
+        if (!lag) {
+          this.lag = true
+          return
+        }
+        this.ruleForm.master = []
       }
     },
     filters: {

@@ -7,7 +7,7 @@
             <el-input v-model="filters.name" placeholder="应用名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="">查询</el-button>
+            <el-button type="primary" v-on:click="searchFun">查询</el-button>
           </el-form-item>
           <el-form-item>
             <router-link :to="{name: '添加策略'}">
@@ -21,7 +21,7 @@
     <el-table :data="filterPolicies" highlight-current-row v-loading="listLoading" style="width: 100%;">
       <el-table-column prop="id" label="id" min-width="1" sortable v-if="false">
       </el-table-column>
-      <el-table-column prop="app_id" label="名称" min-width="120"  sortable>
+      <el-table-column prop="app_id" label="名称" min-width="150"  sortable>
         <template scope="rule">
           <p><span>{{rule.row.app_id.replace('/','')}}</span></p>
         </template>
@@ -31,25 +31,25 @@
           <p><span>{{rule.row.type}}{{rule.row.operator}}{{rule.row.setValue}}</span></p>
         </template>
       </el-table-column>
-      <el-table-column prop="step" label="步长" width="100" sortable>
+      <el-table-column prop="step" label="步长" width="80" sortable>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="100" sortable >
+      <el-table-column prop="status" label="状态" width="80">
         <template scope="rule">
           <span v-if="rule.row.status === 'disable'">禁用</span>
           <span v-else-if="rule.row.status === 'start'">开启</span>
         </template>
       </el-table-column>
-      <el-table-column prop="monitor_cycle" label="监控周期(秒)" min-width="150" sortable>
+      <el-table-column prop="monitor_cycle" label="监控周期(秒)" min-width="100" sortable>
       </el-table-column>
-      <el-table-column prop="threshold" label="阈值" min-width="100" sortable>
+      <el-table-column prop="threshold" label="阈值" min-width="80" sortable>
       </el-table-column>
-      <el-table-column prop="max_instance" label="最大实例个数" min-width="150" sortable>
+      <el-table-column prop="max_instance" label="最大实例个数" min-width="100" sortable>
       </el-table-column>
-      <el-table-column prop="min_instance" label="最小实例个数" min-width="150" sortable>
+      <el-table-column prop="min_instance" label="最小实例个数" min-width=100" sortable>
       </el-table-column>
       <el-table-column prop="created" label="创建时间" min-width="1" sortable v-if="false">
       </el-table-column>
-      <el-table-column prop="updated" label="更新时间" min-width="200" sortable>
+      <el-table-column prop="updated" label="更新时间" min-width="150">
         <template scope="rule">
           {{rule.row.updated | moment("YYYY-MM-DD hh:mm:ss")}}
         </template>
@@ -94,6 +94,7 @@
           name: ''
         },
         page: 1,
+        search: false,
         pageSize: 10,
         listLoading: false
       }
@@ -118,12 +119,28 @@
         }
       }),
       filterPolicies: function () {
+        let allData = this.policies.policies
+        let name = this.filters.name
+        if (name !== null && name !== '') {
+          let list = []
+          // 循环比对
+          for (let u of allData) {
+            if (u.app_id.indexOf(name) > -1) {
+              list.push(u)
+            }
+          }
+          return list
+        }
         return this.policies.policies
       }
     },
     methods: {
+      searchFun () {
+        this.search = true
+      },
       handleCurrentChange (val) {
         this.page = val
+        this.search = true
         let param = {pageSize: this.pageSize, page: this.page}
         return this.$store.dispatch(type.FETCH_SELECT_POLICIES, param)
       },

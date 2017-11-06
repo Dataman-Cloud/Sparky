@@ -1,9 +1,9 @@
 function baseFormRule () {
   return {
     name: [
-      {required: true, message: '请输入应用id', trigger: 'blur'},
+      {required: true, message: '请输入名称', trigger: 'blur'},
       { max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
-      {pattern: /^[a-z0-9-]+$/, message: '应用id只能包含小写字母、数字及中划线', trigger: 'blur'}
+      {pattern: /^[a-z0-9]+$/, message: '名称只能包含小写字母和数字', trigger: 'blur'}
     ],
     image: [
       {required: true, message: '请输入镜像地址', trigger: 'blur'}

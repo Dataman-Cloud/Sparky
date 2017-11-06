@@ -7,11 +7,15 @@ export default {
   [type.FATCH_ALL_APPGROUP] (state, payload) {
     if (payload !== undefined) {
       state.arr = payload.groups
+      state.marathonNameVoList = payload.marathonNameVoList
+      state.groupCreateList = payload.groupCreateList
       state.unversion = payload.apps
       state.total = state.arr.length
     }
   },
   [type.FATCH_SELF_APPGROUP] (state, payload) {
+    state.marathonNameVoList = payload.marathonNameVoList
+    state.groupCreateList = payload.groupCreateList
     state.selfGroups = payload.groups
   }
 }

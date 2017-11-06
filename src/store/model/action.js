@@ -5,7 +5,6 @@ import * as type from './mutations_types'
 import * as api from '../../api/app'
 export default {
   [type.FETCH_SELECT_MODEL] (context, params) {
-    console.log(params.curGroupId)
     return api.listModel(params)
       .then(data => {
         context.commit(type.FETCH_SELECT_MODEL, data.data)

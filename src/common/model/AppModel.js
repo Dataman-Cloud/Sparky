@@ -10,7 +10,7 @@ class AppModel {
     this.instances = instances
     this.healthChecks = healthChecks
     this.cmd = cmd
-    this.labels = {PACKAGE_VOLUME: labels}
+    this.labels = labels
     this.env = env
   }
 }

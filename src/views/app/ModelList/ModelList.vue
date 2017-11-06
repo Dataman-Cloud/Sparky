@@ -5,34 +5,48 @@
       <el-form :inline="true" :model="filters">
         <el-form-item>
           <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模版</el-button>
+          <el-button type="primary" @click="cancelForm('ruleForm')" v-if="isCatalogStackCreate">返回</el-button>
         </el-form-item>
-        <el-form-item>
+<!--        <el-form-item>
           <el-button type="primary" v-showBtn="packagePublish" @click = "catalogStackCreate">{{CatalogStackCreate}}</el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </el-col>
     <!--列表-->
     <el-table :data="filterModels" highlight-current-row v-loading="listLoading" style="width: 100%;">
-      <el-table-column prop="name" label="模版名称" min-width="65" sortable  show-overflow-tooltip>
+      <el-table-column prop="name" label="模版名称" min-width="80" sortable  show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="accountsName" label="创建者" width="100" sortable >
+      <el-table-column prop="accountsName" label="创建者" min-width="100" sortable >
       </el-table-column>
-      <el-table-column prop="groupName" label="所属组" width="150" sortable>
+      <el-table-column prop="groupName" label="所属组" min-width="100" sortable>
       </el-table-column>
-      <el-table-column prop="desc" label="描述" min-width="100" sortable  show-overflow-tooltip>
+      <el-table-column prop="desc" label="描述" min-width="150" sortable  show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="createdAt" label="创建时间" min-width="70" sortable>
+      <el-table-column prop="createdAt" label="创建时间" min-width="150" sortable>
         <template scope="app">
           {{app.row.createdAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="165" show-overflow-tooltip>
+      <el-table-column label="操作" min-width="120" show-overflow-tooltip>
         <template scope="scope">
                 <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
                 <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogUpdate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
                 <!-- 当前不为程序包发布，并且该登录用户有操作此模板的权限 -->
-                <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
-                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
+
+          <el-dropdown>
+            <span class="el-dropdown-link"> <el-button size="mini" style="margin-left: 7px;">更多</el-button></span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+
+ <!--               <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
+                <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -50,8 +64,8 @@
       size="tiny"
     >
       <span >创建人：</span><span >{{dialogMessage.accountName}}</span><br/>
-      <span >所属组：</span><span >{{dialogMessage.groupName}}</span><br/><br/>
-      <span>{{dialogMessage.desc}}</span>
+      <span >所属组：</span><span >{{dialogMessage.groupName}}</span><br/>
+      <span  style="white-space: pre-wrap;word-break: break-all;display: block;overflow: hidden;">描述：<span>{{dialogMessage.desc}}</span></span>
       <div class="">
         <codemirror v-model="this.dialogMessage.json" class="codemirror">
         </codemirror>
@@ -75,7 +89,7 @@
         filters: {
           name: '00000'
         },
-        isCatalogStackCreate: false, // 程序包发布
+        isCatalogStackCreate: false, //  程序包发布
         CatalogStackCreate: '程序包发布', // 程序包发布文字
         isRole: false, // 是否对某一模版拥有权限
         page: 1, // 默认当前第1页
@@ -173,6 +187,9 @@
         this.dialogMessage.groupName = this.filterModels[index].groupName
         this.dialogMessage.desc = this.filterModels[index].desc
         this.dialogMessage.json = this.filterModels[index].json
+      },
+      cancelForm: function () {
+        this.$router.go(-1)
       },
       // 删除模版按钮
       removeModel (index) {

@@ -1,7 +1,7 @@
 ﻿<template>
 	<section>
 		<div class="top">
-      <el-button icon="plus" v-showBtn="repAdd" @click="repAdd">镜像仓库添加</el-button>
+      <el-button icon="plus" type="primary" v-showBtn="repAdd" @click="repAdd">镜像仓库添加</el-button>
     </div>
 
     <el-table :data="filterRepos" highlight-current-row v-loading="listLoading" class="bodybar">

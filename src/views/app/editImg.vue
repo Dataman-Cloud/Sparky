@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="表单模式" name="formModel">
         <base-form :isEdit='true' :ruleForm="ruleForm">
-          <el-form-item label="应用id" prop="name" style="width: 400px;" slot="appId">
+          <el-form-item label="应用名称" prop="name" style="width: 400px;" slot="appId">
             <el-input v-model="ruleForm.name" :disabled="isEdit"></el-input>
           </el-form-item>
           <el-form-item label="应用组" prop="group" slot="appGroup">
@@ -13,6 +13,7 @@
             </el-select>
           </el-form-item>
           <el-form-item slot="action">
+            <el-button type="primary" @click="cancelForm">取消</el-button>
             <el-button type="primary" @click="submitForm('ruleForm')">更新应用</el-button>
             <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
           </el-form-item>
@@ -28,8 +29,8 @@
       </el-tab-pane>
     </el-tabs>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">更新应用</el-button>
       <el-button type="primary" @click="cancelForm">取消</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">更新应用</el-button>
       <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
     </el-form-item>
   </el-form>
@@ -61,7 +62,8 @@ export default {
   },
   methods: {
     cancelForm: function () {
-      this.$router.push({path: '/app/list/apps'})
+      // this.$router.push({path: '/app/list/apps'})
+      this.$router.go(-1)
     },
     mainRender (appModel) {
       // 封装应用模版信息进行显示

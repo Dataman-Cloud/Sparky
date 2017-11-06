@@ -16,6 +16,9 @@ const AppAddImg = _import('app/addImg')
 const AppEditImg = _import('app/editImg')
 const AppAddPrm = _import('app/addPrm')
 const UserList = _import('user/list/List')
+const RoleList = _import('user/role/List')
+const RoleAdd = _import('user/role/RoleAdd')
+const RoleEdit = _import('user/role/RoleUpdate')
 const UserAdd = _import('user/manage/Add')
 const ClusterList = _import('resource/cluster/list/List')
 const AddCluster = _import('resource/cluster/add/Add')
@@ -49,13 +52,13 @@ export const constantRouterMap = [
     name: 'Login',
     component: Login,
     hidden: true
-  },
-  {
+  }
+/*  {
     path: '/graph',
     component: Layout,
     name: '首页',
     redirect: {name: '资源概览'},
-    iconCls: 'el-icon-picture', // 图标样式class
+    iconCls: 'fa fa-home', // 图标样式
     children: [
       {
         path: 'index',
@@ -63,7 +66,7 @@ export const constantRouterMap = [
         component: Graph
       }
     ]
-  }
+  } */
 ]
 
 export default new Router({
@@ -78,7 +81,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: '应用',
     redirect: {name: '全部的应用'},
-    iconCls: 'el-icon-message', // 图标样式class
+    iconCls: 'fa fa-th-large', // 图标样式class
     children: [
       {
         path: 'list/apps',
@@ -144,7 +147,7 @@ export const asyncRouterMap = [
         hidden: true
       },
       {
-        path: 'appInstance/list',
+        path: 'appInstance/list/:group/:name',
         name: '应用实例信息',
         component: AppInstanList,
         hidden: true
@@ -163,6 +166,11 @@ export const asyncRouterMap = [
     redirect: {name: '集群'},
     iconCls: 'fa fa-cubes',
     children: [
+      {
+        path: 'graph/index',
+        name: '资源概览',
+        component: Graph
+      },
       {
         path: 'cluster/list',
         name: '集群',
@@ -269,8 +277,15 @@ export const asyncRouterMap = [
         name: '用户管理',
         component: UserList
       },
+      {
+        path: 'user/roles',
+        name: '角色管理',
+        component: RoleList
+      },
+      {path: 'user/role/add', name: '添加角色', hidden: true, component: RoleAdd},
+      {path: 'user/role/edit', name: '编辑角色', hidden: true, component: RoleEdit},
       {path: 'user/edit', name: '用户修改', hidden: true, component: UserEdit},
-      {path: 'user/group', name: '用户组管理', component: UserGroup},
+      {path: 'user/group', name: '用户组管理', hidden: true, component: UserGroup},
       {path: 'user/group/add', name: '添加用户组', hidden: true, component: GroupAdd},
       {path: 'user/group/edit', name: '修改用户组', hidden: true, component: GroupEdit},
       {path: '/system/user/add', name: '用户创建', hidden: true, component: UserAdd},
@@ -289,6 +304,6 @@ export const asyncRouterMap = [
   {
     path: '*',
     hidden: true,
-    redirect: {name: '资源概览'}
+    redirect: {name: '我的应用'}
   }
 ]

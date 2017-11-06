@@ -30,6 +30,7 @@ aside {
   width: 230px;
   .el-menu {
     height: 100%;
+    background: #253a49;
   }
 }
 </style>

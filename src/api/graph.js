@@ -4,5 +4,5 @@
 import axios from './http'
 
 export function getGraph () {
-  return axios.get(`/jborg/dashboard/getResource`)
+  return axios.get(`/jborg/dashboard/getResource?consulMarathonServiceName=${localStorage.getItem('marathonName')}`)
 }

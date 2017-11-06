@@ -2,28 +2,44 @@
   <div>
     <!-- 正常添加或修改模版的表单 -->
     <el-form :model="ruleForm" v-if="!catalogStackCreateForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
-        <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
-        {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
-      </el-form-item>
-      <el-form-item label="描述" prop="desc" style="width:800px;">
-        <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
-      </el-form-item>
+      <div v-if="catalogStackCreate" style="background: #F9FAFC; padding: 10px 0; border-radius: 15px;">
+        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
+          <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
+          {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
+        </el-form-item>
+        <el-form-item label="描述" prop="desc" style="width:800px;">
+          <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate"></el-input>
+        </el-form-item>
+      </div>
+      <div v-else>
+        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
+          <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
+          {{ruleForm.createdTime | moment("YYYY/MM/DD HH:mm:ss")}}
+        </el-form-item>
+        <el-form-item label="描述" prop="desc" style="width:800px;">
+          <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="catalogStackCreate" maxlength=255 placeholder="最多输入255个字符"></el-input>
+        </el-form-item>
+      </div>
     <base-form :isEdit='false' :ruleForm="ruleForm">
       <el-form-item label="程序包挂载" prop="procedureMount" style="width: 400px;" slot="mount">
         <el-input v-model="ruleForm.procedureMount" placeholder="容器路径"></el-input>
       </el-form-item>
     </base-form>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate && isRole">{{updateOrCreate}}</el-button>
+      <el-button type="primary" @click="cancelForm('ruleForm')" v-if="!catalogStackCreate">取消</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate">{{updateOrCreate}}</el-button>
+      <el-button type="primary" @click="cancelForm" v-if="catalogStackCreate">上一步</el-button>
       <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">下一步</el-button>
       <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
     </el-form-item>
       </el-form>
 
     <el-form :model="cscForm" v-if="catalogStackCreateForm" :rules="cscFormRules" ref="cscForm" label-width="100px" class="demo-ruleForm">
+      <div style="background: #EFF2F7; padding: 10px 0; border-radius: 15px;">
       <el-form-item label="模版名称" style="width: 400px;" >
         <el-input v-model="ruleForm.name" v-bind:disabled="true" ></el-input>
       </el-form-item>
@@ -33,18 +49,21 @@
       <el-form-item label="描述" style="width:800px;">
         <el-input type="textarea" v-model="ruleForm.desc" v-bind:disabled="true" ></el-input>
       </el-form-item><!-- -->
+      </div>
       <el-form-item label="选择应用组" prop="appsGroup"  >
         <el-select v-model="cscForm.appsGroup" v-bind:disabled="cscForm.success" placeholder="请选择应用组" >
           <el-option v-for="item in appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="应用名称"  style="width: 400px;" prop="appsName" >
+      <el-form-item label="应用名称"  style="width: 400px;" prop="appsName" :rules="[
+            {required: true, message: '应用名称', trigger: 'blur'},
+            {pattern: /^[a-z0-9]+$/, message: '名称只能包含小写字母和数字', trigger: 'blur'}]">
         <el-input v-model="cscForm.appsName" v-bind:disabled="cscForm.success"></el-input>
       </el-form-item>
       <el-form-item label="版本号"  style="width: 400px;" prop="version" >
         <el-input v-model="cscForm.version" v-bind:disabled="cscForm.success"></el-input>
       </el-form-item>
-      <el-form-item v-if="!cscForm.success" label="包类型">
+      <el-form-item v-if="!cscForm.success" label="包类型" prop="packageType" required>
         <el-radio-group v-model="cscForm.packageType" >
           <el-radio :label="0" >微服务(.jar)</el-radio>
           <el-radio :label="1" >Dubbo(.jar)</el-radio>
@@ -53,8 +72,8 @@
           <el-radio :label="4" >WebLogic(.war)</el-radio>
         </el-radio-group>
       </el-form-item>
-      <!-- :http-request="fileUpload" -->
-      <el-form-item style="width:300px;"  v-if="!cscForm.success">
+      <!-- :http-request="fileUpload"  -->
+      <el-form-item style="width:300px;"  v-if="!cscForm.success" prop="uploadFile1" >
         <el-upload
           class="upload-demo"
           ref="upload"
@@ -68,6 +87,7 @@
           v-bind:auto-upload="uploadFile">
           <el-button size="small" type="primary">选择文件</el-button>
         </el-upload>
+        <span id="fileUploadErr"></span>
       </el-form-item>
       <el-form-item  v-if="!cscForm.success">
         <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">上一步</el-button>
@@ -109,10 +129,11 @@ export default {
   data () {
     return {
       ruleForm: appConf.modelForm(),
+      isUploadFile: false, // 文件是否上传标志
       catalogStackCreate: false, // 是否为程序包发布进入
       catalogStackCreateForm: false, // 程序包发布进入后的表单控制
       updateOrCreate: '立即创建', // 创建或更新的文本
-      uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+      uploadFileAction: 'http://172.30.131.25:8090/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
       uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
       // uploadFileAction: '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
       uploadFile: false, // 是否立即上传
@@ -122,6 +143,7 @@ export default {
         appsName: '',
         version: '',
         packageType: 0,
+        NEED_HAPROXY: false,
         success: false // 是否发布程序包成功，成功后禁用应用组名称，应用名称，版本号，隐藏：包类型和上传按钮，显示：状态为创建完成，“应用列表”和“查看应用详情”按钮
       },
       cscFormRules: {
@@ -134,6 +156,12 @@ export default {
         appsGroup: [
           { required: true, message: '请选择应用组', trigger: 'change' }
         ]
+        /*    uploadFile1: [
+              { required: true, message: '请选择上传文件', trigger: 'blue' }
+            ]
+            packageType: [
+              { required: true, message: '请选择包类型', trigger: 'click' }
+            ] */
       },
       rules: appConf.modelFormRule()
     }
@@ -157,7 +185,6 @@ export default {
           PackageType: this.getPackageType}
       },
       setObjModelJSON (state) {
-        console.log(state.model.model.model)
         let appModel = JSON.parse(state.model.model.model.json)
         // 封装应用模版信息进行显示
         this.ruleForm.id = state.model.model.model.id // id
@@ -175,31 +202,43 @@ export default {
         this.ruleForm.hardDrive = appModel.disk // 硬盘
         this.ruleForm.dockerNum = appModel.instances // 容器个数
         switch (appModel.constraints.length) {
-          case 1:// 没有选择集群和1容器：1主机
+          case 1: // 没有选择集群和1容器：1主机
             break
-          case 2:// 集群和1容器：1主机选择了1个
+          case 2: // 集群和1容器：1主机选择了1个
             if (appModel.constraints[1][1] === 'UNIQUE') { // 是否选择了1容器：1主机
               this.ruleForm.dockerProportion = true
               this.ruleForm.dockerProportionDefault = true
+              for (var host1 of appModel.constraints[1][2].split('|')) {
+                this.ruleForm.master.push(host1)
+              }
             } else { // 没有选择1容器：1主机则选择了主机
               this.ruleForm.dockerProportion = false
               this.ruleForm.dockerProportionDefault = true
               // 选择的主机
-              this.ruleForm.master = appModel.constraints[1][2]
+              for (var host of appModel.constraints[1][2].split('|')) {
+                this.ruleForm.master.push(host)
+              }
+//              this.ruleForm.master = appModel.constraints[1][2]
             }
             break
           case 3: // 集群和1容器：1主机都进行了选择
-            // 1容器：1主机
+            //  1容器：1主机
             this.ruleForm.dockerProportion = true
             this.ruleForm.dockerProportionDefault = true
             // 选择的主机
-            this.ruleForm.master = appModel.constraints[2][2]
+//            this.ruleForm.master = appModel.constraints[2][2]
+            for (var host2 of appModel.constraints[2][2].split('|')) {
+              this.ruleForm.master.push(host2)
+            }
             break
         }
         // this.ruleForm.f5Pool = appModel.env['F5_POOL_NAME']// F5 Pool 名称
         if (appModel.hasOwnProperty('labels')) {
           if (appModel.labels.hasOwnProperty('PACKAGE_VOLUME')) {
             this.ruleForm.procedureMount = appModel.labels['PACKAGE_VOLUME']// 程序包挂载点
+          }
+          if (appModel.labels.hasOwnProperty('NEED_HAPROXY')) {
+            this.ruleForm.NEED_HAPROXY = appModel.labels['NEED_HAPROXY'] // haproxy
           }
         }
         this.ruleForm.cmd = appModel.cmd // CMD命令
@@ -269,17 +308,36 @@ export default {
       // 集群，主机信息
       let constraints = null
       if (this.ruleForm.dockerProportion === true) { // 是否勾选了1主机:1容器
-        constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
-          ['hostname', 'UNIQUE'],
-          ['hostname', 'LIKE', this.ruleForm.master]// 主机
-        ]
+        if (this.ruleForm.master.length > 0) {
+          let host = this.ruleForm.master.toString()
+
+          constraints = [
+            ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
+            ['hostname', 'UNIQUE'],
+            ['hostname', 'LIKE', host.replace(/,/g, '|')]  // 主机
+          ]
+        } else {
+          constraints = [
+            ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
+            ['hostname', 'UNIQUE']
+          ]
+        }
       } else if (this.ruleForm.dockerProportion === false) {
-        constraints = [
-          ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
-          ['hostname', 'LIKE', this.ruleForm.master]// 主机
-        ]
+        if (this.ruleForm.master.length > 0) {
+          let host = this.ruleForm.master.toString()
+          constraints = [
+            ['vcluster', 'LIKE', this.ruleForm.vcluster], // 集群
+            ['hostname', 'LIKE', host.replace(/,/g, '|')] // 主机
+          ]
+        } else {
+          constraints = [
+            ['vcluster', 'LIKE', this.ruleForm.vcluster] // 集群
+          ]
+        }
       }
+      let labels = {}
+      labels['NEED_HAPROXY'] = this.ruleForm.NEED_HAPROXY
+      labels['PACKAGE_VOLUME'] = this.ruleForm.procedureMount
       // 自定义环境变量
       let env = {}
       for (let v of this.ruleForm.environmentVariables) {
@@ -304,7 +362,7 @@ export default {
       for (let v of this.ruleForm.ports) {
         let port = {}
         port['containerPort'] = parseInt(v.containerPort) // 端口号
-        port['name'] = ''
+        port['name'] = null // ''
         port['protocol'] = v.protocol // tcp或udp
         portMappings.push(port)
       }
@@ -370,7 +428,7 @@ export default {
         this.ruleForm.dockerNum, // 健康检查
         healthChecks,
         this.ruleForm.cmd,
-        this.ruleForm.procedureMount,
+        labels,
         env
       ), null, 4)
     },
@@ -431,6 +489,9 @@ export default {
     }
   },
   methods: {
+    cancelForm: function () {
+      this.$router.go(-1)
+    },
     resetForm () {
       this.$refs['ruleForm'].resetFields()
     },
@@ -438,22 +499,34 @@ export default {
       this.$router.push({path: '/app/list/apps'})
     },
     appInfo () { // 跳转应用详细列表
-      this.$router.push({path: '/app/appInstance/list',
-        query: {'id': '%2F' + this.cscForm.appsGroup + '%2F' + this.cscForm.appsName}})
+      this.$router.push({ path: '/app/appInstance/list/' + this.cscForm.appsGroup + '/' + this.cscForm.appsName })
     },
     cscFormSubmit (formName) {
-      this.$refs[formName].validate((valid) => {
+      if (this.isUploadFile) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            // 提交文件上传
+            this.$refs.upload.submit()
+          }
+        })
+      } else {
+     //   document.getElementById('fileUploadErr').htmlText('请上传文件')
+        this.$message.error('还没有上传文件')
+      }
+    /*  this.$refs[formName].validate((valid) => {
         if (valid) {
           // 提交文件上传
           this.$refs.upload.submit()
         }
-      })
+      }) */
     },
     // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
     uploadChange (file, fileList) {
+      this.isUploadFile = true
       if (file.status === 'ready') {
         if (fileList.length > 1) {
           this.$message.error('只能上传一个文件')
+          this.isUploadFile = false // 没有上传文件
           // 清空已上传的文件列表
           this.$refs.upload.clearFiles()
         }
@@ -462,10 +535,11 @@ export default {
           this.$message.error('上传失败')
           // 取消上传请求
           this.$refs.upload.abort()
+          this.isUploadFile = false // 没有上传文件
           // 清空已上传的文件列表
           this.$refs.upload.clearFiles()
         } else {
-            // 上传成功
+            //  上传成功
           /* -----拼装json--------- */
           // 获取json对象
           let appModel = JSON.parse(this.getObjModelJSON)
@@ -482,7 +556,7 @@ export default {
           appModel.labels['CURRENT_VERSION'] = this.cscForm.version
           appModel.labels['DEPLOY_TIMES'] = '1'
           appModel.labels['PACKAGE_TYPE'] = this.getPackageType
-          console.log(appModel)
+          appModel.labels['NEED_HAPROXY'] = this.cscForm.NEED_HAPROXY
           // 创建应用接口
           this.$store.dispatch(appType.ADD_APP, appModel)
             .then((data) => {
@@ -498,6 +572,7 @@ export default {
                 this.$refs.upload.abort()
                 // 清空已上传的文件列表
                 this.$refs.upload.clearFiles()
+                this.isUploadFile = false // 没有上传文件
               }
             })
         }
@@ -507,6 +582,7 @@ export default {
         this.$refs.upload.abort()
         // 清空已上传的文件列表
         this.$refs.upload.clearFiles()
+        this.isUploadFile = false // 没有上传文件
       }
     },
     fileUpload (e) { // 上传文件并创建模板
@@ -537,8 +613,9 @@ export default {
             appModel.labels['CURRENT_VERSION'] = this.cscForm.version
             appModel.labels['DEPLOY_TIMES'] = '1'
             appModel.labels['PACKAGE_TYPE'] = this.getPackageType
-            console.log(appModel)
-            // 创建应用接口
+            appModel.labels['NEED_HAPROXY'] = this.cscForm.NEED_HAPROXY
+//            console.log(appModel)
+            //  创建应用接口
             this.$store.dispatch(appType.ADD_APP, appModel)
               .then((data) => {
                 if (data.resultCode === '00') {
@@ -563,7 +640,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.updateOrCreate === '立即更新') {
-            // 更新操作
+            //  更新操作
             let modelInfo = {
               'name': this.ruleForm.name,
               'desc': this.ruleForm.desc,
@@ -617,6 +694,7 @@ export default {
     },
     // 控制上传文件类型
     beforeAvatarUpload (file) {
+      this.isUploadFile = true
       let result = true
       // 获取后缀名
       const fileType = file.name.substring(file.name.lastIndexOf('.') + 1)
@@ -626,30 +704,35 @@ export default {
           if (fileType !== 'jar') {
             this.$message.error('必须上传jar文件')
             result = false
+            this.isUploadFile = false
           }
           break
         case 1:
           if (fileType !== 'jar') {
-            this.$message.error('上传头像图片只能是 JPG 格式!')
+            this.$message.error('必须上传jar文件')
             result = false
+            this.isUploadFile = false
           }
           break
         case 2:
           if (fileType !== 'zip') {
             this.$message.error('必须上传zip文件')
             result = false
+            this.isUploadFile = false
           }
           break
         case 3:
           if (fileType !== 'war') {
             this.$message.error('必须上传war文件')
             result = false
+            this.isUploadFile = false
           }
           break
         case 4:
           if (fileType !== 'war') {
             this.$message.error('必须上传war文件')
             result = false
+            this.isUploadFile = false
           }
           break
       }
@@ -681,7 +764,7 @@ export default {
         .then((data) => {
           if (data.resultCode === '00') {
             // 判断是否有权限
-            this.checkModelRole
+   //         this.checkModelRole
             // 显示到页面
             this.setObjModelJSON
           } else {
@@ -719,4 +802,11 @@ export default {
 </script>
 
 <style lang="css">
+  .line {
+    height:1px;
+    border:none;
+    width: 80%;
+    align: left;
+    border-top:1px dashed  #0066CC;
+  }
 </style>

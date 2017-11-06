@@ -40,15 +40,15 @@
       <el-form-item label="容器规格" prop="norms" >
         <el-col :span="6" class="height-30 min-width">
           <label for="">CPUs</label>
-          <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01"></el-input-number>
+          <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01"></el-input-number>核
         </el-col>
         <el-col :span="6" class="height-30 min-width">
           <label for="">内存</label>
-          <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1"></el-input-number>
+          <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1"></el-input-number>MB
         </el-col>
         <el-col :span="6" class="height-30 min-width">
           <label for="">硬盘</label>
-          <el-input-number v-model="ruleForm.hardDrive" size="small" :debounce="3000" :min="0" :step="1"></el-input-number>
+          <el-input-number v-model="ruleForm.hardDrive" size="small" :debounce="3000" :min="0" :step="1"></el-input-number>MB
         </el-col>
       </el-form-item>
 
@@ -115,6 +115,8 @@
                 </div>
                 <div class=" height-30">
                   <el-select @change="healthProtocolChange(h)" v-model="h.networkProtocol" size="small" style="width: 100px;">
+                    <el-option label="HTTP" value="MESOS_HTTP" ></el-option>
+                    <el-option label="HTTP" value="MESOS_TCP" ></el-option>
                     <el-option label="HTTP" value="HTTP" ></el-option>
                     <el-option label="TCP" value="TCP"></el-option>
                   </el-select>

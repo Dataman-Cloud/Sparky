@@ -16,7 +16,7 @@
 
 /* 设置table内容不换行*/
 .el-table .cell {
-    white-space: nowrap !important;
+  white-space: nowrap !important;
 }
 
 .margin-bottom-20 {
@@ -35,4 +35,52 @@
 }
 .codemirrorHeight .CodeMirror{
   height: auto;
+}
+.el-menu-item .el-submenu__title{
+  color: #fff!important;
+}
+.dm-login-input .el-input__inner{
+  border: none!important;
+  margin-top:18px!important;
+  font-size: 16px;
+  background:rgba(0,0,0,0);
+}
+.dm-login-input .el-input-group__append{
+  border: none;
+}
+.dm-con-box .el-form-item__error{
+  font-size: 14px!important;
+  color: #f76260!important;
+  left: 48px!important;
+}
+aside .el-menu-item,aside .el-submenu__title{
+  color: #fff!important;
+}
+aside .el-submenu .el-menu-item{
+  background-color: #1b2d3e!important;
+}
+aside .el-menu-item:hover,aside .el-submenu__title:hover{
+  background-color: #13202b!important;
+}
+aside .is-opened,aside .is-opened .is-active{
+  background-color: #13202b!important;
+}
+input:-webkit-autofill {
+  box-shadow: 0 0 3000px white inset;
+  -webkit-text-fill-color: #333;
+  background: rgba(0, 0, 0, 0)!important;
+}
+.el-button--success{
+  color: #fff;
+  background-color: #4ac8ca!important;
+  border-color: #4ac8ca!important;
+}
+.el-button--success:hover,.el-button--success:active{
+  color: #fff;
+  background-color: #4dced0!important;
+  border-color: #4dced0!important;
+}
+.el-button--primary {
+  background-color: #414fa8 !important;
+  border-color: #414fa8 !important;
 }

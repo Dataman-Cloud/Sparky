@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="表单模式" name="formModel">
         <base-form :isEdit='false' :ruleForm="ruleForm">
-          <el-form-item label="应用id" prop="name" style="width: 400px;" slot="appId">
+          <el-form-item label="应用名称" prop="name" style="width: 400px;" slot="appId">
             <el-input v-model="ruleForm.name" :disabled="false"></el-input>
           </el-form-item>
           <el-form-item label="应用组" prop="group" slot="appGroup">
@@ -13,11 +13,11 @@
             </el-select>
           </el-form-item>
         </base-form>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
+<!--        <el-form-item>
           <el-button type="primary" @click="cancelForm">取消</el-button>
-          <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
-        </el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
+          &lt;!&ndash;<el-button @click="resetForm('ruleForm')">重置</el-button>&ndash;&gt;
+        </el-form-item>  -->
       </el-tab-pane>
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showCodeMirror">
@@ -28,6 +28,11 @@
         <br/><br/>
       </el-tab-pane>
     </el-tabs>
+    <el-form-item>
+      <el-button type="primary" @click="cancelForm">取消</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
+      <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
+    </el-form-item>
   </el-form>
 </template>
 
@@ -56,7 +61,8 @@ export default {
   },
   methods: {
     cancelForm: function () {
-      this.$router.push({path: '/app/list/apps'})
+//      this.$router.push({path: '/app/list/apps'})
+      this.$router.go(-1)
     },
     transForm () {
       return appUtil.transformFormToJson(this.ruleForm, this.resultForm)
@@ -65,10 +71,14 @@ export default {
       this.$refs['ruleForm'].resetFields()
     },
     submitForm (formName) {
+//      console.log('111----2')
+//      this.transForm()
+//      console.log(JSON.stringify(this.resultForm))
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let router = this.$router
           this.transForm()
+          console.log(JSON.stringify(this.resultForm))
           this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
             if (data.resultCode === '00') {
               this.$message({

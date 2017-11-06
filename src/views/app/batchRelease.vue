@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section  style="margin-top:20px">
     <el-select @change="changeGroups" v-model="appsGroup" placeholder="请选择应用组">
       <el-option v-for="item in this.appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')"
                  :key="item.id"></el-option>
@@ -12,7 +12,7 @@
       @selection-change="selectApps"
       border
       tooltip-effect="dark"
-      style="width: 100%; margin-top: 5px;">
+      style="width: 100%; margin-top: 20px;">
       <el-table-column
         :selectable="checkSelectable"
         select="select"
@@ -21,14 +21,11 @@
       </el-table-column>
       <el-table-column
         label="应用"
-        width="120">
+        width="200" show-overflow-tooltip>
         <template scope="scope"><a href="javascript:void(0);" @click="appInfoDialog(scope.$index)">{{ scope.row.appInfo.app.id }}</a>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="packageType"
-        label="应用类型"
-        width="120">
+      <el-table-column prop="packageType" label="应用类型" width="150">
       </el-table-column>
       <el-table-column
         label="版本号"
@@ -40,7 +37,7 @@
       <el-table-column
         label="文件"
         show-overflow-tooltip
-        width="200">
+        width="300">
         <template scope="scope">
           <el-upload
             class="upload-demo"
@@ -100,7 +97,7 @@
         <el-col :span="12"><div class="grid-content bg-purple-light"><label>仓库认证：</label></div></el-col>
       </el-row>
 
-<!--      <label>应用名称：{{dialog.dialogName}}</label><label class="proClass">CPU：{{dialog.dialogCPU}}</label><br/>
+<!--    <label>应用名称：{{dialog.dialogName}}</label><label class="proClass">CPU：{{dialog.dialogCPU}}</label><br/>
       <label>内存：{{dialog.dialogMem}}</label><label class="proClass">实例个数：{{dialog.dialogExample}}</label><br/>
       <label>CMD：{{dialog.dialogCMD}}</label><label>版本：{{dialog.dialogVer}}</label><br/>
       <label>应用端口：<label v-for="item in dialog.dialogPortMappings">{{item.servicePort}}，</label></label><label class="proClass">协议：<label v-for="item in dialog.dialogPortMappings">{{item.protocol}}，</label></label><br/>
@@ -148,7 +145,8 @@
     },
     data () {
       return {
-        uploadFileBasePath: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+        uploadFileBasePath: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径 服务器
+//        uploadFileBasePath: 'http://localhost:8080' + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径 本地
         autoUploadFile: false, // 是否立即上传
         uploadRowIndex: -1, // 当前操作的upload行数索引，默认-1
         uploadRowIndexObj: {},
@@ -194,8 +192,8 @@
           })
           */
           this.apps = state.app.apps.apps
-          console.log('1111-----------------------------')
-          console.log(this.apps)
+//          console.log('1111-----------------------------')
+//          console.log(JSON.stringify(this.apps))
           for (let v = 0; v < this.apps.length; v++) {
             this.apps[v].appInfo = JSON.parse(this.apps[v].appInfo)
             // 设置包的中文名
@@ -221,11 +219,11 @@
             this.apps[v].uploadButton = true
             this.apps[v].reset = true
             */
-            console.log('for-----------------------')
-            console.log(this.apps[v])
+//            console.log('for-----------------------')
+//            console.log(this.apps[v])
           }
-          console.log('end-----------------------')
-          console.log(this.apps)
+//          console.log('end-----------------------')
+//          console.log(JSON.stringify(this.apps))
         }
       })
     },
@@ -272,7 +270,7 @@
             } else {
               /* ----- 清空值 ----- */
               for (let i = 0; i < this.apps.length; ++i) {
-                console.log(this.$refs['upload' + i])
+//                console.log(this.$refs['upload' + i])
                 if (this.$refs['upload' + i] !== undefined) {
                   // 取消上传请求
                   this.$refs['upload' + i].abort()
@@ -332,7 +330,7 @@
       },
       // 勾选复选框时的触发事件
       selectApps (selection, row) {
-        console.log(selection)
+//        console.log(selection)
         this.uploadAPPS = selection
       },
       // 点击上传文件按钮触发，在这里会触发beforeAvatarUpload
@@ -340,11 +338,12 @@
         // 保存当前行
         this.uploadRowIndex = index
         // 判断文件队列
-        console.log(this.uploadFileList['list' + index])
+//        console.log(this.uploadFileList['list' + index])
         if (this.uploadFileList['list' + index] === undefined) {
           this.$message.error('请选择文件')
         } else if (this.uploadFileList['list' + index].length > 1) {
           this.$message.error('只能上传一个文件')
+          this.$refs['upload' + index].clearFiles()
         } else {
           // 修改上传参数：版本号
           this.apps[index].param.Version = this.apps[index].appInfo.app.labels.CURRENT_VERSION
@@ -361,17 +360,18 @@
       // 文件上传时会调用
       uploadProgress (event, file, fileList) {
       },
-      // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
+      //  更改文件时触发，添加文件、上传成功和上传失败时都会被调用
       uploadChange (file, fileList) {
         if (file.status === 'ready') { // 准备上传
           // 记录该文件对应的行
           this.uploadRowIndexObj[file.uid] = this.uploadRowIndex
           // 记录该行上传的文件个数
           this.uploadFileList['list' + this.uploadRowIndexObj[file.uid]] = fileList
-          console.log('准备', file)
+       //   console.log('准备', file)
         } else if (file.status === 'success') { // 上传成功
           if (file.response.resultCode !== '00') {
             this.$message.error('上传失败')
+            this.$refs.upload.clearFiles()
           } else {
             // 上传成功
             /* ----------------------- 封装此行数据------------------------- */
@@ -379,21 +379,30 @@
             let path = file.response.data
             let app = this.apps[this.uploadRowIndexObj[file.uid]].appInfo.app
             let appName = app.id.substring(app.id.lastIndexOf('/') + 1)
-            // 找到挂载程序包的地址并修改为新地址
+            let packageVersion = `${app.labels.PACKAGE_VERSION}`
+            let lastVersion = packageVersion.split(',')[packageVersion.split(',').length - 1]
+/*            console.log(lastVersion)
+            console.log(111)
+            console.log(path)
+            console.log(JSON.stringify(app.container.volumes))
+            console.log(JSON.stringify(app)) */
+            //  找到挂载程序包的地址并修改为新地址
             for (let v of app.container.volumes) {
-              if (v.hostPath.indexOf(`/data/apps/${this.appsGroup}/${appName}/${app.labels.CURRENT_VERSION}`) > -1) {
+//              console.log(`/data/apps/${this.appsGroup}/${appName}/${lastVersion}`)
+              if (v.hostPath.indexOf(`/data/apps/${this.appsGroup}/${appName}/${lastVersion}`) > -1) {
                 v.hostPath = path // 替换为新地址
               }
             }
             // 更改包版本号
             app.labels.PACKAGE_VERSION = `${app.labels.PACKAGE_VERSION},${app.labels.CURRENT_VERSION}`
             app.labels.DEFAULT_PACKAGE_VERSION = new Date()
-            console.log(app)
+//            console.log(app)
             // 选中此行
             this.$refs.multipleTable.toggleRowSelection(this.apps[this.uploadRowIndexObj[file.uid]])
           }
         } else if (file.status === 'fail') { // 上传失败
           this.$message.error('上传失败')
+          this.$refs.upload.clearFiles()
         }
       },
       // 点击重置按钮时触发
@@ -403,7 +412,8 @@
         // 清空已上传的文件列表
         this.$refs['upload' + index].clearFiles()
         // 取消选中
-        this.$refs.multipleTable.toggleRowSelection(this.apps[index])
+        this.$refs.multipleTable.clearSelection(this.apps[index])
+    //    this.$refs.multipleTable.rowSele
       },
       appInfoDialog (index) { // 显示弹出层
         this.dialog.dialogVisible = true
@@ -415,14 +425,31 @@
         this.dialog.dialogVer = this.apps[index].appInfo.app.version // 版本
 
         this.dialog.dialogPortMappings = this.apps[index].appInfo.app.container.docker.portMappings // 应用端口,协议，映射端口
-         // this.dialog.dialogDeport = this.apps[index]., // 仓库认证
+         // this.dialog.dialogDeport = this.apps[index].,  // 仓库认证
         this.dialog.dialogEnvionVar = JSON.stringify(this.apps[index].appInfo.app.env, null, 4) // 环境变量
+        /*
+        if (this.apps[index].appInfo.app.constraints[1][2] !== undefined) {
+          console.log(111)
+          let ips = this.apps[index].appInfo.app.constraints[1][2].substring(0, this.apps[index].appInfo.app.constraints[1][2].length)
+          this.apps[index].appInfo.app.constraints[1][2] = ips
+          console.log(ips)
+          console.log(JSON.stringify(this.apps[index].appInfo.app.constraints, null, 4))
+        }
+        */
+//        let kk = [
+//          [this.apps[index].appInfo.app.constraints[0][0], this.apps[index].appInfo.app.constraints[0][1], this.apps[index].appInfo.app.constraints[0][2]],
+//          [this.apps[index].appInfo.app.constraints[1][0], this.apps[index].appInfo.app.constraints[1][1], [this.apps[index].appInfo.app.constraints[1][2].split(',')[0].substring(2, this.apps[index].appInfo.app.constraints[1][2].split(',')[0].length - 1), this.apps[index].appInfo.app.constraints[1][2].split(',')[1].substring(1, this.apps[index].appInfo.app.constraints[1][2].split(',')[1].length - 2)]],
+//          [this.apps[index].appInfo.app.constraints[2][0], this.apps[index].appInfo.app.constraints[2][1], this.apps[index].appInfo.app.constraints[2][2]]
+//        ]
+//        let ff = this.apps[index].appInfo.app.constraints[1][2].toString().substring(0, this.apps[index].appInfo.app.constraints[1][2].length)
+//        this.apps[index].appInfo.app.constraints = kk
+//        console.log(this.apps[index].appInfo.app.constraints[1][2])
         this.dialog.dialogRestrict = JSON.stringify(this.apps[index].appInfo.app.constraints, null, 4) // 限制条件
         this.dialog.dialogHealthCheck = JSON.stringify(this.apps[index].appInfo.app.healthChecks, null, 4)// 健康检查
         this.dialog.dialogDocker = JSON.stringify(this.apps[index].appInfo.app.container.docker, null, 4) // 容器
-        console.log('弹出层内容---')
-        console.log(this.dialog)
-        console.log(this.apps[index].appInfo.app)
+//        console.log('弹出层内容--')
+//        console.log(this.dialog)
+//        console.log(this.apps[index].appInfo.app)
       },
       // 选择文件时保存当前行
       saveRowIndex (index) {
@@ -430,23 +457,30 @@
       },
       // 选中某一行时的触发
       select (selection, row) {
-        console.log('select')
-        console.log(selection)
-        console.log('row', row)
+//        console.log('select')
+//        console.log(selection)
+//        console.log('row', row)
         this.uploadAPPS = selection
-        console.log(this.uploadAPPS)
+//        console.log(this.uploadAPPS)
       },
       // 批量更新应用
       updateAPPList () {
         if (this.uploadAPPS.length > 0) {
           let ua = []
+          var pattern = /^[A-Za-z0-9\\.]+$/
           for (let v of this.uploadAPPS) {
-            ua.push(v.appInfo)
+            let val = v.appInfo.app.labels.CURRENT_VERSION
+            if (val !== undefined && val.trim() !== '' && pattern.test(val) && val.trim().length < 25) {
+              ua.push(v.appInfo)
+            } else {
+              this.$message.error(v.appId + ' 版本号错误，请重新输入')
+              return false
+            }
           }
           let json = JSON.stringify(ua, null, 4)
-          console.log('-----------------------------')
-          console.log(ua)
-          console.log(json)
+//          console.log('==================================')
+//          console.log(JSON.stringify(ua))
+//          console.log(json)
           this.$store.dispatch(appTypes.UPDATE_APPLIST, json)
             .then((data) => {
               if (data.resultCode !== '00') {
@@ -459,6 +493,8 @@
                 this.$router.push({path: '/app/list/apps'})
               }
             })
+        } else {
+          this.$message.error('没有要更新的应用')
         }
       }
     },

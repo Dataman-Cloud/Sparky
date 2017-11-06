@@ -6,7 +6,9 @@ import mutations from './mutations'
 
 const state = {
   clusters: {
-    currClusters: null,
+    currClusters: {
+      vClusterLabel: ''
+    },
     clusters: [],
     total: 0
   }

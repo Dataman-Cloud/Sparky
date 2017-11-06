@@ -7,7 +7,13 @@ import mutations from './mutations'
 const state = {
   apps: {
     apps: [],
-    currApp: {},
+    currApp: {
+      deployments: [],
+      labels: {
+        HAPROXY_PROTOCOL_TYPE: ''
+      },
+      version: ''
+    },
     currContainers: [],
     queue: [],
     model: {},
@@ -16,6 +22,12 @@ const state = {
     appVersionInfo: {},
     appsInfo: [],
     total: 0
+  },
+  appAcl: {
+    bamboo: '',
+    Config: {},
+    Id: '',
+    Acl: ''
   }
 }
 

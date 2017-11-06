@@ -1,6 +1,6 @@
 <template>
   <el-col :span="24" class="breadcrumb-container">
-    <strong class="title">{{$route.name}}</strong>
+<!--    <strong class="title">{{$route.name}}</strong> -->
     <el-breadcrumb separator="/" class="breadcrumb-inner">
       <el-breadcrumb-item v-for="item in $route.matched" :to="item" :key="item.name">
         {{ item.name }}
@@ -21,10 +21,12 @@ export default {
     width: 200px;
     float: left;
     color: #475669;
+    font-size: 18px;
   }
 
   .breadcrumb-inner {
-    float: right;
+    float: left;
+    margin-bottom: 20px;
   }
 }
 </style>

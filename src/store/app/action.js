@@ -91,6 +91,19 @@ export default {
       context.commit(type.FETCH_APP_VERSION_INFO, data.data)
       return data
     })
+  },
+  // 根据appid获取ACL规则
+  [type.GET_APPACL_BY_APPID] (context, playload) {
+    return api.getAppAclByAppId(playload).then(data => {
+      context.commit(type.GET_APPACL_BY_APPID, data)
+      return data
+    })
+  },
+  [type.UPDATE_APPACL] (context, playload) {
+    let appId = playload.Id
+    return api.updateAppAcl(window.btoa(appId), playload)
+  },
+  [type.DEL_APPACL] (context, playload) {
+    return api.delAppAcl(playload)
   }
-
 }
