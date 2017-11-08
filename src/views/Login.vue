@@ -6,7 +6,7 @@
      <!--   <img src="../assets/LOGO.svg" alt=""> -->
 <!--     <img src="../assets/pufa.png" alt="" style="background-color: #999;"> -->
         <h2>系统登录</h2>
-        <h3>浦发信用卡容器云平台</h3>
+        <h3>安利容器云平台</h3>
       </div>
       <el-form class="dm-login-box" :model="loginForm" :rules="rules" label-width="0" autocomplete="off">
         <el-form-item label="" prop="userName" class="dm-login-label">

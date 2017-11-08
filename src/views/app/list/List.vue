@@ -308,17 +308,17 @@
       :visible.sync="createAppGroupDialogVisisble" size="tiny"
     >
       <el-form :model="addAppGroupForm" ref="addAppGroupForm" :rules="addAppGroupRule">
-        <el-select v-model="addAppGroupForm.groupCreateListVal" placeholder="请选择应用组">
+        <!--<el-select v-model="addAppGroupForm.groupCreateListVal" placeholder="请选择应用组">
           <el-option
             v-for="item in groupCreateList"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select>
-       <!-- <el-form-item label="应用组名称" prop="id">
+        </el-select>-->
+       <el-form-item label="应用组名称" prop="id">
           <el-input v-model="addAppGroupForm.id" @input="checkForm('addAppGroupForm')"></el-input>
-        </el-form-item>-->
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
               <el-button @click="createAppGroupDialogVisisble = false">取 消</el-button>
@@ -871,7 +871,7 @@
       createAppGroup (parm) {
         let topThis = this
         console.log(JSON.stringify(parm.groupCreateListVal))
-        let groupCreateId = parm.groupCreateListVal
+        let groupCreateId = parm.id
         this.$store.dispatch(appgroupTypes.ADD_APPGROUP, {'id': groupCreateId}).then((data) => {
           topThis.showResult(data, '创建应用组成功', '创建应用组失败', () => {
             this.listApp()
