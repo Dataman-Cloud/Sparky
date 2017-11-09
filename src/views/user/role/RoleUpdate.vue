@@ -14,7 +14,7 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="角色资源" prop="roleIds" required>
+      <el-form-item label="角色资源" prop="roleIds" >
         <el-tree
           :data="checkedMenusTree"
           :props="props"
@@ -98,7 +98,7 @@
           }
         }
         let parm = {sysRole: this.formName, roleIds: JSON.parse(JSON.stringify(ids))}
-     //   console.log(JSON.stringify(ids))
+        console.log(JSON.stringify(ids))
         if (ids.size !== 0) {
           this.$refs.formName.validate((valid) => {
             if (valid) {
