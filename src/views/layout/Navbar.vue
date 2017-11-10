@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="logo logo-width"><img src="../../assets/pufa.png" alt=""></div>
+    <div class="logo logo-width"><img src="../../assets/dataman.png" alt=""></div>
     <div class="header-operations">
 <!--      <el-select v-model="selectGroup" placeholder="请选择" class="groupsInfo" @change="switchGroup">
         <el-option
@@ -46,7 +46,7 @@ export default {
   data () {
     return {
       fullscreenLoading: false,
-      marathonVal: 'marathon-app-172.30.131.25:6080',
+      marathonVal: 'marathon-app-10.0.0.202:8080',
       sysName: 'DM/OS'
 //      selectGroup: this.$store.state.user.aboutme.currentGroupId
     }

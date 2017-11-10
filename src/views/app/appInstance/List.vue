@@ -171,10 +171,10 @@
 
       </el-tab-pane>
 
-      <el-tab-pane label="转发规则" name="forth">
+     <!-- <el-tab-pane label="转发规则" name="forth">
         <div style="margin-bottom: 20px;">
           <el-button type="primary" size="small" @click="bambooBtn">查看bamboo</el-button>
-        <!--  <span style="margin-left: 20px;">{{bamboo}}</span> -->
+        &lt;!&ndash;  <span style="margin-left: 20px;">{{bamboo}}</span> &ndash;&gt;
         </div>
         <el-table :data="httpType" highlight-current-row border ref="multipleTable" style="width: 100%">
             <el-table-column prop="Id" label="Id" min-width="600" >
@@ -192,23 +192,23 @@
               </template>
             </el-table-column>
         </el-table>
-        <!--<el-col :span="24" class="toolbar">
+        &lt;!&ndash;<el-col :span="24" class="toolbar">
           <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
                          style="float:right;">
           </el-pagination>
-        </el-col>-->
-      </el-tab-pane>
+        </el-col>&ndash;&gt;
+      </el-tab-pane>-->
 
     </el-tabs>
 
-    <el-dialog title="修改规则" :visible.sync="dialog_editAppRule" size="tiny">
+    <!--<el-dialog title="修改规则" :visible.sync="dialog_editAppRule" size="tiny">
       <el-form :model="appForm" ref="appForm">
         <el-form-item label="AppID" prop="Id">
           <el-input v-model="appForm.Id" v-bind:disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="Acl" prop="Acl" :rules="[
           { required: true, message: '请添加ACL规则', trigger: 'blur'}]">
-<!--          <el-input v-model="appForm.Acl"  required></el-input> -->
+&lt;!&ndash;          <el-input v-model="appForm.Acl"  required></el-input> &ndash;&gt;
           <el-input placeholder="请输入Acl规则" v-model="appForm.Acl">
             <template slot="prepend">path_beg -i </template>
           </el-input>
@@ -222,7 +222,7 @@
         <el-button type="primary" @click="updateAcl(appForm)">确 定</el-button>
       </div>
 
-    </el-dialog>
+    </el-dialog>-->
 
     <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
       <el-select v-model="userId" placeholder="请选择所属用户">
@@ -453,7 +453,7 @@
         this.appForm.Acl = para.Acl
       },
       getAppAcl () {
-        return this.$store.dispatch(type.GET_APPACL_BY_APPID, this.appIdEncoded)
+        // return this.$store.dispatch(type.GET_APPACL_BY_APPID, this.appIdEncoded)
       },
       handleCurrentChange (val) {
         this.page = val

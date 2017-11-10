@@ -40,16 +40,16 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column prop="status" label="用户状态" min-width="50">
+      <el-table-column prop="status" label="用户状态" min-width="150">
         <template scope="user">
           {{user.row.status ? '正常' : '禁用'}}
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="LDAP用户" min-width="50">
+     <!-- <el-table-column prop="status" label="LDAP用户" min-width="50">
         <template scope="user">
           {{user.row.isLdap ? '是' : '否'}}
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column prop="createAt" label="创建时间" min-width="150">
         <template scope="user">
           {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
