@@ -46,7 +46,7 @@ export default {
   data () {
     return {
       fullscreenLoading: false,
-      marathonVal: 'marathon-app-10.0.0.202:8080',
+      marathonVal: 'marathon-10.143.97.21:8080',
       sysName: 'DM/OS'
 //      selectGroup: this.$store.state.user.aboutme.currentGroupId
     }

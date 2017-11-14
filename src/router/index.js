@@ -43,6 +43,8 @@ const CapabilityList = _import('elastic/history/List')
 
 import * as nodeType from '@/store/node/mutations_types'
 const BatchRelease = _import('app/batchRelease')
+const Ipam = _import('resource/ipam/ipam')
+const IpamNetwork = _import('resource/ipam/network')
 
 Vue.use(Router)
 
@@ -214,6 +216,17 @@ export const asyncRouterMap = [
         path: 'metricsSnapshot',
         name: '资源统计',
         component: MetricsSnapshot
+      },
+      {
+        path: 'ipam',
+        name: '网络资源',
+        component: Ipam
+      },
+      {
+        path: 'ipamNetwork',
+        name: '网络使用详情',
+        component: IpamNetwork,
+        hidden: true
       }
     ]
   },

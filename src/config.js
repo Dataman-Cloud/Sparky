@@ -1,5 +1,5 @@
 // export const DEFAULT_BASE_URL = '/'
-export const DEFAULT_BASE_URL = 'http://120.132.7.240:8088' // uat
+export const DEFAULT_BASE_URL = 'http://10.143.97.21' // uat
 // export const DEFAULT_BASE_URL = 'http://172.30.131.25:8090' //  dev
 // export const DEFAULT_BASE_URL = 'http://localhost:8080'
 export const HASRELOXSTACK = false
