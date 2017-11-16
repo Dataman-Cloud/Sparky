@@ -118,9 +118,7 @@
           tooltip: { trigger: 'item', formatter: '{a} <br/>{b} ({d}%)' },
           color: ['#f74343', '#ccc'],
           legend: { orient: 'vertical', left: 'left', data: ['已使用', '未使用'] },
-          series: [
-            { name: 'IP使用率', type: 'pie', radius: '55%', center: ['50%', '60%'], data: [ {value: usedNUM, name: '已使用'}, {value: nusedNUM, name: '未使用'} ] }
-          ]
+          series: [ { type: 'pie', name: 'IP使用率', radius: '55%', center: ['50%', '60%'], data: [ {value: usedNUM, name: '已使用'}, {value: nusedNUM, name: '未使用'} ] } ]
         }
         myChart.setOption(option)
       },

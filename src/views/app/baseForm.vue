@@ -50,8 +50,7 @@
         <el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1" :max="10240"></el-input-number>MB
       </el-col>
     </el-form-item>
-    <el-form-item label="容器个数" prop="dockerNum"
-                  style="width: 300px;">
+    <el-form-item label="容器个数" prop="dockerNum" style="width: 300px;">
       <el-input v-model.number="ruleForm.dockerNum"></el-input>
       <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion"></el-checkbox>
     </el-form-item>
