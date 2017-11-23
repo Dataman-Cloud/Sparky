@@ -43,6 +43,7 @@ import * as mutationsType from '@/store/clusters/mutations_types'
 import * as userTypes from '../../store/user/mutations_types'
 import * as appgroupTypes from '@/store/appgroups/mutations_types'
 import * as appTypes from '@/store/app/mutations_types'
+import * as ipamType from '@/store/ipam/mutations_types'
 import appConf from '@/common/app'
 import { Notification } from 'element-ui'
 import appUtil from 'utils/app'
@@ -110,6 +111,7 @@ export default {
     // 查询主机
     dispatch(mutationsType.FETCH_CLUSTERS, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
+    dispatch(ipamType.FETCH_NODE_NETWORK)
   }
 }
 </script>

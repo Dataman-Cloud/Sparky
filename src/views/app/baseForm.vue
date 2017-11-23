@@ -36,6 +36,15 @@
         <el-radio label="HOST">HOST模式</el-radio>
       </el-radio-group>
     </el-form-item>
+    <el-form-item label="一容器一IP">
+      <el-radio-group v-model="ruleForm.networkMacCheck" @change="networkMacCheckChange">
+        <el-radio label="1">选择</el-radio>
+        <el-radio label="0">不选择</el-radio>
+      </el-radio-group>
+      <el-select v-model="ruleForm.ckeckNET" v-show="showNetworkMacCheck" placeholder="选择mac网络" clearable >
+        <el-option v-for="item in this.nets" :label="item.Name" :value="item.Name" :key="item.Name"></el-option>
+      </el-select>
+    </el-form-item>
     <el-form-item label="容器规格" prop="norms">
       <el-col :span="6" class="height-30 min-width">
         <label for="">CPUs</label>
@@ -55,9 +64,16 @@
       <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion"></el-checkbox>
     </el-form-item>
 
-    <el-form-item label="F5 Pool名称" style="width: 400px;">
-      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
+    <el-form-item label="负载选择" prop="dockerLoadCheck" style="width: 300px;">
+      <el-checkbox-group v-model="ruleForm.loadtype" :min="0" :max="1">
+        <el-checkbox label="nginx" name="loadtype"></el-checkbox>
+        <el-checkbox label="haproxy" name="loadtype"></el-checkbox>
+      </el-checkbox-group>
     </el-form-item>
+
+   <!-- <el-form-item label="F5 Pool名称" style="width: 400px;">
+      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
+    </el-form-item>-->
 
    <!-- <el-form-item label="负载均衡" prop="NEED_HAPROXY">
       <el-switch v-model="ruleForm.NEED_HAPROXY" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
@@ -345,7 +361,8 @@
         lag: false,
         activeName: 'formModel',
         showCodeMirror: false,
-        showForm: ''
+        showForm: '',
+        showNetworkMacCheck: false
       }
     },
     computed: {
@@ -378,6 +395,9 @@
         },
         appgroups ({appgroups}) {
           return appgroups.arr
+        },
+        nets (state) {
+          return state.ipam.ipam.nets
         }
       }),
       filterApps: function () {
@@ -410,6 +430,13 @@
         this.removeAllPorts()
         let isBridge = this.ruleForm.network === 'BRIDGE'
         this.ruleForm.dockerProportion = !isBridge
+      },
+      networkMacCheckChange () {
+        let show = this.ruleForm.networkMacCheck === '1'
+        this.showNetworkMacCheck = show
+        if (!show) {
+          this.ruleForm.ckeckNET = ''
+        }
       },
       addPorts () {
         this._addFormItem(this.ruleForm.ports, appConf.formAppend().ports)

@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-form label-position="left" inline class="demo-table-expand">
-      <el-form-item label="容器名称">
+      <el-form-item label="容器名称" style="width: 100%">
         <span>{{instance.Name }} <el-tag type="primary" v-if="instance.State !== undefined">{{instance.State.Status }} </el-tag></span>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -13,8 +13,14 @@
       <el-form-item label="主机名称">
         <span v-if="instance.Config !== undefined">{{instance.Config.Hostname }}</span>
       </el-form-item>
-      <el-form-item label="网络模式">
+      <el-form-item label="容器网络">
         <span v-if="instance.HostConfig !== undefined">{{instance.HostConfig.NetworkMode }}</span>
+      </el-form-item>
+      <el-form-item label="宿主机IP">
+        <span>{{nodeIp }}</span>
+      </el-form-item>
+      <el-form-item label="分配IP">
+        <span>{{instance.NetworkSettings.Networks[instance.HostConfig.NetworkMode].IPAddress }}</span>
       </el-form-item>
     </el-form>
 
@@ -31,7 +37,7 @@
           <el-form-item label="容器主机名" v-bind:style="bigLable">
             <span  class="contest">{{instance.Config.Hostname }}</span>
           </el-form-item>
-          <el-form-item label="网络模式" v-bind:style="bigLable">
+          <el-form-item label="容器网络" v-bind:style="bigLable">
             <span  class="contest">{{instance.HostConfig.NetworkMode }}</span>
           </el-form-item>
           <el-form-item label="hostname 文件" v-bind:style="bigLable">
@@ -118,7 +124,7 @@
         instanceId: this.$route.query.instanceId,
         nodeIp: this.$route.query.nodeIp,
         smallLable: { width: '20%' },
-        bigLable: { width: '80%' },
+        bigLable: { width: '100%' },
         activeName: 'tab1',
         currsse: null,
         cpuChart: null,
@@ -427,7 +433,7 @@
 
 <style scoped>
   .contest {
-    margin-left: 40px;
+    margin-left: 10px;
   }
   .demo-table-expand {
     font-size: 0;

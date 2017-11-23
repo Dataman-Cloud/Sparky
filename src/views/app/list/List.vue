@@ -921,11 +921,12 @@
       },
       parseId (id) {
         if (id) {
-          let params = id.split('/')
-          return {
-            group: params[1],
-            name: params[2]
-          }
+//          let params = id.split('/')
+//          return {
+//            group: params[1],
+//            name: params[2]
+//          }
+          return {appid: id}
         }
       }
     },
