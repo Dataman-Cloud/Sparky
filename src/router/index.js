@@ -42,7 +42,7 @@ const AddPolicy = _import('elastic/policy/Add')
 const CapabilityList = _import('elastic/history/List')
 
 import * as nodeType from '@/store/node/mutations_types'
-const BatchRelease = _import('app/batchRelease')
+// const BatchRelease = _import('app/batchRelease')
 const Ipam = _import('resource/ipam/ipam')
 const IpamNetwork = _import('resource/ipam/network')
 
@@ -153,12 +153,12 @@ export const asyncRouterMap = [
         name: '应用实例信息',
         component: AppInstanList,
         hidden: true
-      },
-      {
-        path: 'list/batchRelease',
-        name: '批量发布',
-        component: BatchRelease
-      }
+      } // ,
+      // {
+      //   path: 'list/batchRelease',
+      //   name: '批量发布',
+      //   component: BatchRelease
+      // }
     ]
   },
   {

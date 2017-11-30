@@ -55,10 +55,33 @@
                 {{scope.row.id }}
               </router-link> <br />
               <template v-if="!isMacVlan">
-              <span >{{scope.row.host }}:
-                <template v-for="port in scope.row.ports"> <a target="_blank"  :href="getIPAddr(scope.row.host,port)">{{port }}&nbsp&nbsp</a> </template>
-              </span>
+                <span >{{scope.row.host }}:
+                  <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                    <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.host,port.number)">{{port.number }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                  <template v-if="networkType === 'BRIDGE'">
+                    <template v-for="port in scope.row.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.host,port)">{{port }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                </span>
               </template>
+              <template v-else>
+                <!--// 默认只有一个 mac 一个ip-->
+                <span > {{scope.row.ipAddresses[0].ipAddress }}:
+                  <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                    <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.ipAddresses[0].ipAddress,port.number)">{{port.number }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                  <template v-if="networkType === 'BRIDGE'">
+                    <template v-for="(port, index) in scope.row.ports"> <a target="_blank"  :href="getIPAddr(scope.row.ipAddresses[0].ipAddress,appInfo.container.docker.portMappings[index].containerPort)">{{appInfo.container.docker.portMappings[index].containerPort }}&nbsp&nbsp</a> </template>
+                  </template>
+                  </span>
+              </template>
+
             </template>
           </el-table-column>
           <el-table-column prop="host" label="宿主机IP" min-width="130" sortable>
@@ -66,10 +89,20 @@
           <el-table-column prop="ports" label="端口映射" min-width="200" sortable>
             <template scope="scope">
               <template v-if="!isMacVlan">
-                <template v-for="(port, index) in scope.row.ports"> {{port }}({{appInfo.container.docker.portMappings[index].containerPort }})&nbsp&nbsp </template>
+                <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                  <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">{{port.number}}</template>
+                </template>
+                <template v-if="networkType === 'BRIDGE'">
+                  <template v-for="(port, index) in scope.row.ports"> {{port }}({{appInfo.container.docker.portMappings[index].containerPort }})&nbsp&nbsp </template>
+                </template>
               </template>
               <template v-else>
-                <template v-for="(port, index) in scope.row.ports"> {{appInfo.container.docker.portMappings[index].containerPort }}&nbsp&nbsp </template>
+                <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                  <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">{{port.number}}</template>
+                </template>
+                <template v-if="networkType === 'BRIDGE'">
+                  <template v-for="(port, index) in scope.row.ports"> {{appInfo.container.docker.portMappings[index].containerPort }}({{appInfo.container.docker.portMappings[index].containerPort }})&nbsp&nbsp </template>
+                </template>
               </template>
               </template>
           </el-table-column>
@@ -316,7 +349,8 @@
         versionAPPInfo: undefined,
         // appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
         appIdEncoded: window.btoa(this.$route.params.appid),
-        isMacVlan: false
+        isMacVlan: false,
+        networkType: ''
       }
     },
     computed: {
@@ -335,6 +369,10 @@
           // 版本应用信息默认为当前应用信息
           this.versionAPPInfo = appinfo
           let isMacVlan = false
+          let networkType = ''
+          if (appinfo && appinfo.container && appinfo.container.docker && appinfo.container.docker.network) {
+            networkType = appinfo.container.docker.network
+          }
           if (appinfo && appinfo.container && appinfo.container.docker && appinfo.container.docker.parameters) {
             for (let p of appinfo.container.docker.parameters) {
               if (p.key === 'net') {
@@ -343,6 +381,7 @@
             }
           }
           this.isMacVlan = isMacVlan
+          this.networkType = networkType
           return appinfo
         },
         httpType (state) {

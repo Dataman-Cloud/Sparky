@@ -20,7 +20,7 @@
               </el-form>
               <div id="refreshbtndiv">
                 <el-button type="success" @click="details">使用详情</el-button>
-                <el-button type="success" @click="releaseIp">刷新IP</el-button>
+                <!--<el-button type="success" @click="releaseIp">刷新IP</el-button>-->
               </div>
             </div>
           </el-col>

@@ -66,6 +66,8 @@ export default {
       this.$router.go(-1)
     },
     transForm () {
+      console.log(this.ruleForm)
+      console.log(this.resultForm)
       return appUtil.transformFormToJson(this.ruleForm, this.resultForm)
     },
     resetForm () {
@@ -79,6 +81,9 @@ export default {
         if (valid) {
           let router = this.$router
           this.transForm()
+          if (this.resultForm.container.docker.network === 'BRIDGE') {
+            delete this.resultForm.ipAddress
+          }
           console.log(JSON.stringify(this.resultForm))
           this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
             if (data.resultCode === '00') {

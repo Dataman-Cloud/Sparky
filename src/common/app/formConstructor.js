@@ -30,9 +30,11 @@ function ruleForm () {
     health: [],
     cmd: undefined,
     dockerPar: [],
-    networkMacCheck: '0',
+    networkMacCheck: '1',
     ckeckNET: '',
-    loadtype: []
+    loadtype: [],
+    hostPorts: [],
+    ckeckLoadNET: ''
   }
 }
 
@@ -86,7 +88,9 @@ function modelForm () {
     createdTime: '',
     networkMacCheck: '0',
     ckeckNET: '',
-    loadtype: []
+    loadtype: [],
+    hostPorts: [],
+    ckeckLoadNET: ''
   }
 }
 
