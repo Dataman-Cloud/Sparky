@@ -80,6 +80,11 @@
   import * as type from '../../../store/ipam/mutations_types'
 
   const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/toolbox')
+require('echarts/lib/component/title')
+require('echarts/lib/component/legend')
 
   export default {
     data () {
