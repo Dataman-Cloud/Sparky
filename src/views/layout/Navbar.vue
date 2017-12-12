@@ -14,14 +14,14 @@
       </el-select> -->
 
      <!-- <span><strong>选择marathon:</strong></span> -->
-      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading">
-        <el-option
-          v-for="item in marathonList"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select> &nbsp;
+      <!--<el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading">-->
+        <!--<el-option-->
+          <!--v-for="item in marathonList"-->
+          <!--:key="item.value"-->
+          <!--:label="item.label"-->
+          <!--:value="item.value">-->
+        <!--</el-option>-->
+      <!--</el-select> &nbsp;-->
 
       <el-dropdown trigger="hover" class="userinfo">
         <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}<i class="el-icon-caret-bottom" style="margin-left:10px;font-size:12px"></i></span>

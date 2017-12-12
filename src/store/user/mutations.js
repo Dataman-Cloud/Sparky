@@ -11,6 +11,11 @@ export default {
     state.users.users = payload
     state.users.total = state.users.users.length
   },
+  [type.FETCH_USERS_PAGE] (state, payload) {
+    state.users.users = payload.accounts
+    state.users.total = payload.total
+    state.users.pageNum = payload.pageNum
+  },
   [type.FETCH_USER_DETAIL] (state, payload) {
   },
   [type.USER_INFO] (state, payload) {

@@ -12,7 +12,8 @@ const state = {
   userEdit: {},
   users: {
     users: [],
-    total: 0
+    total: 0,
+    pageNum: 0
   },
   groups: {
     groups: [],

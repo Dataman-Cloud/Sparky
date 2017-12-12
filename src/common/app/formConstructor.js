@@ -13,7 +13,7 @@ function ruleForm () {
     vcluster: 'default_cluster',
     master: [],
     group: undefined,
-    network: 'BRIDGE',
+    network: 'HOST',
     NEED_HAPROXY: false, // HAPORXY
     CURRENT_VERSION: '', // 程序包版本
     PACKAGE_TYPE: undefined, // 程序包发布包类型
@@ -70,7 +70,7 @@ function modelForm () {
     vcluster: undefined,
     master: [],
     NEED_HAPROXY: false,
-    network: 'BRIDGE',
+    network: 'HOST',
     cpus: 0,
     memory: 0,
     hardDrive: 0,

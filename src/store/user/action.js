@@ -14,6 +14,13 @@ export default {
         return data
       })
   },
+  [type.FETCH_USERS_PAGE] (context, playload) {
+    return api.usersPage(playload.pageNum, playload.userName)
+      .then(data => {
+        context.commit(type.FETCH_USERS_PAGE, data)
+        return data
+      })
+  },
   [type.FETCH_USERS] (context, playload) {
     return api.users()
       .then(data => {

@@ -35,6 +35,16 @@ export function users () {
   return axios.get(`/jborg/accounts/getAll`)
 }
 
+export function usersPage (pageNum, userName) {
+  if (!pageNum) {
+    pageNum = 1
+  }
+  if (userName) {
+    return axios.get(`/jborg/accounts/find?pageNum=${pageNum}&&userName=${userName}`)
+  }
+  return axios.get(`/jborg/accounts/find?pageNum=${pageNum}`)
+}
+
 export function userDetail (userId) {
   return axios.get(`/jborg/accounts/getUser/${userId}`)
 }

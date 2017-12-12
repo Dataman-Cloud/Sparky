@@ -387,7 +387,7 @@
         showForm: '',
         showNetworkMacCheck: true,
         loadtype_haproxy_disabled: false,
-        loadtype_nginx_disabled: false
+        loadtype_nginx_disabled: true
       }
     },
     computed: {
@@ -478,8 +478,8 @@
           }
         }
 
-        // 当前版本 nginx的代理只能是 代理 HOST 和 BRIDGE 不能代理 使用了 macvlan 的应用
-        this.loadtype_nginx_disabled = data !== ''
+        // 当前版本 nginx的代理只能是使用了 macvlan 的应用, HOST 和 BRIDGE 不能代理
+        this.loadtype_nginx_disabled = data === ''
         if (this.loadtype_nginx_disabled) {
           if (this.ruleForm.loadtype && this.ruleForm.loadtype.length > 0 && this.ruleForm.loadtype[0] === 'nginx') {
             this.ruleForm.loadtype = []
