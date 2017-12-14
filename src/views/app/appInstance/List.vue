@@ -268,7 +268,7 @@
 
     </el-dialog>-->
 
-    <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
+<!--    <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
       <el-select v-model="userId" placeholder="请选择所属用户">
         <el-option v-for="item in users" :label="item.name" :value="item.id" :key="item.id"></el-option>
       </el-select>
@@ -276,7 +276,7 @@
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
 
     <el-dialog title="扩展" :visible.sync="dialogVisible" size="tiny">
       <el-input-number v-model="instancesNums" size="small" :min="0" :step="1"></el-input-number>
@@ -833,7 +833,7 @@
     mounted () {
       this.init()
       this.getAppVersions()
-      this.getUsers()
+      // this.getUsers()
       this.interval = setInterval(() => this.init(), 5000)
     },
     beforeDestroy: function () {
