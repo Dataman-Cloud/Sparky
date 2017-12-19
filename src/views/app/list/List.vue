@@ -24,11 +24,11 @@
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
           -->
-          <el-form-item>
-            <router-link to="../list/catalogStackList">
-              <el-button type="primary" v-showBtn="addPackage" >程序包发布</el-button>
-            </router-link>
-          </el-form-item>
+          <!--<el-form-item>-->
+            <!--<router-link to="../list/catalogStackList">-->
+              <!--<el-button type="primary" v-showBtn="addPackage" >程序包发布</el-button>-->
+            <!--</router-link>-->
+          <!--</el-form-item>-->
           <el-form-item>
             <router-link to="../addImg">
               <el-button type="primary" v-showBtn="addAPP" >镜像发布</el-button>
@@ -921,11 +921,12 @@
       },
       parseId (id) {
         if (id) {
-          let params = id.split('/')
-          return {
-            group: params[1],
-            name: params[2]
-          }
+//          let params = id.split('/')
+//          return {
+//            group: params[1],
+//            name: params[2]
+//          }
+          return {appid: id}
         }
       }
     },

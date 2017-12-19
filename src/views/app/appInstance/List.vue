@@ -54,13 +54,57 @@
                 :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
                 {{scope.row.id }}
               </router-link> <br />
+              <template v-if="!isMacVlan">
+                <span >{{scope.row.host }}:
+                  <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                    <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.host,port.number)">{{port.number }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                  <template v-if="networkType === 'BRIDGE'">
+                    <template v-for="port in scope.row.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.host,port)">{{port }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                </span>
+              </template>
+              <template v-else>
+                <!--// 默认只有一个 mac 一个ip-->
+                <span > {{scope.row.ipAddresses[0].ipAddress }}:
+                  <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                    <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">
+                      <a target="_blank"  :href="getIPAddr(scope.row.ipAddresses[0].ipAddress,port.number)">{{port.number }}&nbsp&nbsp</a>
+                    </template>
+                  </template>
+                  <template v-if="networkType === 'BRIDGE'">
+                    <template v-for="(port, index) in scope.row.ports"> <a target="_blank"  :href="getIPAddr(scope.row.ipAddresses[0].ipAddress,appInfo.container.docker.portMappings[index].containerPort)">{{appInfo.container.docker.portMappings[index].containerPort }}&nbsp&nbsp</a> </template>
+                  </template>
+                  </span>
+              </template>
 
-              <span>{{scope.row.host }}:<a target="_blank" :href="getIPAddr(scope.row)">{{scope.row.ports }}</a></span>
             </template>
           </el-table-column>
-          <el-table-column prop="host" label="IP" min-width="150" sortable>
+          <el-table-column prop="host" label="宿主机IP" min-width="130" sortable>
           </el-table-column>
-          <el-table-column prop="ports" label="端口" min-width="130" sortable>
+          <el-table-column prop="ports" label="端口映射" min-width="200" sortable>
+            <template scope="scope">
+              <template v-if="!isMacVlan">
+                <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                  <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">{{port.number}}</template>
+                </template>
+                <template v-if="networkType === 'BRIDGE'">
+                  <template v-for="(port, index) in scope.row.ports"> {{port }}({{appInfo.container.docker.portMappings[index].containerPort }})&nbsp&nbsp </template>
+                </template>
+              </template>
+              <template v-else>
+                <template v-if="networkType === 'HOST' && appInfo.ipAddress">
+                  <template v-for="(port, index) in appInfo.ipAddress.discovery.ports">{{port.number}}</template>
+                </template>
+                <template v-if="networkType === 'BRIDGE'">
+                  <template v-for="(port, index) in scope.row.ports"> {{appInfo.container.docker.portMappings[index].containerPort }}({{appInfo.container.docker.portMappings[index].containerPort }})&nbsp&nbsp </template>
+                </template>
+              </template>
+              </template>
           </el-table-column>
           <el-table-column prop="taskHealth" label="健康" min-width="130" sortable>
           </el-table-column>
@@ -224,7 +268,7 @@
 
     </el-dialog>-->
 
-    <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
+<!--    <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
       <el-select v-model="userId" placeholder="请选择所属用户">
         <el-option v-for="item in users" :label="item.name" :value="item.id" :key="item.id"></el-option>
       </el-select>
@@ -232,7 +276,7 @@
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
 
     <el-dialog title="扩展" :visible.sync="dialogVisible" size="tiny">
       <el-input-number v-model="instancesNums" size="small" :min="0" :step="1"></el-input-number>
@@ -303,7 +347,10 @@
         instancesNums: 0,
         dialogVisible: false,
         versionAPPInfo: undefined,
-        appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
+        // appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
+        appIdEncoded: window.btoa(this.$route.params.appid),
+        isMacVlan: false,
+        networkType: ''
       }
     },
     computed: {
@@ -321,6 +368,20 @@
           this.instancesNum = appinfo.instances
           // 版本应用信息默认为当前应用信息
           this.versionAPPInfo = appinfo
+          let isMacVlan = false
+          let networkType = ''
+          if (appinfo && appinfo.container && appinfo.container.docker && appinfo.container.docker.network) {
+            networkType = appinfo.container.docker.network
+          }
+          if (appinfo && appinfo.container && appinfo.container.docker && appinfo.container.docker.parameters) {
+            for (let p of appinfo.container.docker.parameters) {
+              if (p.key === 'net') {
+                isMacVlan = true
+              }
+            }
+          }
+          this.isMacVlan = isMacVlan
+          this.networkType = networkType
           return appinfo
         },
         httpType (state) {
@@ -573,10 +634,11 @@
         }
         return url
       },
-      getIPAddr (para) {
-        let ip = para.host
-        let port = para.ports
-        return 'http://' + ip + ':' + port
+      getIPAddr (host, port) {
+        // console.log(para)
+//        let ip = para.host
+//        let port = para.ports
+        return 'http://' + host + ':' + port
       },
       getStderr (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
@@ -771,7 +833,7 @@
     mounted () {
       this.init()
       this.getAppVersions()
-      this.getUsers()
+      // this.getUsers()
       this.interval = setInterval(() => this.init(), 5000)
     },
     beforeDestroy: function () {

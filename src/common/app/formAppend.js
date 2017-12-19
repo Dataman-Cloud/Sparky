@@ -4,6 +4,10 @@ function formAppend () {
       containerPort: '1',
       protocol: 'tcp'
     },
+    hostPorts: {
+      containerPort: '1',
+      protocol: 'tcp'
+    },
     mounts: {
       containerPath: '',
       hostPath: '',

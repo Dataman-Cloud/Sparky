@@ -30,11 +30,20 @@
       </el-select>
     </el-form-item>
     <slot name="appGroup"></slot>
-    <el-form-item label="网络模式">
-      <el-radio-group v-model="ruleForm.network" @change="networkChange">
-        <el-radio label="BRIDGE">网桥模式</el-radio>
-        <el-radio label="HOST">HOST模式</el-radio>
-      </el-radio-group>
+    <!--<el-form-item label="网络模式">-->
+      <!--<el-radio-group v-model="ruleForm.network" @change="networkChange">-->
+        <!--<el-radio label="BRIDGE">网桥模式</el-radio>-->
+        <!--<el-radio label="HOST">HOST模式</el-radio>-->
+      <!--</el-radio-group>-->
+    <!--</el-form-item>-->
+    <el-form-item label="选择网络" prop="ckeckNET">
+      <!--<el-radio-group v-model="ruleForm.networkMacCheck" @change="networkMacCheckChange">-->
+        <!--<el-radio label="1">选择</el-radio>-->
+        <!--<el-radio label="0">不选择</el-radio>-->
+      <!--</el-radio-group>-->
+      <el-select v-model="ruleForm.ckeckNET" v-show="showNetworkMacCheck" placeholder="选择macvlan网络" clearable @change="macvlanChange" >
+        <el-option v-for="item in this.nets" :label="item.Name" :value="item.Name" :key="item.Name"></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="容器规格" prop="norms">
       <el-col :span="6" class="height-30 min-width">
@@ -45,20 +54,31 @@
         <label for="">内存</label>
         <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1" :max="10240"></el-input-number>MB
       </el-col>
-      <el-col :span="6" class="height-30 min-width">
-        <label for="">硬盘</label>
-        <el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1" :max="10240"></el-input-number>MB
-      </el-col>
+      <!--<el-col :span="6" class="height-30 min-width">-->
+        <!--<label for="">硬盘</label>-->
+        <!--<el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1" :max="10240"></el-input-number>MB-->
+      <!--</el-col>-->
     </el-form-item>
-    <el-form-item label="容器个数" prop="dockerNum"
-                  style="width: 300px;">
+    <el-form-item label="容器个数" prop="dockerNum" style="width: 300px;">
       <el-input v-model.number="ruleForm.dockerNum"></el-input>
       <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion"></el-checkbox>
     </el-form-item>
 
-    <el-form-item label="F5 Pool名称" style="width: 400px;">
-      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
+    <el-form-item label="负载选择" prop="dockerLoadCheck" style="width: 700px;">
+      <el-checkbox-group v-model="ruleForm.loadtype" :min="0" :max="1" style="display: inline-block;margin-right: 15px;">
+        <el-checkbox label="nginx" name="loadtype" :disabled="loadtype_nginx_disabled"></el-checkbox>
+        <el-checkbox label="haproxy" name="loadtype" :disabled="loadtype_haproxy_disabled"></el-checkbox>
+      </el-checkbox-group>
+
+      <el-select v-model="ruleForm.ckeckLoadNET" v-show="ruleForm.loadtype.length>0" placeholder="选择负载应用macvlan网络" clearable >
+        <el-option v-for="item in this.nets" :label="item.Name" :value="item.Name" :key="item.Name"></el-option>
+      </el-select>
+
     </el-form-item>
+
+   <!-- <el-form-item label="F5 Pool名称" style="width: 400px;">
+      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
+    </el-form-item>-->
 
    <!-- <el-form-item label="负载均衡" prop="NEED_HAPROXY">
       <el-switch v-model="ruleForm.NEED_HAPROXY" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
@@ -77,22 +97,15 @@
     <!-- 这里开始高级选项 -->
     <el-collapse>
       <el-collapse-item title="高级选项" name="1">
-        <el-row>
+        <el-row v-show="ruleForm.network==='BRIDGE'">
           <el-row>
-            <a v-show="ruleForm.network==='BRIDGE'" @click="addPorts" class="cursor-pointer">添加端口<i
-              class="el-icon-plus"></i></a>
+            <a @click="addPorts" class="cursor-pointer">添加端口<i class="el-icon-plus"></i></a>
           </el-row>
           <el-form-item v-for="(port, index) in ruleForm.ports" class="margin-left-100" :key="index">
             <el-row>
-              <el-col :span="3" :key="index"
-                      v-show="ruleForm.network==='BRIDGE'">
-                <el-form-item :prop="'ports.' + index + '.containerPort'"
-                              :key="port.index"
-                              :rules="[
-                                  { required: true, message: '端口号不能为空' }
-                              ]">
-                  <el-input v-model.number="port.containerPort" type="number" placeholder="端口号" size="small"
-                            style="width: 120px; padding-bottom: 16px;"></el-input>
+              <el-col :span="3" :key="index" >
+                <el-form-item :prop="'ports.' + index + '.containerPort'" :key="port.index" :rules="[{ required: true, message: '端口号不能为空' }]">
+                  <el-input v-model.number="port.containerPort" type="number" placeholder="端口号" size="small" style="width: 120px; padding-bottom: 16px;"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="3">
@@ -107,6 +120,31 @@
             </el-row>
           </el-form-item>
         </el-row>
+
+        <el-row v-show="ruleForm.network==='HOST'">
+          <el-row>
+            <a @click="addHostPorts" class="cursor-pointer">添加端口<i class="el-icon-plus"></i></a>
+          </el-row>
+          <el-form-item v-for="(port, index) in ruleForm.hostPorts" class="margin-left-100" :key="index">
+            <el-row>
+              <el-col :span="3" :key="index" >
+                <el-form-item :prop="'hostPorts.' + index + '.containerPort'" :key="port.index" :rules="[{ required: true, message: '端口号不能为空' }]">
+                  <el-input v-model.number="port.containerPort" type="number" placeholder="端口号" size="small" style="width: 120px; padding-bottom: 16px;"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-select v-model="port.protocol" placeholder="" size="small" style="width:100px;">
+                  <el-option label="tcp" value="tcp"></el-option>
+                  <el-option label="udp" value="udp"></el-option>
+                </el-select>
+              </el-col>
+              <el-col :span="2">
+                <el-button @click.prevent="removeHostPorts(port)" size="small">删除</el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+        </el-row>
+
         <el-row>
           <el-row>
             <a @click="addMount" class="cursor-pointer">挂载目录<a class="el-icon-plus"></a></a>
@@ -346,7 +384,10 @@
         lag: false,
         activeName: 'formModel',
         showCodeMirror: false,
-        showForm: ''
+        showForm: '',
+        showNetworkMacCheck: true,
+        loadtype_haproxy_disabled: false,
+        loadtype_nginx_disabled: true
       }
     },
     computed: {
@@ -379,6 +420,9 @@
         },
         appgroups ({appgroups}) {
           return appgroups.arr
+        },
+        nets (state) {
+          return state.ipam.ipam.nets
         }
       }),
       filterApps: function () {
@@ -397,6 +441,7 @@
       handleClick (tab, event) {
         if (tab.name === 'jsonModel') {
           try {
+            console.log(this.transForm())
             this.showForm = JSON.stringify(this.transForm(), null, 2)
           } catch (e) {
             throw new Error(`has something wrong with the form`)
@@ -408,18 +453,56 @@
         }
       },
       networkChange () {
-        this.removeAllPorts()
         let isBridge = this.ruleForm.network === 'BRIDGE'
+        if (isBridge) {
+          this.removeAllHostPorts()
+        } else {
+          this.removeAllPorts()
+        }
         this.ruleForm.dockerProportion = !isBridge
+      },
+      networkMacCheckChange () {
+        let show = this.ruleForm.networkMacCheck === '1'
+        this.showNetworkMacCheck = show
+        if (!show) {
+          this.ruleForm.ckeckNET = ''
+        }
+      },
+      macvlanChange (data) {
+        // 默认 做一下限制  如果 网络模式 BRIDGE 同时又选择了使用 macvlan 则  haproxy 代理不能选择
+        // 当前版本 marathon-lb 只能支持 HOST 模式
+        this.loadtype_haproxy_disabled = data !== '' && this.ruleForm.network === 'BRIDGE'
+        if (this.loadtype_haproxy_disabled) {
+          if (this.ruleForm.loadtype && this.ruleForm.loadtype.length > 0 && this.ruleForm.loadtype[0] === 'haproxy') {
+            this.ruleForm.loadtype = []
+          }
+        }
+
+        // 当前版本 nginx的代理只能是使用了 macvlan 的应用, HOST 和 BRIDGE 不能代理
+        this.loadtype_nginx_disabled = data === ''
+        if (this.loadtype_nginx_disabled) {
+          if (this.ruleForm.loadtype && this.ruleForm.loadtype.length > 0 && this.ruleForm.loadtype[0] === 'nginx') {
+            this.ruleForm.loadtype = []
+          }
+        }
       },
       addPorts () {
         this._addFormItem(this.ruleForm.ports, appConf.formAppend().ports)
       },
+      addHostPorts () {
+        this._addFormItem(this.ruleForm.hostPorts, appConf.formAppend().hostPorts)
+      },
       removePorts (item) {
         this._removeFormItem(this.ruleForm.ports, item)
       },
+      removeHostPorts (item) {
+        this._removeFormItem(this.ruleForm.hostPorts, item)
+      },
       removeAllPorts () {
         this.ruleForm.ports = []
+      },
+      removeAllHostPorts () {
+        this.ruleForm.hostPorts = []
       },
       addMount () {
         this._addFormItem(this.ruleForm.mounts, appConf.formAppend().mounts)

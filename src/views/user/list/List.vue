@@ -16,28 +16,13 @@
     </el-col>
 
     <!--列表-->
-    <el-table :data="filterUsers" highlight-current-row v-loading="listLoading" style="width: 100%;">
+    <el-table :data="users" highlight-current-row v-loading="listLoading" style="width: 100%;">
       <el-table-column prop="userName" label="用户名" min-width="80" sortable>
       </el-table-column>
       <el-table-column prop="name" label="姓名" min-width="100" sortable>
       </el-table-column>
 
       <el-table-column prop="roleName" label="组名 / 用户角色" min-width="150">
-        <!-- <template scope="scopes">
-          <div v-for="group in scopes.row.accountGroups">
-            <div v-if="group.roleId === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span>
-            </div>
-            <div v-else-if="group.roleId === 'owner'">{{group.group.name}} <span style=" font-style:italic;">组管理员</span>
-            </div>
-            <div v-else-if="group.roleId === 'member'">{{group.group.name}} <span style=" font-style:italic;">组成员</span>
-            </div>
-            <div v-else-if="group.roleId === 'default'">{{group.group.name}} <span style=" font-style:italic;">LDAP管理员</span>
-            </div>
-            <div v-else-if="group.roleId === 'orther'">{{group.group.name}} <span style=" font-style:italic;">其他</span>
-            </div>
-            <div v-else></div>
-          </div>
-        </template> -->
       </el-table-column>
 
       <el-table-column prop="status" label="用户状态" min-width="150">
@@ -45,11 +30,6 @@
           {{user.row.status ? '正常' : '禁用'}}
         </template>
       </el-table-column>
-     <!-- <el-table-column prop="status" label="LDAP用户" min-width="50">
-        <template scope="user">
-          {{user.row.isLdap ? '是' : '否'}}
-        </template>
-      </el-table-column>-->
       <el-table-column prop="createAt" label="创建时间" min-width="150">
         <template scope="user">
           {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
@@ -58,14 +38,6 @@
       <el-table-column label="操作" min-width="100">
         <template scope="user">
           <el-button size="mini" v-showBtn="userDisable" @click="userDisableOrEnable(user.row)">{{user.row.status ? '禁止' : '启用'}}</el-button>
-
-          <!--<span v-if="user.row.status==1">-->
-            <!--<el-button size="mini" v-showBtn="userDisable" @click="userDisable(user.row)">禁止</el-button>-->
-          <!--</span>-->
-          <!--<span v-else>-->
-            <!--<el-button size="mini" v-showBtn="userEnable" @click="userEnable(user.row)">启用</el-button>-->
-          <!--</span>-->
-
           <el-dropdown>
             <span class="el-dropdown-link"> <el-button size="mini">更多</el-button></span>
             <el-dropdown-menu slot="dropdown">
@@ -91,7 +63,7 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" :current-page.sync="currentPage" @current-change="handleCurrentChange" :page-size="pageSize" :total="getTotal"
+      <el-pagination layout="prev, pager, next" :current-page.sync="currentPage" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
                      style="float:right;">
       </el-pagination>
     </el-col>
@@ -113,60 +85,7 @@
 
     </el-dialog>
 
-  <!--  <el-dialog title="编辑用户组" :visible.sync="dialog_groupEdit" @close="editGroupClose">
-      <el-form :model="e_form" :rules="rules" ref="e_form">
-        <el-form-item label="添加组">
-          <el-form-item>
-            <el-select @change="changeSelect" v-model="e_form.groupId" placeholder="选择组">
-              <el-option
-                v-for="item in group_options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-            &lt;!&ndash;
-            <el-select v-model="e_form.role" placeholder="组中角色" style="margin-left: 30px;" v-if="e_form.groupId === 1">
-              <el-option label="超级管理员" value="superuser"></el-option>
-            </el-select>
-            &ndash;&gt;
-            <el-select v-model="e_form.role" placeholder="组中角色" style="margin-left: 30px;">
-              <el-option label="普通管理员" value="owner"></el-option>
-              <el-option label="组成员" value="member"></el-option>
-              <el-option label="LDAP管理员" value="default"></el-option>
-              <el-option label="其他" value="orther"></el-option>
-            </el-select>
-            <el-button type="text" @click="addGroup">添加</el-button>
-          </el-form-item>
-        </el-form-item>
-      </el-form>
-      <template>
-        <el-table
-          :data="e_form.accountGroups"
-          style="width: 100%">
-          <el-table-column
-            prop="group.name"
-            label="用户组"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="role"
-            label="组中角色"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template scope="scope">
-              <el-button type="text" @click="delGroup(scope, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialog_groupEdit = false">取 消</el-button>
-        <el-button type="primary" @click="dialog_groupEdit = false">确 定</el-button>
-      </div>
-    </el-dialog> -->
+
 
   </section>
 </template>
@@ -238,7 +157,6 @@
           return state.user.users.users
         },
         total (state) {
-          this.getTotal = state.user.users.total
           return state.user.users.total
         },
         group_options (state) {
@@ -247,45 +165,14 @@
         group_optionsTotal1 (state) {
           return state.user.groups.total
         }
-      }),
-      filterUsers: function () {
-        if (this.search) {
-          let name = this.filters.name
-          if (name !== null && name !== '') {
-            let list = []
-            // 循环比对
-            for (let u of this.users) {
-              if (u.userName.indexOf(name) > -1) {
-                list.push(u)
-              }
-            }
-            this.search = false
-            this.list = list.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-            this.getTotal = list.length
-            this.currentPage = 1
-            return this.list
-          } else {
-            this.search = false
-            this.list = this.users.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-            this.getTotal = this.total
-            return this.list
-          }
-        }
-/*        console.log(5555555555)
-        if (this.list === null || this.list.length === 0) {
-          this.getTotal = this.total
-          return this.users.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-        } */
-//        return this.list
-        this.getTotal = this.total
-        return this.users.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-      }
+      })
     },
     methods: {
       ...mapActions({
         fetchGroups: type.FETCH_GROUPS,
         fetchUserDetail: type.FETCH_USER_DETAIL,
         fetchUsers: type.FETCH_USERS,
+        fetchUsersPage: type.FETCH_USERS_PAGE,
         fetchUsersDisable: type.FETCH_USERS_DISABLE,
         fetchUsersEnable: type.FETCH_USERS_ENABLE,
         fetchUsersDelGroup: type.FETCH_USERS_DEL_GROUPS,
@@ -294,7 +181,7 @@
         fetchUsersAddInGroup: type.FETCH_USERS_ADD_IN_GROUPS
       }),
       searchFun () {
-        this.search = true
+        this.fetchUsersPage({pageNum: 1, userName: this.filters.name})
       },
       addGroup () {
         let param = {accountId: this.e_form.accountId, groupId: this.e_form.groupId, role: this.e_form.role}
@@ -358,7 +245,7 @@
       },
       handleCurrentChange (val) {
         this.page = val
-        this.search = true
+        this.fetchUsersPage({pageNum: val, userName: this.filters.name})
       },
       resetPwd (user) {
         this.u_form = {
@@ -448,7 +335,7 @@
     },
     mounted () {
       this.listLoading = true
-      this.fetchUsers()
+      this.fetchUsersPage({pageNum: 1, userName: null})
         .then(() => {
           this.listLoading = false
         })

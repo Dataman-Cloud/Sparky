@@ -19,6 +19,7 @@ class Image {
     this.healthChecks = healthChecks
     this.updatePolicy = updatePolicy
     this.mode = mode
+    this.ipAddress = {'discovery': {'ports': []}}
   }
 }
 

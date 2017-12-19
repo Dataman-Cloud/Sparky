@@ -43,6 +43,7 @@ import * as mutationsType from '@/store/clusters/mutations_types'
 import * as userTypes from '../../store/user/mutations_types'
 import * as appgroupTypes from '@/store/appgroups/mutations_types'
 import * as appTypes from '@/store/app/mutations_types'
+import * as ipamType from '@/store/ipam/mutations_types'
 import appConf from '@/common/app'
 import appUtil from 'utils/app'
 
@@ -80,6 +81,9 @@ export default {
         if (valid) {
           this.transForm()
           let router = this.$router
+          if (this.resultForm.container.docker.network === 'BRIDGE') {
+            delete this.resultForm.ipAddress
+          }
           this.$store.dispatch(appTypes.UPDATE_APP, {
             'aid': window.btoa(this.$route.query.aid),
             'params': this.resultForm
@@ -113,6 +117,7 @@ export default {
     // 查询主机
     dispatch(mutationsType.FETCH_CLUSTERS, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
+    dispatch(ipamType.FETCH_NODE_NETWORK)
     if (this.$route.path === '/app/versionAppUpdate') {
       // 查询该版本的应用信息
       dispatch(appTypes.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.$route.query.aid), 'vid': window.btoa(this.$route.query.vid)})

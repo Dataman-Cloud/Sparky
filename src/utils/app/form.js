@@ -45,17 +45,43 @@ function transformFormToJson (normalForm, jsonForm) {
   if (normalForm.dockerPar != null && normalForm.dockerPar.length > 0) {
     docker.parameters = normalForm.dockerPar
   }
+  if (normalForm.ckeckNET) {
+    let hasNetSet = false
+    for (let p of docker.parameters) {
+      if (p['key'] === 'net') {
+        p['value'] = normalForm.ckeckNET
+        hasNetSet = true
+      }
+    }
+    if (!hasNetSet) {
+      docker.parameters.push({key: 'net', value: normalForm.ckeckNET})
+    }
+    console.log(docker.parameters)
+  } else {
+    var tmparr = []
+    for (let p of docker.parameters) {
+      if (p['key'] === 'net') { continue }
+      tmparr.push(p)
+    }
+    docker.parameters = tmparr
+  }
   docker.network = normalForm.network
   if (docker.network === 'BRIDGE') {
     docker.portMappings = normalForm.ports
   } else {
     docker.portMappings = []
   }
-
   docker.forcePullImage = normalForm.force
   jsonForm.env = {}
   if (normalForm.f5Pool != null) {
     jsonForm.env.F5_POOL_NAME = normalForm.f5Pool
+  }
+  if (normalForm.loadtype.length > 0) {
+    jsonForm.labels.LOADTYPE = normalForm.loadtype[0]
+    jsonForm.labels.LOADAPP_MACVLAN = normalForm.ckeckLoadNET
+  } else {
+    jsonForm.labels.LOADTYPE = ''
+    jsonForm.labels.LOADAPP_MACVLAN = ''
   }
   if (normalForm.environmentVariables && normalForm.environmentVariables.length > 0) {
     for (let obj of normalForm.environmentVariables) {
@@ -74,6 +100,15 @@ function transformFormToJson (normalForm, jsonForm) {
   }
   if (normalForm.cmd != null) {
     jsonForm.cmd = normalForm.cmd
+  }
+  if (normalForm.hostPorts != null && normalForm.hostPorts.length > 0) {
+    jsonForm.ipAddress.discovery.ports = []
+    for (let port of normalForm.hostPorts) {
+      jsonForm.ipAddress.discovery.ports.push({'number': port.containerPort, 'protocol': port.protocol, 'name': port.containerPort + port.protocol})
+    }
+  } else {
+    jsonForm.ipAddress.discovery.ports = []
+    // delete jsonForm.ipAddress
   }
   return jsonForm
 }
@@ -111,6 +146,16 @@ function transformJsonToForm (appModel, normalForm) {
   if (appModel.labels['NEED_HAPROXY'] === 'false') {
     normalForm.NEED_HAPROXY = false
   }
+  if (appModel.labels['LOADTYPE']) {
+    normalForm.loadtype[0] = appModel.labels['LOADTYPE']
+  } else {
+    normalForm.loadtype = []
+  }
+  if (appModel.labels['LOADAPP_MACVLAN']) {
+    normalForm.ckeckLoadNET = appModel.labels['LOADAPP_MACVLAN']
+  } else {
+    normalForm.ckeckLoadNET = ''
+  }
   // normalForm.NEED_HAPROXY = appModel.labels['NEED_HAPROXY'] === 'true'// HAPROXY
   normalForm.PACKAGE_TYPE = appModel.labels['PACKAGE_TYPE'] // 程序包发布包类型
   normalForm.procedureMount = appModel.labels['PACKAGE_VOLUME']// 程序包挂载点
@@ -119,6 +164,12 @@ function transformJsonToForm (appModel, normalForm) {
   if (appModel.container.docker.portMappings && appModel.container.docker.portMappings.length > 0) {
     for (let v of appModel.container.docker.portMappings) {
       normalForm.ports.push({containerPort: v.containerPort, protocol: v.protocol})
+    }
+  }
+  if (appModel.ipAddress && appModel.ipAddress.discovery.ports && appModel.ipAddress.discovery.ports.length > 0) {
+    normalForm.hostPorts = []
+    for (let v of appModel.ipAddress.discovery.ports) {
+      normalForm.hostPorts.push({containerPort: v.number, protocol: v.protocol})
     }
   }
   // 挂载目录
@@ -169,13 +220,20 @@ function transformJsonToForm (appModel, normalForm) {
       normalForm.f5Pool = appModel.env[v]
       continue
     }
+    // if (v === 'LOAD_TYPE') {
+    //   normalForm.loadtype = []
+    //   normalForm.loadtype[0] = appModel.env[v]
+    //   continue
+    // }
     normalForm.environmentVariables.push({key: v, value: appModel.env[v]})
   }
   // 自定义Docker变量
   for (let v of appModel.container.docker.parameters) {
-//          if (v['key'] === 'label') {
-//            continue
-//          }
+    if (v['key'] === 'net') {
+      normalForm.networkMacCheck = '1'
+      normalForm.ckeckNET = v['value']
+      continue
+    }
     normalForm.dockerPar.push({key: v['key'], value: v['value']})
   }
   return normalForm

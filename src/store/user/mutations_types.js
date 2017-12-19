@@ -1,5 +1,6 @@
 export const FETCH_ABOUTME = 'FETCH_ABOUTME'
 export const FETCH_USERS = 'FETCH_USERS'
+export const FETCH_USERS_PAGE = 'FETCH_USERS_PAGE'
 export const FETCH_USER_DETAIL = 'FETCH_USER_DETAIL'
 export const USER_INFO = 'USER_INFO'
 export const USER_PWD_RESET = 'USER_PWD_RESET'
