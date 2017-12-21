@@ -52,8 +52,7 @@
             <el-col :span="4">
               <i v-if="item.apps.length > 0" class="el-icon-edit">
               </i>
-              <i v-else class="el-icon-delete" style="color:red"
-                 @click.stop="delAppGroup(item.id)"></i>
+              <i v-else class="el-icon-delete" style="color:red" @click.stop="delAppGroup(item.id)"></i>
             </el-col>
           </el-row>
         </template>
@@ -200,7 +199,7 @@
     <el-button type="primary" @click="createAppGroup(addAppGroupForm)">确 定</el-button>
   </span>
     </el-dialog>
-
+<!--
     <el-dialog
       title="更新用户"
       :visible.sync="editDialogVisible"
@@ -212,7 +211,7 @@
               <el-button @click="editDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="editUser()">确 定</el-button>
   </span>
-    </el-dialog>
+    </el-dialog>-->
 
     <el-dialog title="程序包更新" :visible.sync="dialog_packageEdit" size="small">
       <el-form :model="p_form" :rules="rules" ref="p_form">
@@ -255,7 +254,7 @@
   import { LABEL_PREFIX } from '../../../config'
   import * as type from '../../../store/app/mutations_types'
   import * as appgroupTypes from '../../../store/appgroups/mutations_types'
-  import * as userType from '../../../store/user/mutations_types'
+ // import * as userType from '../../../store/user/mutations_types'
   import ElCol from 'element-ui/packages/col/src/col'
   import ElFormItem from '../../../../node_modules/element-ui/packages/form/src/form-item'
   import ElButton from '../../../../node_modules/element-ui/packages/button/src/button'
@@ -366,13 +365,13 @@
         curGroupId (state) {
           return state.user.aboutme.currentGroupID
         },
-        userMap (state) {
-          let map = new Map()
-          for (let user of state.user.users.users) {
-            map.set(user.id, user.name)
-          }
-          return map
-        },
+//        userMap (state) {
+//          let map = new Map()
+//          for (let user of state.user.users.users) {
+//            map.set(user.id, user.name)
+//          }
+//          return map
+//        },
         appgroups (state) {
           let appgroups = state.appgroups.selfGroups
 //          console.log('*********************appgroups=' + JSON.stringify(state))
@@ -415,7 +414,8 @@
           return state.app.apps.queue.queue
         },
         users (state) {
-          return state.user.users.users
+         // return state.user.users.users
+          return []
         }
       }),
       filterApps: function () {
@@ -687,9 +687,9 @@
           })
         })
       },
-      getUserName (userId) {
-        return this.userMap.get(parseInt(userId))
-      },
+//      getUserName (userId) {
+//        return this.userMap.get(parseInt(userId))
+//      },
       showCreateAppGroup () {
         this.addAppGroupForm.id = null
         this.createAppGroupDialogVisisble = true
@@ -757,10 +757,12 @@
       }
     },
     mounted () {
-      this.$store.dispatch(userType.FETCH_USERS).then(() => {
-        this.interval = setInterval(this.listApp, 5000)
-        this.listApp()
-      })
+//      this.$store.dispatch(userType.FETCH_USERS).then(() => {
+//        this.interval = setInterval(this.listApp, 5000)
+//        this.listApp()
+//      })
+      this.interval = setInterval(this.listApp, 2000)
+      this.listApp()
     },
     filters: {
       localMoment (str, df) {
