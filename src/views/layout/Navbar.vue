@@ -45,8 +45,10 @@ import * as appgroupTypes from 'store/appgroups/mutations_types'
 export default {
   data () {
     return {
+      currentMarathon: '',
       fullscreenLoading: false,
-      marathonVal: 'marathon-10.143.97.21:8080',
+      marathonVal: localStorage.getItem('marathonName'),
+//      marathonVal: '',
       sysName: 'DM/OS'
 //      selectGroup: this.$store.state.user.aboutme.currentGroupId
     }
@@ -71,16 +73,26 @@ export default {
       }) */
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
+          localStorage.removeItem('marathonName')
           location.reload()
         })
       }).catch(() => {
         //   toLogin()
       })
     },
-    listApp () {
-      this.$store.dispatch(appType.FETCH_QUEUE).then(() => {
-        this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
-      })
+    marathonNameVoList () {
+      this.$store.dispatch(appgroupTypes.FATCH_MARATHON)
+        .then((data) => {
+          if (data.resultCode === '00') {
+//            let val = JSON.stringify(data.data[0])
+//            console.log(data.data[0])
+//            console.log(data.data[0].value)
+            this.marathonVal = data.data[0].value
+          } else {
+            // 赋值
+            this.marathonVal = ''
+          }
+        })
     },
     switchGroup () {
       let {dispatch} = store
@@ -114,7 +126,7 @@ export default {
     })
   },
   mounted () {
-    this.listApp()
+    this.marathonNameVoList()
   }
 }
 </script>

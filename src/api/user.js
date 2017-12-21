@@ -3,10 +3,11 @@
  */
 import axios from './http'
 
-export function login (userName, password) {
+export function login (userName, password, kaptchaCode) {
   let data = {
     'userName': userName,
-    'password': password
+    'password': password,
+    'kaptchaCode': kaptchaCode
   }
   return axios.post(`/jborg/accounts/login`, data)
 }

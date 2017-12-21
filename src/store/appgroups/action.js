@@ -27,5 +27,19 @@ export default {
       .then(data => {
         return data
       })
+  },
+  [type.FATCH_APPGROUP_BY_USERNAME] (context) {
+    return api.allAppGroupByUserName()
+      .then(data => {
+        context.commit(type.FATCH_APPGROUP_BY_USERNAME, data.data)
+        return data
+      })
+  },
+  [type.FATCH_MARATHON] (context) {
+    return api.marathonList()
+      .then(data => {
+        context.commit(type.FATCH_MARATHON, data.data)
+        return data
+      })
   }
 }

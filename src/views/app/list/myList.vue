@@ -19,11 +19,11 @@
           <el-form-item>
             <el-input v-model="filters.name" placeholder="应用名称" icon="search"></el-input>
           </el-form-item>
-          <!--<el-form-item>-->
-            <!--<router-link to="../list/catalogStackList">-->
-              <!--<el-button type="primary"  v-showBtn="addPackage">程序包发布</el-button>-->
-            <!--</router-link>-->
-          <!--</el-form-item>-->
+          <el-form-item>
+            <router-link to="../list/catalogStackList">
+              <el-button type="primary"  v-showBtn="addPackage">程序包发布</el-button>
+            </router-link>
+          </el-form-item>
           <el-form-item>
             <router-link to="../addImg">
               <el-button type="primary" v-showBtn="addAPP">镜像发布</el-button>
@@ -530,6 +530,7 @@
                   // this.cscForm.success = true
                   // 清空已上传的文件列表
                   this.$refs.upload.clearFiles()
+                  this.dialog_packageEdit = false
                 } else {
                   Notification.error({
                     title: '创建应用出错',
@@ -678,6 +679,9 @@
           })
           .catch(_ => {})
       },
+      appGroupByUserNameList () {
+        this.$store.dispatch(appgroupTypes.FATCH_APPGROUP_BY_USERNAME)
+      },
       //  获取用户列表
       listApp () {
         this.listLoading = true
@@ -696,7 +700,7 @@
       },
       createAppGroup (parm) {
         console.log(JSON.stringify(parm.groupCreateListVal))
-        let groupCreateId = parm.id
+        let groupCreateId = parm.groupCreateListVal
         let topThis = this
         this.$store.dispatch(appgroupTypes.ADD_APPGROUP, {'id': groupCreateId}).then((data) => {
           topThis.showResult(data, '创建应用组成功', '创建应用组失败', () => {
@@ -758,6 +762,7 @@
     },
     mounted () {
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
+        this.appGroupByUserNameList()
         this.interval = setInterval(this.listApp, 5000)
         this.listApp()
       })

@@ -24,11 +24,11 @@
             <el-button type="primary" v-on:click="listApp">查询</el-button>
           </el-form-item>
           -->
-          <!--<el-form-item>-->
-            <!--<router-link to="../list/catalogStackList">-->
-              <!--<el-button type="primary" v-showBtn="addPackage" >程序包发布</el-button>-->
-            <!--</router-link>-->
-          <!--</el-form-item>-->
+          <el-form-item>
+            <router-link to="../list/catalogStackList">
+              <el-button type="primary" v-showBtn="addPackage" >程序包发布</el-button>
+            </router-link>
+          </el-form-item>
           <el-form-item>
             <router-link to="../addImg">
               <el-button type="primary" v-showBtn="addAPP" >镜像发布</el-button>
@@ -852,6 +852,9 @@
           .catch(_ => {
           })
       },
+      appGroupByUserNameList () {
+        this.$store.dispatch(appgroupTypes.FATCH_APPGROUP_BY_USERNAME)
+      },
       //  获取用户列表
       listApp () {
         this.listLoading = true
@@ -871,7 +874,7 @@
       createAppGroup (parm) {
         let topThis = this
         console.log(JSON.stringify(parm.groupCreateListVal))
-        let groupCreateId = parm.id
+        let groupCreateId = parm.groupCreateListVal
         this.$store.dispatch(appgroupTypes.ADD_APPGROUP, {'id': groupCreateId}).then((data) => {
           topThis.showResult(data, '创建应用组成功', '创建应用组失败', () => {
             this.listApp()
@@ -932,6 +935,7 @@
     },
     mounted () {
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
+        this.appGroupByUserNameList()
         this.interval = setInterval(this.listApp, 5000)
         this.listApp()
       //  sessionStorage.removeItem('marathonName')

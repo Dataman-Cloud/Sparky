@@ -40,7 +40,7 @@ function transformFormToJson (normalForm, jsonForm) {
     constraints.push(['hostname', 'LIKE', host.replace(/,/g, '|')])
   }
   if (normalForm.image != null) {
-    docker.image = normalForm.image
+    docker.image = normalForm.image.trim()
   }
   if (normalForm.dockerPar != null && normalForm.dockerPar.length > 0) {
     docker.parameters = normalForm.dockerPar
@@ -188,21 +188,26 @@ function transformJsonToForm (appModel, normalForm) {
         timeoutSeconds: v.timeoutSeconds, // 检查超时
         maxConsecutiveFailures: v.maxConsecutiveFailures // 最大失败次数
       }
-      if (v.protocol === 'HTTP') {
+      if (v.protocol === 'HTTP' || v.protocol === 'MESOS_HTTP') {
         health.path = v.path // 选择http协议后的路径
         health.ignoreHttp1xx = v.ignoreHttp1xx // 是否选中了忽略http返回码
         health.healthHttpPathText = true// 选择http协议后表格第一行“路径”标题
         health.healthHttpPathCode = true // 选择http协议后显示表格第二行“路径”
         health.healthHttpCheckBoxCode = true// 选择http协议后显示表格第三行“忽略http返回码”的checkbox元素
+      } else {
+        health.ignoreHttp1xx = false
+        health.healthHttpPathText = false// 选择http协议后表格第一行“路径”标题
+        health.healthHttpPathCode = false // 选择http协议后显示表格第二行“路径”
+        health.healthHttpCheckBoxCode = false// 选择http协议后显示表格第三行“忽略http返回码”的checkbox元素
       }
-      if (v.hasOwnProperty('ifPortIndex')) { // 选中了端口组索引后
+      if (v.portIndex != null) { // 选中了端口组索引后 ifPortIndex
         health.portType = '端口组索引' // 选中端口组索引
         health.portIndex = v.portIndex// 端口组索引的值
         health.port = '' // 清空之端口号
         health.protNumCode = false // “端口号”的input元素隐藏
         health.portNumOrPortIndexText = '端口组索引'// 文字显示为端口组索引
         health.portIndexCode = true // “端口组索引”的input元素显示
-      } else {
+      } else if (v.port != null) {
         health.portType = '端口号' // 选中端口号
         health.port = v.port // 端口号的值
         health.protNumCode = true // “端口号”的input元素显示

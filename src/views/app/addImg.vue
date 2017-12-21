@@ -8,16 +8,16 @@
           </el-form-item>
           <el-form-item label="应用组" prop="group" slot="appGroup">
             <el-select v-model="ruleForm.group" :disabled="false" placeholder="请选择应用组">
-              <el-option v-for="item in appgroups" :label="item.id | replaceSprit"
+              <el-option v-for="item in selfAppGroups" :label="item.id | replaceSprit"
                          :value="item.id | replaceSprit" :key="item.id"></el-option>
             </el-select>
           </el-form-item>
         </base-form>
-<!--        <el-form-item>
+        <el-form-item>
           <el-button type="primary" @click="cancelForm">取消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
-          &lt;!&ndash;<el-button @click="resetForm('ruleForm')">重置</el-button>&ndash;&gt;
-        </el-form-item>  -->
+          <el-button type="primary" @click="submitForm('ruleForm')">发布</el-button>
+          <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
+        </el-form-item>
       </el-tab-pane>
       <el-tab-pane label="json模式" name="jsonModel">
         <div class="" v-if="showCodeMirror">
@@ -28,15 +28,16 @@
         <br/><br/>
       </el-tab-pane>
     </el-tabs>
-    <el-form-item>
+<!--    <el-form-item>
       <el-button type="primary" @click="cancelForm">取消</el-button>
       <el-button type="primary" @click="submitForm('ruleForm')">添加应用</el-button>
-      <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
-    </el-form-item>
+      &lt;!&ndash;<el-button @click="resetForm('ruleForm')">重置</el-button>&ndash;&gt;
+    </el-form-item> -->
   </el-form>
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
 import baseForm from './baseForm.vue'
 import * as nodeType from '@/store/node/mutations_types'
 import * as mutationsType from '@/store/clusters/mutations_types'
@@ -55,12 +56,23 @@ export default {
   },
   data () {
     return {
+      labelPosition: 'left',
       ruleForm: appConf.ruleForm(),
       rules: appConf.baseFormRule(),
       resultForm: appConf.resultForm()
     }
   },
+  computed: {
+    ...mapState({
+      selfAppGroups (state) {
+        return state.appgroups.selfGroups
+      }
+    })
+  },
   methods: {
+    ...mapActions({
+      fetchSelfAppGroups: appgroupTypes.FATCH_SELF_APPGROUP
+    }),
     cancelForm: function () {
 //      this.$router.push({path: '/app/list/apps'})
       this.$router.go(-1)
@@ -81,25 +93,31 @@ export default {
         if (valid) {
           let router = this.$router
           this.transForm()
-          if (this.resultForm.container.docker.network === 'BRIDGE') {
-            delete this.resultForm.ipAddress
+          let portLength = 1
+          let portIndex = 0
+          if (this.resultForm.healthChecks[0] !== undefined) {
+            portIndex = this.resultForm.healthChecks[0].portIndex
+            portLength = this.resultForm.container.docker.portMappings.length === 0 ? 1 : this.resultForm.container.docker.portMappings.length
           }
-          console.log(JSON.stringify(this.resultForm))
-          this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
-            if (data.resultCode === '00') {
-              this.$message({
-                type: 'success',
-                message: '创建应用成功!'
-              })
-              router.push({name: '全部的应用'})
-            } else {
-              Notification({
-                title: '创建应用出错',
-                message: JSON.stringify(data.message),
-                type: 'error'
-              })
-            }
-          })
+          if (portIndex >= portLength || portIndex < 0) {
+            this.$message.error('健康检查配置错误：无效的端口组索引号')
+          } else {
+            this.$store.dispatch(appTypes.ADD_APP, this.resultForm).then((data) => {
+              if (data.resultCode === '00') {
+                this.$message({
+                  type: 'success',
+                  message: '发布应用中'
+                })
+                router.push({name: '我的应用'})
+              } else {
+                Notification({
+                  title: '创建应用出错',
+                  message: JSON.stringify(data.message),
+                  type: 'error'
+                })
+              }
+            })
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -117,6 +135,7 @@ export default {
     dispatch(mutationsType.FETCH_CLUSTERS, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
     dispatch(ipamType.FETCH_NODE_NETWORK)
+    this.fetchSelfAppGroups()
   }
 }
 </script>

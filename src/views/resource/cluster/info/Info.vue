@@ -5,8 +5,8 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
         <el-form-item>
-          <el-button type="primary" @click="delCluster">删除集群</el-button>
-          <el-button type="primary" @click="getAvailableNodes">添加主机</el-button>
+          <el-button type="primary" v-showBtn="delCluster" @click="delCluster">删除集群</el-button>
+          <el-button type="primary" v-showBtn="delCluster" @click="getAvailableNodes">添加主机</el-button>
         </el-form-item>
 
       </el-form>
@@ -63,7 +63,7 @@
       </el-table-column>
       <el-table-column prop="" label="操作" min-width="100" sortable>
         <template scope="node">
-          <el-button type="danger" size="small" @click="delNode(node.$index, node.row)" v-loading.fullscreen.lock="fullscreenLoading">删除</el-button>
+          <el-button type="danger" size="small" v-showBtn="delCluster" @click="delNode(node.$index, node.row)" v-loading.fullscreen.lock="fullscreenLoading">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -79,12 +79,19 @@
 //           this.$route.query.user = this.formName.user
 //            this.$route.query.user.email = this.formName.email
 //            this.$route.query.user.desc = this.formName.desc
-            this.$store.dispatch(type.FETCH_USERS_EDIT, user).then(() => {
-              this.$message({
-                message: '更新成功',
-                type: 'success'
-              })
-              this.$router.push({path: '/system/user/list'})
+            this.$store.dispatch(type.FETCH_USERS_EDIT, user).then((data) => {
+              if (data.resultCode === '00') {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success'
+                })
+                this.$router.push({path: '/system/user/list'})
+              } else {
+                this.$message({
+                  message: data.message,
+                  type: 'error'
+                })
+              }
             })
           } else {
             return false

@@ -23,6 +23,13 @@
             </template>
           </el-input>
         </el-form-item>
+        <el-form-item label="" prop="kaptchaCode" style="margin-top: 25px;" v-show="isShow">
+          <el-input class="dm-login-input" v-model="loginForm.kaptchaCode" placeholder="图形验证码" @keyup.enter.native="login" autofocus="autofocus">
+            <template slot="append">
+              <img src="" alt="验证码" title="看不清？换一张试试" style="width:120px;height:50px;cursor:pointer;" id="kaptchaCode" @click="changeKaptcha"/>
+            </template>
+          </el-input>
+        </el-form-item>
         <el-form-item label="" class="dm-button-box">
           <el-button @click.native.prevent="login" :loading="loading" class="login-button">
             登 录
@@ -41,14 +48,18 @@
   import router from 'router'
   import store from 'store'
   import Cookies from 'js-cookie'
+  import { DEFAULT_BASE_URL } from '@/config'
 
   export default {
     data () {
       return {
         loading: false,
+        isShow: false,
+        loginUrl: DEFAULT_BASE_URL,
         loginForm: {
           userName: '',
-          password: ''
+          password: '',
+          kaptchaCode: ''
         },
         rules: {
           userName: [
@@ -56,15 +67,44 @@
           ],
           password: [
             { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          kaptchaCode: [
+            { required: true, message: '请输入验证码', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
+      getLoginUrl () {
+        if (this.loginUrl.endsWith('/')) {
+          return this.loginUrl + 'jborg/kaptcha/getkaptchaCode'
+        } else {
+          return this.loginUrl + '/jborg/kaptcha/getkaptchaCode'
+        }
+      },
+      srcUrl () {
+        let $img = document.getElementById('kaptchaCode')
+        $img.src = this.getLoginUrl()
+        return $img
+      },
+      changeKaptcha () {
+        let $img = document.getElementById('kaptchaCode')
+        let url = this.getLoginUrl() + '?' + Math.floor(Math.random() * 100)
+        $img.src = url
+      },
       login (ev) {
         let { dispatch, commit } = this.$store
+        if (this.loginForm.userName.trim() === '' || this.loginForm.password.trim() === '') {
+          this.showResult('01', 'success', '请输入账户或密码！')
+          return false
+        }
+        if (this.isShow && this.loginForm.kaptchaCode.trim() === '') {
+          this.showResult('01', 'success', '请输入验证码！')
+          return false
+        }
         this.loading = true
-        dispatch(LOG_IN, this.loginForm).then(res => {
+        let prams = {'userName': this.loginForm.userName, 'password': window.btoa(this.loginForm.password), 'kaptchaCode': this.loginForm.kaptchaCode}
+        dispatch(LOG_IN, prams).then(res => {
           if (res.resultCode === '00') {
             return dispatch('GenerateRoutes', res.sysResources).then(_ => {
               Cookies.set('token', res.token)
@@ -74,19 +114,23 @@
               router.addRoutes(store.getters.appendRouters)
               this.$router.push({ name: '我的应用' })
             }).catch(error => {
-              this.showResult(error, 'd', 'sa')
+              this.showResult(error, 'success', 'error')
+              this.loginForm.kaptchaCode = ''
               this.loading = false
             })
           } else {
+            this.srcUrl()
             Notification({
               title: '登录失败',
               message: JSON.stringify(res.message),
               type: 'error'
             })
             this.loading = false
+            this.isShow = true
+            this.loginForm.kaptchaCode = ''
           }
         }).catch(error => {
-          this.showResult(error, 'd', 'sa')
+          this.showResult(error, 'success', 'error')
           this.loading = false
         })
       },
@@ -108,6 +152,9 @@
           this.loading = false
         }
       }
+    },
+    mounted () {
+//      this.srcUrl()
     }
   }
 </script>

@@ -339,7 +339,7 @@
           </el-form-item>
         </el-row>
         <el-row>
-          <el-form-item label="CMD" style="width: 400px;">
+          <el-form-item label="CMD命令" style="width: 400px;">
             <el-input v-model="ruleForm.cmd" placeholder="输入需要运行的命令"></el-input>
           </el-form-item>
         </el-row>
@@ -529,7 +529,10 @@
         this._removeFormItem(this.ruleForm.dockerPar, item)
       },
       healthProtocolChange (healthItem) {
-        let isHttp = healthItem.protocol === 'HTTP'
+        let isHttp = false
+        if (healthItem.protocol === 'MESOS_HTTP' || healthItem.protocol === 'HTTP') {
+          isHttp = true
+        }
         healthItem.healthHttpCheckBoxCode = isHttp
         healthItem.healthHttpPathCode = isHttp
         healthItem.healthHttpPathText = isHttp

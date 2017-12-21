@@ -334,7 +334,8 @@
       },
       targettypesGetOptions () {
         // 清空操作已选类型重新获取
-        this.selectForm.operations.length = 0
+//        this.selectForm.operations.length = 0
+        this.selectForm.operations = []
         // 获取操作类型列表
         this.$store.dispatch(auditType.FETCH_AUDIT_OPERATIONS, {param: 'objType=' + this.selectForm.targettypes})
           .then((data) => { this.queryErrorMsg(data, '获取操作类型列表失败') })

@@ -5,8 +5,8 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
           <el-form-item label="集群名称" :rules="[
             {required: true, message: '集群名称', trigger: 'blur'},
-            {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'},
-            {pattern: /^[a-z0-9-]+$/, message: '名称只能包含小写字母、数字及中划线', trigger: 'blur'}]" prop="vClusterLabel">
+            {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'},
+            {pattern: /^[a-z0-9-_]+$/, message: '名称只能包含小写字母、数字、中划线和下划线', trigger: 'blur'}]" prop="vClusterLabel">
             <el-input v-model="form.vClusterLabel"></el-input>
           </el-form-item>
           <el-form-item label="所属用户组" prop="groupId" :rules="[{ required: true, message: '请选择组' } ]">

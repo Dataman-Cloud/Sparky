@@ -158,7 +158,7 @@
 <style scoped>
   .top {
     margin: 20px 0 5px 0 ;
-    text-align: right;
+    text-align: left;
   }
   .bodybar {
     width: 100%;

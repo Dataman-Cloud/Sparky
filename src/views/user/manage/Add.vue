@@ -200,7 +200,21 @@
       submitForm: function () {
         this.$refs.formName.validate((valid) => {
           if (valid) {
-            this.$store.dispatch(type.FETCH_USERS_ADD, this.formName).then((data) => {
+            let params = {
+              name: this.formName.name,
+              // userName: 'fid_' + this.formName.userName,
+	      userName: this.formName.userName,
+              email: this.formName.email,
+              password: this.formName.password,
+              chkpwd: this.formName.chkpwd,
+              roleId: this.formName.roleId,
+              title: this.formName.title,
+              accountGroups: [{
+                groupId: '',
+                role: ''
+              }]
+            }
+            this.$store.dispatch(type.FETCH_USERS_ADD, params).then((data) => {
               this.showResult(data, '用户创建成功!', '用户创建出错', () => {
                 this.$router.push({path: '/system/user/list'})
               })

@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模版</el-button>
+          <el-button type="primary" @click = "addAppModel" v-showBtn="addCatalog" >创建应用模板</el-button>
           <el-button type="primary" @click="cancelForm('ruleForm')" v-if="isCatalogStackCreate">返回</el-button>
         </el-form-item>
 <!--        <el-form-item>
@@ -14,7 +14,7 @@
     </el-col>
     <!--列表-->
     <el-table :data="filterModels" highlight-current-row v-loading="listLoading" style="width: 100%;">
-      <el-table-column prop="name" label="模版名称" min-width="80" sortable  show-overflow-tooltip>
+      <el-table-column prop="name" label="模板名称" min-width="80" sortable  show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="accountsName" label="创建者" min-width="100" sortable >
       </el-table-column>
@@ -91,7 +91,7 @@
         },
         isCatalogStackCreate: false, //  程序包发布
         CatalogStackCreate: '程序包发布', // 程序包发布文字
-        isRole: false, // 是否对某一模版拥有权限
+        isRole: false, // 是否对某一模板拥有权限
         page: 1, // 默认当前第1页
         pageSize: 10, // 一页显示几条数据
         listLoading: false,
@@ -168,7 +168,7 @@
               v['isRole'] = true
             } else if (group.role === 'member' && this.getUserInfo.id === v.accountId) { // 为组员但为该模板的创建者
               v['isRole'] = true
-            } else if (v.accountsName === 'admin') { // 该模版的创建者为超管
+            } else if (v.accountsName === 'admin') { // 该模板的创建者为超管
               v['isRole'] = true
             }
           }
@@ -179,7 +179,7 @@
       }
     },
     methods: {
-      // 模版详情弹出层
+      // 模板详情弹出层
       info (index) {
         this.dialogVisible = true
         this.dialogMessage.name = this.filterModels[index].name
@@ -191,9 +191,9 @@
       cancelForm: function () {
         this.$router.go(-1)
       },
-      // 删除模版按钮
+      // 删除模板按钮
       removeModel (index) {
-        this.$confirm('是否删除应用模版', '提示', {
+        this.$confirm('是否删除应用模板', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -224,11 +224,15 @@
           curGroupId: this.curGroupId
         }).then(() => {})
       },
-      // 添加新的应用模版
+      // 添加新的应用模板
       addAppModel () {
-        this.$router.push({path: '/app/list/addModel'})
+        if (this.isCatalogStackCreate) {
+          this.$router.push({name: '创建模板和应用'})
+        } else {
+          this.$router.push({path: '/app/list/addModel'})
+        }
       },
-      // 更新应用模版
+      // 更新应用模板
       updataAppModel (index) {
         this.$router.push({path: '/app/list/updateModel', query: {'id': this.filterModels[index].id}})
       },

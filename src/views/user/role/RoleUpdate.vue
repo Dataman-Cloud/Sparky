@@ -14,7 +14,7 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="角色资源" prop="roleIds" >
+      <el-form-item label="角色资源" prop="roleIds" required>
         <el-tree
           :data="checkedMenusTree"
           :props="props"

@@ -117,9 +117,9 @@ export default {
   [type.FETCH_REPO_DEL] (context, playload) {
     return api.repoDel(playload)
   },
-  [type.LOG_IN] ({ commit }, { userName, password }) {
+  [type.LOG_IN] ({ commit }, { userName, password, kaptchaCode }) {
     return new Promise((resolve, reject) => {
-      api.login(userName, password).then(response => {
+      api.login(userName, password, kaptchaCode).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)

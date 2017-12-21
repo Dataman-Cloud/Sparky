@@ -15,7 +15,7 @@
         </el-input>
       </el-form-item>
 
-      <el-form-item label="角色资源" prop="roleIds" >
+      <el-form-item label="角色资源" prop="roleIds" required>
         <el-tree  v-model="formName.roleIds"
           :data="menusTree"
           :props="props"

@@ -27,10 +27,10 @@
       </el-form-item>
       <br clear="all">
 
-      <el-button type="primary" @click="stopApp">停止</el-button>
+      <el-button type="primary" v-showBtn="stopApp" @click="stopApp">停止</el-button>
      <!-- <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button> -->
-      <el-button type="primary" @click="extendDialogVisible">扩展</el-button>
-      <el-button type="primary" @click="delApp">删除</el-button>
+      <el-button type="primary" v-showBtn="extendApp" @click="extendApp">扩展</el-button>
+      <el-button type="primary" v-showBtn="delApp" @click="delApp">删除</el-button>
 <!--      <el-button type="primary">更新</el-button> -->
     </el-form>
 
@@ -48,7 +48,7 @@
                   @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column prop="id" label="实例ID" min-width="400" sortable>
+          <el-table-column prop="id" label="实例ID" min-width="430" sortable>
             <template scope="scope">
               <router-link
                 :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
@@ -106,16 +106,16 @@
               </template>
               </template>
           </el-table-column>
-          <el-table-column prop="taskHealth" label="健康" min-width="130" sortable>
+          <el-table-column prop="taskHealth" label="健康" min-width="150" sortable>
           </el-table-column>
-          <el-table-column prop="taskStatus" label="状态" min-width="130" sortable>
+          <el-table-column prop="taskStatus" label="状态" min-width="150" sortable>
           </el-table-column>
           <el-table-column prop="stagedAt" label="版本" min-width="250" sortable>
             <template scope="scope">
               {{scope.row.stagedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
           </el-table-column>
-          <el-table-column prop="startedAt" label="更新时间" min-width="220" sortable>
+          <el-table-column prop="startedAt" label="更新时间" min-width="250" sortable>
             <template scope="scope">
               {{scope.row.startedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
@@ -215,17 +215,20 @@
 
       </el-tab-pane>
 
-     <!-- <el-tab-pane label="转发规则" name="forth">
+      <el-tab-pane label="转发规则" name="forth">
         <div style="margin-bottom: 20px;">
           <el-button type="primary" size="small" @click="bambooBtn">查看bamboo</el-button>
-        &lt;!&ndash;  <span style="margin-left: 20px;">{{bamboo}}</span> &ndash;&gt;
+        <!--  <span style="margin-left: 20px;">{{bamboo}}</span> -->
         </div>
         <el-table :data="httpType" highlight-current-row border ref="multipleTable" style="width: 100%">
             <el-table-column prop="Id" label="Id" min-width="600" >
             </el-table-column>
             <el-table-column prop="Acl" label="Acl" min-width="600">
               <template scope="scope">
-                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a>
+                <span v-for="item in scope.row.Acl.split(' ')">
+                  <a target="_blank" :href="aclLink(item)">{{item}}</a> &nbsp;
+                </span>
+<!--                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a> -->
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="450" sortable>
@@ -236,29 +239,30 @@
               </template>
             </el-table-column>
         </el-table>
-        &lt;!&ndash;<el-col :span="24" class="toolbar">
+        <!--<el-col :span="24" class="toolbar">
           <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
                          style="float:right;">
           </el-pagination>
-        </el-col>&ndash;&gt;
-      </el-tab-pane>-->
+        </el-col>-->
+      </el-tab-pane>
 
     </el-tabs>
 
-    <!--<el-dialog title="修改规则" :visible.sync="dialog_editAppRule" size="tiny">
+    <el-dialog title="修改规则" :visible.sync="dialog_editAppRule" size="tiny">
       <el-form :model="appForm" ref="appForm">
         <el-form-item label="AppID" prop="Id">
           <el-input v-model="appForm.Id" v-bind:disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="Acl" prop="Acl" :rules="[
           { required: true, message: '请添加ACL规则', trigger: 'blur'}]">
-&lt;!&ndash;          <el-input v-model="appForm.Acl"  required></el-input> &ndash;&gt;
+<!--          <el-input v-model="appForm.Acl"  required></el-input> -->
           <el-input placeholder="请输入Acl规则" v-model="appForm.Acl">
             <template slot="prepend">path_beg -i </template>
           </el-input>
         </el-form-item>
-        <span>ACL 规则示例 <br/>
-              路径前缀：path_beg -i /app-group/app1 (不能仅为/)</span>
+
+        <span>ACL 规则示例： <br/>
+              <strong>path_beg -i /app-group/app1</strong> (不能仅为/)；如果有多个ACL规则请以<strong>&nbsp;空格&nbsp;</strong>隔开。</span>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -266,7 +270,7 @@
         <el-button type="primary" @click="updateAcl(appForm)">确 定</el-button>
       </div>
 
-    </el-dialog>-->
+    </el-dialog>
 
 <!--    <el-dialog title="修改所属" :visible.sync="editDialogVisible" size="tiny">
       <el-select v-model="userId" placeholder="请选择所属用户">
@@ -398,6 +402,9 @@
         getBamboo (state) {
           return state.app.appAcl.bamboo
         },
+        getServiceUrl (state) {
+          return state.app.appAcl.serviceUrl
+        },
         tasks (state) {
           let arr = state.app.apps.currApp.tasks || []
 //          console.log(11111111111)
@@ -431,7 +438,12 @@
           return state.app.apps.queue.queue
         },
         versions (state) {
-          return state.app.apps.appVersions.versions
+          let versions = state.app.apps.appVersions.versions
+          let arrs = [] // 排序后
+          for (let i = 0; i < versions.length; i++) {
+            arrs.push(versions[versions.length - i - 1])
+          }
+          return arrs
         },
         users (state) {
           return state.user.users.users
@@ -459,9 +471,12 @@
         })
         $a.dispatchEvent(evt)
       },
-      extendDialogVisible () {
+      extendApp () {
         this.instancesNums = this.instancesNum
         this.dialogVisible = true
+      },
+      addAclGroups () {
+        this.appForm.Acl += ' ' + this.appForm.Acl
       },
       delAppAcl (parm) {
         let aid = parm.Id
@@ -476,6 +491,7 @@
                 message: '删除成功',
                 type: 'success'
               })
+              this.getAppAcl()
               this.activeName = 'first'
             } else {
               Notification({
@@ -488,25 +504,29 @@
         })
       },
       updateAcl (parm) {
-        var pattern = /^\/*$/
-        var pattern1 = /^(\/){2,}\w+$/
-        if (parm.Acl === '/' || pattern.test(parm.Acl) || pattern1.test(parm.Acl)) {
-          return false
-        } else {
-          this.$refs.appForm.validate((valid) => {
-            if (valid) {
-              this.$store.dispatch(type.UPDATE_APPACL, {Id: parm.Id, Acl: 'path_beg -i ' + parm.Acl}).then(() => {
-                this.$message({
-                  message: '更新成功',
-                  type: 'success'
-                })
-                this.dialog_editAppRule = false
-                this.getAppAcl()
-                this.activeName = 'first'
-              })
-            }
-          })
+        // (\/)[A-Za-z0-9\/]+
+        var truePat = /^\/[/A-Za-z0-9-.]+$/
+        var errPat = /^\/+$/
+        let arrs = parm.Acl.trim().split(' ')
+        for (let arr of arrs) {
+          if (errPat.test(arr) || !truePat.test(arr)) {
+            this.$message.error('无效的ACL规则 ' + arr)
+            return false
+          }
         }
+        this.$refs.appForm.validate((valid) => {
+          if (valid) {
+            this.$store.dispatch(type.UPDATE_APPACL, {Id: parm.Id, Acl: 'path_beg -i ' + parm.Acl}).then(() => {
+              this.$message({
+                message: '更新成功',
+                type: 'success'
+              })
+              this.dialog_editAppRule = false
+              this.getAppAcl()
+              this.activeName = 'first'
+            })
+          }
+        })
       },
       editAppRule (para) {
         this.dialog_editAppRule = true
@@ -514,7 +534,7 @@
         this.appForm.Acl = para.Acl
       },
       getAppAcl () {
-        // return this.$store.dispatch(type.GET_APPACL_BY_APPID, this.appIdEncoded)
+        return this.$store.dispatch(type.GET_APPACL_BY_APPID, this.appIdEncoded)
       },
       handleCurrentChange (val) {
         this.page = val
@@ -627,10 +647,10 @@
       },
       aclLink (parm) {
         let url = ''
-        if (parm.Acl.startsWith('/')) {
-          url = 'http://' + this.getBamboo + parm.Acl
+        if (parm.startsWith('/')) {
+          url = 'http://' + this.getServiceUrl + parm
         } else {
-          url = 'http://' + this.getBamboo + '/' + parm.Acl
+          url = 'http://' + this.getServiceUrl + '/' + parm
         }
         return url
       },
@@ -729,7 +749,7 @@
         let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': this.instancesNums}}
         this.$store.dispatch(type.UPDATE_APP, param).then((data) => {
           if (data.resultCode === '00') {
-            myMessage({type: 'success', message: '扩展成功!'})
+            myMessage({type: 'success', message: '扩展实例中'})
             this.dialogVisible = false
             this.init()
           }
@@ -754,6 +774,7 @@
         this.unhealthy = 0
         this.unknown = 0
         this.getAppInfo()
+        this.getAppVersions()
         this.getAppContainers()
         this.getQueue()
         this.getAppAcl()
