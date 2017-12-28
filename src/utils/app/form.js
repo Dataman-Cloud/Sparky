@@ -56,7 +56,7 @@ function transformFormToJson (normalForm, jsonForm) {
     if (!hasNetSet) {
       docker.parameters.push({key: 'net', value: normalForm.ckeckNET})
     }
-    console.log(docker.parameters)
+    // console.log(docker.parameters)
   } else {
     var tmparr = []
     for (let p of docker.parameters) {
@@ -110,10 +110,35 @@ function transformFormToJson (normalForm, jsonForm) {
     jsonForm.ipAddress.discovery.ports = []
     // delete jsonForm.ipAddress
   }
+  if (normalForm.labels) {
+    if (normalForm.labels.DEFAULT_PACKAGE_VERSION) {
+      jsonForm.labels.DEFAULT_PACKAGE_VERSION = normalForm.labels.DEFAULT_PACKAGE_VERSION
+    }
+    if (normalForm.labels.GROUP_ID) {
+      jsonForm.labels.GROUP_ID = normalForm.labels.GROUP_ID
+    }
+    if (normalForm.labels.LOAD_APPID) {
+      jsonForm.labels.LOAD_APPID = normalForm.labels.LOAD_APPID
+    }
+    if (normalForm.labels.NIXY_REALM) {
+      jsonForm.labels.NIXY_REALM = normalForm.labels.NIXY_REALM
+    }
+    if (normalForm.labels.PACKAGE_VERSION) {
+      jsonForm.labels.PACKAGE_VERSION = normalForm.labels.PACKAGE_VERSION
+    }
+    if (normalForm.labels.USER_ID) {
+      jsonForm.labels.USER_ID = normalForm.labels.USER_ID
+    }
+    if (normalForm.labels.VCLUSTER) {
+      jsonForm.labels.VCLUSTER = normalForm.labels.VCLUSTER
+    }
+    console.log(normalForm.labels)
+  }
   return jsonForm
 }
 
 function transformJsonToForm (appModel, normalForm) {
+  // console.log(appModel)
   normalForm.name = appModel.id.split('/')[2] // 名称
   normalForm.group = appModel.id.split('/')[1]
   normalForm.image = appModel.container.docker.image // 镜像
@@ -147,6 +172,7 @@ function transformJsonToForm (appModel, normalForm) {
     normalForm.NEED_HAPROXY = false
   }
   if (appModel.labels['LOADTYPE']) {
+    normalForm.loadtype = []
     normalForm.loadtype[0] = appModel.labels['LOADTYPE']
   } else {
     normalForm.loadtype = []
@@ -236,6 +262,8 @@ function transformJsonToForm (appModel, normalForm) {
     }
     normalForm.dockerPar.push({key: v['key'], value: v['value']})
   }
+  normalForm.labels = appModel.labels
+  console.log(normalForm)
   return normalForm
 }
 

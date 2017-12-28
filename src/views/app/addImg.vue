@@ -66,8 +66,8 @@ export default {
       this.$router.go(-1)
     },
     transForm () {
-      console.log(this.ruleForm)
-      console.log(this.resultForm)
+      // console.log(this.ruleForm)
+      // console.log(this.resultForm)
       return appUtil.transformFormToJson(this.ruleForm, this.resultForm)
     },
     resetForm () {
