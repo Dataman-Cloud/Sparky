@@ -14,13 +14,21 @@
         <span v-if="instance.Config !== undefined">{{instance.Config.Hostname }}</span>
       </el-form-item>
       <el-form-item label="容器网络">
-        <span v-if="instance.HostConfig !== undefined">{{instance.HostConfig.NetworkMode }}</span>
+        <span v-if="instance.HostConfig !== undefined">
+          <template v-if="instance.HostConfig.NetworkMode === 'default'">bridge</template>
+          <template v-else="">{{instance.HostConfig.NetworkMode }}</template>
+        </span>
       </el-form-item>
       <el-form-item label="宿主机IP">
         <span>{{nodeIp }}</span>
       </el-form-item>
       <el-form-item label="分配IP">
-        <span>{{instance.NetworkSettings.Networks[instance.HostConfig.NetworkMode].IPAddress }}</span>
+        <template v-if="instance.HostConfig.NetworkMode === 'default'">
+          <span>{{instance.NetworkSettings.Networks['bridge'].IPAddress }}</span>
+        </template>
+        <template v-else="">
+          <span>{{instance.NetworkSettings.Networks[instance.HostConfig.NetworkMode].IPAddress }}</span>
+        </template>
       </el-form-item>
     </el-form>
 
