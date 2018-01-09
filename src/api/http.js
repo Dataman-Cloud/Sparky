@@ -8,7 +8,7 @@ import store from '../store'
 import { CLEAR_TOKEN } from 'store/user/mutations_types'
 import router from 'router'
 // axios 配置
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 15000
 axios.defaults.baseURL = DEFAULT_BASE_URL //  可配置
 
 // http request 拦截器

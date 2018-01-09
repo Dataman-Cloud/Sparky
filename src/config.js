@@ -1,8 +1,8 @@
 // export const DEFAULT_BASE_URL = '/'
-export const DEFAULT_BASE_URL = 'http://10.210.221.10:81' // qa
+// export const DEFAULT_BASE_URL = 'http://10.210.221.10:81' // qa
 // export const DEFAULT_BASE_URL = 'http://10.143.97.21' // uat
 // export const DEFAULT_BASE_URL = 'http://120.132.7.240:8088' //  dev
-// export const DEFAULT_BASE_URL = 'http://localhost:8080'
+export const DEFAULT_BASE_URL = 'http://localhost:8080'
 export const HASRELOXSTACK = false
 export const HASMULTICLUSTER = false
 export const HASPROXY = false

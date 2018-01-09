@@ -834,7 +834,7 @@
       this.init()
       this.getAppVersions()
       // this.getUsers()
-      this.interval = setInterval(() => this.init(), 5000)
+      this.interval = setInterval(() => this.init(), 10000)
     },
     beforeDestroy: function () {
       clearInterval(this.interval)
