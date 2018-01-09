@@ -35,8 +35,8 @@ export function delNodeImage (params) {
 
 // 获取主机上指定容器的信息
 export function nodeInstanceInfo (params) {
-  let {nodeIp, instanceId} = params
-  return axios.get(`/jborg/nodes/${nodeIp}/instances/${instanceId}`)
+  let {nodeIp, instanceId, byName} = params
+  return axios.get(`/jborg/nodes/${nodeIp}/instances/${instanceId}?byName=${byName}`)
 }
 
 // 获取主机上指定容器的日志

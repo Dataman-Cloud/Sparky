@@ -129,7 +129,7 @@
     data () {
       return {
         showTerminalTab: false,
-        instanceId: this.$route.query.instanceId,
+        // instanceId: this.$route.query.instanceId,
         nodeIp: this.$route.query.nodeIp,
         smallLable: { width: '20%' },
         bigLable: { width: '100%' },
@@ -155,6 +155,9 @@
         instance (state) {
           return state.node.nodes.currInstance
         },
+        instanceId (state) {
+          return state.node.nodes.currInstance.Id
+        },
         envarr (state) {
           let arr = []
           if (state.node.nodes.currInstance.Config !== undefined) {
@@ -170,6 +173,11 @@
     methods: {
       getInstance () {
         let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        if (this.$route.query.byName) {
+          param.byName = this.$route.query.byName
+        } else {
+          param.byName = 0
+        }
         // console.log(param)
         return this.$store.dispatch(type.FETCH_NODE_INSTANCE_INFO, param)
       },
@@ -191,7 +199,7 @@
         }
       },
       showLog (tab) {
-        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.instanceId}
         this.currsse = api.nodeInstanceLogsWS(param)
         // this.currsse = api.nodeInstanceLogsWS(param)
         this.currsse.onopen = function (event) {
@@ -217,7 +225,7 @@
       },
       showState (tab) {
         let self = this
-        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.instanceId}
         self.initMonitor()
         this.currsse = api.nodeInstanceStats(param)
         this.currsse.onopen = function (event) {
