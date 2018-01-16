@@ -48,7 +48,7 @@
     <el-form-item label="容器规格" prop="norms">
       <el-col :span="6" class="height-30 min-width">
         <label for="">CPUs</label>
-        <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="1"></el-input-number>核
+        <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="100"></el-input-number>核
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">内存</label>
