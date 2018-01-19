@@ -7,18 +7,18 @@
     <el-table :data="filterRoles" highlight-current-row v-loading="listLoading" class="bodybar">
       <el-table-column prop="id" label="ID" min-width="40" sortable>
       </el-table-column>
-      <el-table-column prop="name" label="名称" min-width="100" sortable>
+      <el-table-column prop="name" label="角色名称" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="remarks" label="角色标签" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" min-width="150">
         <template scope="role">
-          {{role.row.createTime | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{role.row.createTime | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间" min-width="150">
         <template scope="role">
-          {{role.row.updateTime | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{role.row.updateTime | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="100">
@@ -116,7 +116,7 @@
 <style scoped>
   .top {
     margin: 20px 0 5px 0 ;
-    text-align: right;
+    text-align: left;
   }
   .bodybar {
     width: 100%;

@@ -8,10 +8,14 @@ const _import = require('./_import_' + process.env.NODE_ENV)
 
 const Login = _import('Login')
 const Graph = _import('graph/Graph')
+const DCManager = _import('resource/dataCenter/List')
+const DCManagerEdit = _import('resource/dataCenter/DCEdit')
+const DCManagerCreate = _import('resource/dataCenter/DCAdd')
 const AppList = _import('app/list/List')
 const MyAppList = _import('app/list/myList')
 const AppModelList = _import('app/ModelList/ModelList')
 const AddModel = _import('app/ModelList/AddModel')
+const AddModelAndApp = _import('app/ModelList/AddModelAndApp')
 const AppAddImg = _import('app/addImg')
 const AppEditImg = _import('app/editImg')
 const AppAddPrm = _import('app/addPrm')
@@ -95,7 +99,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'list/appsModel',
-        name: '应用模版',
+        name: '应用模板',
         component: AppModelList
       },
       {
@@ -106,19 +110,25 @@ export const asyncRouterMap = [
       },
       {
         path: 'list/addModel',
-        name: '添加应用模版',
+        name: '添加应用模板',
         component: AddModel,
         hidden: true
       },
       {
+        path: 'list/addModelAndApp',
+        name: '创建模板和应用',
+        component: AddModelAndApp,
+        hidden: true
+      },
+      {
         path: 'list/updateModel',
-        name: '更新应用模版',
+        name: '更新应用模板',
         component: AddModel,
         hidden: true
       },
       {
         path: 'list/catalogStackCreate',
-        name: '发布程序包',
+        name: '程序包发布',
         component: AddModel,
         hidden: true
       },
@@ -130,13 +140,13 @@ export const asyncRouterMap = [
       },
       {
         path: 'addImg',
-        name: '添加镜像',
+        name: '镜像发布',
         component: AppAddImg,
         hidden: true
       },
       {
         path: 'editImg',
-        name: '修改镜像',
+        name: '更新应用',
         component: AppEditImg,
         hidden: true
       },
@@ -166,6 +176,23 @@ export const asyncRouterMap = [
     redirect: {name: '集群'},
     iconCls: 'fa fa-cubes',
     children: [
+      {
+        path: 'manager',
+        name: '数据中心',
+        component: DCManager
+      },
+      {
+        path: 'manager/create',
+        name: '添加数据中心',
+        hidden: true,
+        component: DCManagerCreate
+      },
+      {
+        path: 'manager/edit',
+        name: '编辑数据中心',
+        hidden: true,
+        component: DCManagerEdit
+      },
       {
         path: 'graph/index',
         name: '资源概览',

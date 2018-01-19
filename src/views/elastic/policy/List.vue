@@ -4,14 +4,14 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.name" placeholder="应用名称"></el-input>
+            <el-input v-model="filters.name" placeholder="应用名称" :maxlength="50"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="searchFun">查询</el-button>
           </el-form-item>
           <el-form-item>
             <router-link :to="{name: '添加策略'}">
-              <el-button v-showBtn="addPolicies" type="primary">创建策略</el-button>
+              <el-button v-showBtn="addPolicies" type="primary">添加策略</el-button>
             </router-link>
           </el-form-item>
         </el-form>
@@ -31,14 +31,6 @@
           <p><span>{{rule.row.type}}{{rule.row.operator}}{{rule.row.setValue}}</span></p>
         </template>
       </el-table-column>
-      <el-table-column prop="step" label="步长" width="80" sortable>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" width="80">
-        <template scope="rule">
-          <span v-if="rule.row.status === 'disable'">禁用</span>
-          <span v-else-if="rule.row.status === 'start'">开启</span>
-        </template>
-      </el-table-column>
       <el-table-column prop="monitor_cycle" label="监控周期(秒)" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="threshold" label="阈值" min-width="80" sortable>
@@ -47,12 +39,20 @@
       </el-table-column>
       <el-table-column prop="min_instance" label="最小实例个数" min-width=100" sortable>
       </el-table-column>
+      <el-table-column prop="step" label="步长" width="80" sortable>
+      </el-table-column>
       <el-table-column prop="created" label="创建时间" min-width="1" sortable v-if="false">
       </el-table-column>
       <el-table-column prop="updated" label="更新时间" min-width="150">
         <template scope="rule">
-          {{rule.row.updated | moment("YYYY-MM-DD hh:mm:ss")}}
+          {{rule.row.updated | moment("YYYY-MM-DD HH:mm:ss")}}
         </template>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" width="80">
+      <template scope="rule">
+        <span v-if="rule.row.status === 'disable'">禁用</span>
+        <span v-else-if="rule.row.status === 'start'">开启</span>
+      </template>
       </el-table-column>
       <el-table-column prop="action" label="扩缩" min-width="100" sortable>
         <template scope="rule">

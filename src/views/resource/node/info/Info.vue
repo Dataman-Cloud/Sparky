@@ -23,7 +23,7 @@
         <span>{{formatFileSize(nodeInfo.MemTotal) }}</span>
       </el-form-item>
       <el-form-item label="系统时间">
-        <span>{{nodeInfo.RegistryConfig.SystemTime | moment("YYYY/MM/DD hh:mm:ss") }}</span>
+        <span>{{nodeInfo.RegistryConfig.SystemTime | moment("YYYY/MM/DD HH:mm:ss") }}</span>
       </el-form-item>
       <br clear="all"/>
     </el-form>
@@ -98,7 +98,7 @@
             </el-table-column>
             <el-table-column prop="containerCreateTime" label="创建时间" min-width="100" sortable>
               <template scope="instance">
-                {{instance.row.containerCreateTime * 1000 | moment("YYYY/MM/DD hh:mm:ss")}}
+                {{instance.row.containerCreateTime * 1000 | moment("YYYY/MM/DD HH:mm:ss")}}
               </template>
             </el-table-column>
           </el-table>
@@ -120,7 +120,7 @@
             </el-table-column>
             <!--<el-table-column prop="updatedAt" label="创建时间" min-width="100" sortable>-->
             <!--<template scope="images">-->
-            <!--{{images.row.Created | moment("YYYY/MM/DD hh:mm:ss")}}-->
+            <!--{{images.row.Created | moment("YYYY/MM/DD HH:mm:ss")}}-->
             <!--</template>-->
             <!--</el-table-column>-->
             <el-table-column prop="" label="操作" min-width="80" sortable>

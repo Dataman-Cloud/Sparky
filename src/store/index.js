@@ -1,6 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import roles from './roles'
+import dataCenter from './datacenter'
 import syssrc from './syssrc'
 import syssrcrole from './syssrcrole'
 import user from './user'
@@ -22,6 +23,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     roles,
+    dataCenter,
     syssrc,
     syssrcrole,
     user,

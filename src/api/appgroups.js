@@ -12,6 +12,14 @@ export function all () {
 export function self () {
   return axios.get(`/jborg/appGroup/getSelfs?consulMarathonServiceName=${localStorage.getItem('marathonName')}`)
 }
+// 应用列表创建应用组下拉表数据
+export function allAppGroupByUserName (params) {
+  return axios.get(`/jborg/appGroup/getCanCreateGroupListByAccount`)
+}
+// 获取marathon列表
+export function marathonList (params) {
+  return axios.get(`/jborg/appGroup/getMarathonServiceNameList`)
+}
 // 添加应用分组
 export function add (params) {
   return axios.post(`/jborg/appGroup/create?consulMarathonServiceName=${localStorage.getItem('marathonName')}`, params)

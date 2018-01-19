@@ -1,6 +1,6 @@
-// export const DEFAULT_BASE_URL = '/'
-// export const DEFAULT_BASE_URL = 'http://172.29.24.84:18090' // uat
-export const DEFAULT_BASE_URL = 'http://172.30.131.25:8090' //  dev
+export const DEFAULT_BASE_URL = '/'
+// export const DEFAULT_BASE_URL = 'http://172.29.26.21:5013' // uat
+// export const DEFAULT_BASE_URL = 'http://172.30.131.25:8090' //  dev
 // export const DEFAULT_BASE_URL = 'http://localhost:8080'
 export const HASRELOXSTACK = false
 export const HASMULTICLUSTER = false
@@ -12,5 +12,5 @@ export const AUTH_URL = '/ui/auth'
 export const DASH_URL = '/ui'
 export const LOGO_ICON = null
 export const COMPANY = null
-export const DM_VERSION = '3.5.0 beta2'
+export const DM_VERSION = 'V1.0.1' // 3.5.0 beta2
 export const LABEL_PREFIX = 'DM'

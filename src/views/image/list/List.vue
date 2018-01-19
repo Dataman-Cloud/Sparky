@@ -21,7 +21,7 @@
       </el-table-column>
       <el-table-column prop="CreatedAt" label="创建时间" min-width="150" sortable>
         <template scope="app">
-          {{app.row.CreatedAt | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{app.row.CreatedAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150">

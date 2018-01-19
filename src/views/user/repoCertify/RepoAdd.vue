@@ -2,29 +2,40 @@
   <section>
     <el-form :label-position="labelPosition" :model="formName" label-width="120px" ref="formName"  class="bodybar">
       <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
-          {max: 20, message: '长度不能超过20个字符', trigger: 'blur' }]">
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
+        <el-col :span="4">
         <el-input v-model="formName.name" placeholder="请输入名称"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="镜像仓库地址" prop="addr" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
           { required: true, message: '请输入镜像仓库地址', trigger: 'blur' }]">
+        <el-col :span="8">
         <el-input v-model="formName.addr" placeholder="请输入镜像仓库地址"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="用户名" prop="userName" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
           { required: true, message: '请输入用户名', trigger: 'blur' }]">
+        <el-col :span="4">
         <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="密码" prop="password" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
           { required: true, message: '请输入密码', trigger: 'blur' }]">
+        <el-col :span="4">
         <el-input type="password" v-model="formName.password" placeholder="请输入密码"></el-input>
+        </el-col>
       </el-form-item>
 
-      <div class="btn">
-        <el-button type="primary" @click="submitForm" class="btn">创建</el-button>
+      <el-form-item>
         <el-button @click="cancelForm">取消</el-button>
-      </div>
+        <el-button type="primary" @click="submitForm" class="btn">创建</el-button>
+      </el-form-item>
 
     </el-form>
 

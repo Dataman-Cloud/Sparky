@@ -5,7 +5,7 @@
         <span>{{instance.Name }} <el-tag type="primary" v-if="instance.State !== undefined">{{instance.State.Status }} </el-tag></span>
       </el-form-item>
       <el-form-item label="创建时间">
-        <span>{{instance.Created | moment("YYYY/MM/DD hh:mm:ss") }}</span>
+        <span>{{instance.Created | moment("YYYY/MM/DD HH:mm:ss") }}</span>
       </el-form-item>
       <el-form-item label="驱动">
         <span>{{instance.Driver }}</span>

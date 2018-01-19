@@ -14,7 +14,7 @@
       </el-select> -->
 
      <!-- <span><strong>选择marathon:</strong></span> -->
-      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading">
+      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading" style="width: 280px;">
         <el-option
           v-for="item in marathonList"
           :key="item.value"
@@ -25,7 +25,8 @@
 
       <el-dropdown trigger="hover" class="userinfo">
         <span class="el-dropdown-link userinfo-inner">{{aboutMe.userName}}<i class="el-icon-caret-bottom" style="margin-left:10px;font-size:12px"></i></span>
-        <el-dropdown-menu slot="dropdown">
+        <span style="padding-left: 10px;color: #616161">{{aboutMe.roleName}}</span>
+        <el-dropdown-menu slot="dropdown" style="margin-right:80px">
           <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -45,21 +46,25 @@ import * as appgroupTypes from 'store/appgroups/mutations_types'
 export default {
   data () {
     return {
+      currentMarathon: '',
       fullscreenLoading: false,
-      marathonVal: 'marathon-app-172.30.131.25:6080',
+      marathonVal: localStorage.getItem('marathonName'),
+//      marathonVal: '',
       sysName: 'DM/OS'
-//      selectGroup: this.$store.state.user.aboutme.currentGroupId
+//       selectGroup: this.$store.state.user.aboutme.currentGroupId
     }
   },
   watch: {
     marathonVal (curval, oldval) {
-//      console.log(88888888888)
       window.localStorage.setItem('marathonName', curval)
-      this.fullscreenLoading = true
-      setTimeout(() => {
-        this.fullscreenLoading = false
-      }, 1000)
-      this.$router.push({ name: '我的应用' })
+      if (this.marathonVal !== null) {
+        // 刷新
+//        this.fullscreenLoading = true
+//        setTimeout(() => {
+//          this.fullscreenLoading = false
+//        }, 1000)
+        this.$router.push({ name: '我的应用' })
+      }
     }
   },
   methods: {
@@ -71,16 +76,26 @@ export default {
       }) */
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
+          localStorage.removeItem('marathonName')
           location.reload()
         })
       }).catch(() => {
         //   toLogin()
       })
     },
-    listApp () {
-      this.$store.dispatch(appType.FETCH_QUEUE).then(() => {
-        this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
-      })
+    marathonNameVoList () {
+      this.$store.dispatch(appgroupTypes.FATCH_MARATHON)
+        .then((data) => {
+          if (data.resultCode === '00') {
+//            let val = JSON.stringify(data.data[0])
+//            console.log(data.data[0])
+//            console.log(data.data[0].value)
+            this.marathonVal = data.data[0].value
+          } else {
+            // 赋值
+            this.marathonVal = ''
+          }
+        })
     },
     switchGroup () {
       let {dispatch} = store
@@ -114,7 +129,7 @@ export default {
     })
   },
   mounted () {
-    this.listApp()
+    this.marathonNameVoList()
   }
 }
 </script>

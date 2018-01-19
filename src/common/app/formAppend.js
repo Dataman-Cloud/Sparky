@@ -18,7 +18,7 @@ function formAppend () {
       value: ''
     },
     health: {
-      protocol: 'HTTP',
+      protocol: 'MESOS_HTTP',
       gracePeriodSeconds: null,
       intervalSeconds: null,
       timeoutSeconds: null,

@@ -11,32 +11,47 @@
       <el-form-item label="用户名" prop="userName" :rules="[
           { required: true, message: '请输入用户名', trigger: 'blur' },
           {pattern: /^[A-Za-z0-9]+$/, message: '用户名只能包含字母和数字', trigger: 'blur'},
-          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
-        <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input>
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
+        <el-col :span="8">
+        <el-input placeholder="请输入用户名" v-model="formName.userName">
+          <template slot="prepend">fid_</template>
+        </el-input>
+        </el-col>
+       <!-- <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input> -->
       </el-form-item>
 
       <el-form-item label="姓名" prop="name" :rules="[
         {required: true, message: '请输入姓名', trigger: 'blur'},
+        {max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
         {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '名称只能包含字母、数字和中文字符', trigger: 'blur'}]">
+        <el-col :span="8">
         <el-input v-model="formName.name" placeholder="请输入姓名"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="邮箱地址" prop="email" :rules="[
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }]">
+        <el-col :span="8">
         <el-input v-model="formName.email" placeholder="请输入邮箱"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
+        <el-col :span="8">
         <el-input type="password" v-model="formName.password" placeholder="请输入密码"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item label="确认密码" prop="chkpwd">
+        <el-col :span="8">
         <el-input type="password" v-model="formName.chkpwd" placeholder="请确认密码"></el-input>
+        </el-col>
       </el-form-item>
 
             <el-form-item label="用户角色" prop="roleId" :rules="[
                 { required: true, message: ''}]">
-              <el-col :span="18">
+              <el-col :span="12">
                 <el-radio-group v-model="formName.roleId" v-for="(item, index) in UserRoles" :key="index">
                     <el-radio :label="item.id" style="padding-right: 5px;">{{item.name}}</el-radio>
                 <!--  <el-radio :label="1">管理员</el-radio>
@@ -47,8 +62,10 @@
       </el-form-item>
 
       <el-form-item label="用户描述" prop="title">
+        <el-col :span="12">
         <el-input type="textarea" v-model="formName.title" autosize placeholder="请输入内容">
         </el-input>
+        </el-col>
       </el-form-item>
 <!--      <el-form-item label="添加用户组">
         <el-button type="primary" icon="plus" @click="addGroups" size="mini" class="sub-title">添加组</el-button>
@@ -89,11 +106,10 @@
         </el-form-item>
         <el-button type="text" @click="delGroup('group')">删除</el-button>
       </el-form-item>-->
-      <div class="btn">
-        <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">创建</el-button>
+      <el-form-item>
         <el-button @click="cancelForm">取消</el-button>
-      </div>
-
+        <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">创建</el-button>
+      </el-form-item>
     </el-form>
 
   </section>
@@ -142,10 +158,14 @@
         rules: {
           password: [
             { required: true, validator: validatePass, trigger: 'blur' },
+            { max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
             {pattern: /((?=.*[A-Z])(?=.*[A-Za-z0-9]))^.{8,16}$/, message: '密码必须包含大写字母，长度为8-16位。', trigger: 'blur'}
           ],
           chkpwd: [
             {required: true, validator: validatePass2, trigger: 'blur'}
+          ],
+          title: [
+            { max: 255, message: '长度不能超过255个字符', trigger: 'blur' }
           ]
         },
         beDisabled: true,
@@ -200,7 +220,20 @@
       submitForm: function () {
         this.$refs.formName.validate((valid) => {
           if (valid) {
-            this.$store.dispatch(type.FETCH_USERS_ADD, this.formName).then((data) => {
+            let params = {
+              name: this.formName.name,
+              userName: 'fid_' + this.formName.userName,
+              email: this.formName.email,
+              password: this.formName.password,
+              chkpwd: this.formName.chkpwd,
+              roleId: this.formName.roleId,
+              title: this.formName.title,
+              accountGroups: [{
+                groupId: '',
+                role: ''
+              }]
+            }
+            this.$store.dispatch(type.FETCH_USERS_ADD, params).then((data) => {
               this.showResult(data, '用户创建成功!', '用户创建出错', () => {
                 this.$router.push({path: '/system/user/list'})
               })

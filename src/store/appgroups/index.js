@@ -9,6 +9,7 @@ const state = {
   unversion: [],
   marathonNameVoList: [],
   groupCreateList: [],
+  selfGroupCreateList: [],
   total: 0,
   selfGroups: []
 }

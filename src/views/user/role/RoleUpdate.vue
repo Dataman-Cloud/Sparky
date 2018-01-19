@@ -3,18 +3,16 @@
 
     <el-form :label-position="labelPosition" :model="formName" label-width="85px" ref="formName"
              class="bodybar">
-      <el-form-item label="角色名" prop="name" :rules="[
-          { required: true, message: '请输入角色名', trigger: 'blur' },
-          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
+      <el-form-item label="角色名称" prop="name" :rules="[
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
+        <el-col :span="8">
         <el-input v-model="formName.name"></el-input>
-      </el-form-item>
-
-      <el-form-item label="角色描述" prop="remarks">
-        <el-input type="textarea" v-model="formName.remarks" autosize>
-        </el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="角色资源" prop="roleIds" required>
+        <el-col :span="12">
         <el-tree
           :data="checkedMenusTree"
           :props="props"
@@ -23,12 +21,20 @@
           ref="tree">
    //     default-checked-keys="sysSrcRole">
         </el-tree>
+        </el-col>
       </el-form-item>
 
-      <div class="btn">
-        <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">更新</el-button>
+      <el-form-item label="角色标签" prop="remarks">
+        <el-col :span="12">
+        <el-input type="textarea" v-model="formName.remarks" autosize :maxlength="255">
+        </el-input>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item>
         <el-button @click="cancelForm">取消</el-button>
-      </div>
+        <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">更新</el-button>
+      </el-form-item>
 
     </el-form>
 
@@ -82,7 +88,7 @@
       },
 /*      fetchSelectedRes () {
         this.$store.dispatch(sysRecRoletype.FETCH_SYSRESOURCE_ROLE_BY_ID, this.formName.id)
-      },  */
+      }, */
       submitForm: function () {
         this.roleIds = this.$refs.tree.getCheckedNodes()
         let params = JSON.parse(JSON.stringify(this.roleIds))
@@ -98,7 +104,7 @@
           }
         }
         let parm = {sysRole: this.formName, roleIds: JSON.parse(JSON.stringify(ids))}
-     //   console.log(JSON.stringify(ids))
+        console.log(JSON.stringify(ids))
         if (ids.size !== 0) {
           this.$refs.formName.validate((valid) => {
             if (valid) {
@@ -144,7 +150,7 @@
         this.$store.dispatch(sysRecRoletype.FETCH_SYSRESOURCE_ROLE_BY_ID, this.formName.id).then((data) => {
           let ids = data.data
           console.log(JSON.stringify(ids))
-        //  this.$refs.tree.setCheckedNodes(ids)
+//          this.$refs.tree.setCheckedNodes(ids)
           this.$refs.tree.setCheckedKeys(ids)
         })
       }

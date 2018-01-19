@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="主机名称"></el-input>
+          <el-input v-model="filters.name" placeholder="主机名称" :maxlength="50"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="">查询</el-button>
@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column prop="registeredTime" label="创建时间" min-width="100" sortable>
         <template scope="node">
-          {{node.row.registeredTime | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{node.row.registeredTime | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
 
@@ -56,7 +56,8 @@
           name: ''
         },
         page: 1,
-        listLoading: false
+        listLoading: false,
+        interval: null
       }
     },
     computed: {
@@ -73,7 +74,7 @@
           if (this.filters && this.filters.name) {
             return this.nodes.filter((node) => {
               let reg = new RegExp(this.filters.name)
-              return reg.test(node.hostName)
+              return reg.test(node.nodeIp)
             })
           }
           return this.nodes.slice((this.page - 1) * 20, this.page * 20)
@@ -98,10 +99,10 @@
         .then(() => {
           this.listLoading = false
         })
-      // this.interval = setInterval(() => this.listCluster(), 5000)
+      this.interval = setInterval(() => this.listCluster(), 5000)
     },
     beforeDestroy: function () {
-      // clearInterval(this.interval)
+      clearInterval(this.interval)
     }
   }
 </script>

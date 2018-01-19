@@ -4,13 +4,13 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="用户名"></el-input>
+          <el-input v-model="filters.name" placeholder="用户名" :maxlength="50"　@change="searchFun"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchFun">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-showBtn="userAdd" icon="plus" v-on:click="userAdd">新建用户</el-button>
+          <el-button type="primary" v-showBtn="userAdd" icon="plus" v-on:click="userAdd">用户创建</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -22,7 +22,7 @@
       <el-table-column prop="name" label="姓名" min-width="100" sortable>
       </el-table-column>
 
-      <el-table-column prop="roleName" label="组名 / 用户角色" min-width="150">
+      <el-table-column prop="roleName" label="用户角色" min-width="150">
         <!-- <template scope="scopes">
           <div v-for="group in scopes.row.accountGroups">
             <div v-if="group.roleId === 'superuser'">{{group.group.name}} <span style=" font-style:italic;">超级管理员</span>
@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column prop="createAt" label="创建时间" min-width="150">
         <template scope="user">
-          {{user.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{user.row.createAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="100">
@@ -96,7 +96,7 @@
       </el-pagination>
     </el-col>
 
-    <el-dialog title="重置密码" :visible.sync="dialog_resetPwd">
+    <el-dialog title="修改密码" :visible.sync="dialog_resetPwd" size="tiny">
       <el-form :model="u_form" :rules="pwdRules" ref="u_form">
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="u_form.password"></el-input>
@@ -432,13 +432,20 @@
         let param = {id: this.u_form.id, pwd: this.u_form}
         this.$refs.u_form.validate((valid) => {
           if (valid) {
-            this.fetchPwdReset(param).then(() => {
-              this.$message({
-                message: '更新成功',
-                type: 'success',
-                onClose: this.fetchUsers
-              })
-              this.dialog_resetPwd = false
+            this.fetchPwdReset(param).then((data) => {
+              if (data.resultCode === '00') {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success',
+                  onClose: this.fetchUsers
+                })
+                this.dialog_resetPwd = false
+              } else {
+                this.$message({
+                  message: data.message,
+                  type: 'error'
+                })
+              }
             })
           } else {
             return false

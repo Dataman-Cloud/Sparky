@@ -12,7 +12,7 @@
           <el-option v-for="item in getOperations" :label="item.key" :value="item.value" :key="item.value"></el-option>
         </el-select>
         <br/>
-        <el-input placeholder="操作人" v-model="selectForm.operateUser" style="width: 110px;margin-top: 5px;"></el-input>
+        <el-input placeholder="操作人" v-model="selectForm.operateUser" style="width: 110px;margin-top: 5px;" :maxlength="50"></el-input>
         <!-- style="width: 200px" -->
         <el-date-picker
           v-model="selectForm.timeExtent"
@@ -22,8 +22,8 @@
           :editable="editable"
           align="right" >
         </el-date-picker>
-        <el-input placeholder="请求信息（关键字）" v-model="selectForm.rquest" style="width: 150px"></el-input>
-        <el-input placeholder="请求结果（关键字）" v-model="selectForm.response" style="width: 150px"></el-input>
+        <el-input placeholder="请求信息（关键字）" v-model="selectForm.rquest" style="width: 150px" :maxlength="50"></el-input>
+        <el-input placeholder="请求结果（关键字）" v-model="selectForm.response" style="width: 150px" :maxlength="50"></el-input>
         <el-button type="primary" @click="selectFormSubmit('selectForm')">查询</el-button>
       </el-form-item>
     </el-form>
@@ -234,6 +234,11 @@
                 tem['key'] = '扩缩事件'
                 targetTypes.push(tem)
                 break
+              case 'SysRoleController':
+                tem['value'] = v
+                tem['key'] = '角色'
+                targetTypes.push(tem)
+                break
             }
           }
           return targetTypes
@@ -334,7 +339,8 @@
       },
       targettypesGetOptions () {
         // 清空操作已选类型重新获取
-        this.selectForm.operations.length = 0
+//        this.selectForm.operations.length = 0
+        this.selectForm.operations = []
         // 获取操作类型列表
         this.$store.dispatch(auditType.FETCH_AUDIT_OPERATIONS, {param: 'objType=' + this.selectForm.targettypes})
           .then((data) => { this.queryErrorMsg(data, '获取操作类型列表失败') })

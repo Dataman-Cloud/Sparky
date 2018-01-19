@@ -43,7 +43,7 @@
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">内存</label>
-        <el-input-number v-model="ruleForm.memory" size="small" :min="16" :step="1" :max="10240"></el-input-number>MB
+        <el-input-number v-model="ruleForm.memory" size="small" :min="1" :step="1" :max="10240"></el-input-number>MB
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">硬盘</label>
@@ -89,9 +89,10 @@
                 <el-form-item :prop="'ports.' + index + '.containerPort'"
                               :key="port.index"
                               :rules="[
-                                  { required: true, message: '端口号不能为空' }
+                                  { required: true, message: '端口号不能为空' },
+                                  {pattern: /^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]{1}|6553[0-5])$/, message: '端口号必需是1~65535的整数', trigger: 'blur'}
                               ]">
-                  <el-input v-model.number="port.containerPort" type="number" placeholder="端口号" size="small"
+                  <el-input v-model.number="port.containerPort" type="number" placeholder="端口号" size="small" :max="65535" :min="1"
                             style="width: 120px; padding-bottom: 16px;"></el-input>
                 </el-form-item>
               </el-col>
@@ -135,7 +136,7 @@
                 </div>
                 <div class=" height-30">
                   <el-select @change="healthProtocolChange(h)" v-model="h.protocol" size="small"
-                             style="width: 100px;">
+                             style="width: 150px;">
                     <el-option label="MESOS_HTTP" value="MESOS_HTTP" ></el-option>
                     <el-option label="MESOS_TCP" value="MESOS_TCP" ></el-option>
                     <el-option label="HTTP" value="HTTP"></el-option>
@@ -159,7 +160,7 @@
                   <label for="">宽限时间（秒）</label>
                 </div>
                 <div class="height-30">
-                  <el-input-number v-model="h.gracePeriodSeconds" size="small" :min="0" :step="1"></el-input-number>
+                  <el-input-number v-model="h.gracePeriodSeconds" size="small" :min="0" :step="1" :value="300"></el-input-number>
                 </div>
               </div>
               <div class="table-cell">
@@ -301,7 +302,7 @@
           </el-form-item>
         </el-row>
         <el-row>
-          <el-form-item label="CMD" style="width: 400px;">
+          <el-form-item label="CMD命令" style="width: 400px;">
             <el-input v-model="ruleForm.cmd" placeholder="输入需要运行的命令"></el-input>
           </el-form-item>
         </el-row>
@@ -446,11 +447,14 @@
         this._removeFormItem(this.ruleForm.dockerPar, item)
       },
       healthProtocolChange (healthItem) {
-        let isHttp = healthItem.protocol === 'HTTP'
+        let isHttp = false
+        if (healthItem.protocol === 'MESOS_HTTP' || healthItem.protocol === 'HTTP') {
+          isHttp = true
+        }
         healthItem.healthHttpCheckBoxCode = isHttp
         healthItem.healthHttpPathCode = isHttp
         healthItem.healthHttpPathText = isHttp
-        // healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
+        //  healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
         healthItem.ignoreHttp1xx = false
       },
       healthPortTypeChange (healthItem) {

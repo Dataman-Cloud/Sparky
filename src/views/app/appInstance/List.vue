@@ -2,6 +2,13 @@
   <section>
     <el-form label-position="left" inline class="demo-table-expand" style="padding-top: 20px;">
 
+      <el-form-item label="应用名称" v-bind:style="smallLable">
+        <strong><span>{{appInfo.id }}</span></strong>
+      </el-form-item>
+      <el-form-item label="应用状态" v-bind:style="smallLable">
+        <strong><span>{{appInfo.status }}</span></strong>
+      </el-form-item>
+      <br clear="all">
       <el-form-item label="healthy" v-bind:style="smallLable">
         <el-tag type="gray">{{healthy }}</el-tag>
       </el-form-item>
@@ -10,13 +17,6 @@
       </el-form-item>
       <el-form-item label="unknown" v-bind:style="smallLable">
         <el-tag type="gray">{{unknown }}</el-tag>
-      </el-form-item>
-      <br clear="all">
-      <el-form-item label="应用名称" v-bind:style="smallLable">
-        <span>{{appInfo.id }}</span>
-      </el-form-item>
-      <el-form-item label="应用状态" v-bind:style="smallLable">
-        <span>{{appInfo.status }}</span>
       </el-form-item>
 <!--      <el-form-item label="访问地址" v-bind:style="smallLable">
         <span>-</span>
@@ -27,10 +27,10 @@
       </el-form-item>
       <br clear="all">
 
-      <el-button type="primary" @click="stopApp">停止</el-button>
+      <el-button type="primary" v-showBtn="stopApp" @click="stopApp">停止</el-button>
      <!-- <el-button type="primary" @click="editDialogVisible = true">修改所属</el-button> -->
-      <el-button type="primary" @click="extendDialogVisible">扩展</el-button>
-      <el-button type="primary" @click="delApp">删除</el-button>
+      <el-button type="primary" v-showBtn="extendApp" @click="extendApp">扩展</el-button>
+      <el-button type="primary" v-showBtn="delApp" @click="delApp">删除</el-button>
 <!--      <el-button type="primary">更新</el-button> -->
     </el-form>
 
@@ -48,30 +48,35 @@
                   @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column prop="id" label="实例ID" min-width="400" sortable>
+          <el-table-column prop="id" label="实例ID" min-width="430" sortable>
             <template scope="scope">
               <router-link
                 :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
                 {{scope.row.id }}
               </router-link> <br />
 
-              <span>{{scope.row.host }}:<a target="_blank" :href="getIPAddr(scope.row)">{{scope.row.ports }}</a></span>
+              <span>{{scope.row.host }}:[
+                <span v-for="item in scope.row.ports">
+                   &nbsp;<a target="_blank" :href="getIPAddr(scope.row.host, item)">{{item}}</a>
+                </span> &nbsp;]
+              <!--  <a target="_blank" :href="getIPAddr(scope.row)">{{scope.row.ports }}</a> -->
+              </span>
             </template>
           </el-table-column>
-          <el-table-column prop="host" label="IP" min-width="150" sortable>
+          <el-table-column prop="host" label="IP" min-width="180" sortable>
           </el-table-column>
-          <el-table-column prop="ports" label="端口" min-width="130" sortable>
+<!--          <el-table-column prop="ports" label="端口" min-width="130" sortable>
+          </el-table-column> -->
+          <el-table-column prop="taskHealth" label="健康" min-width="150" sortable>
           </el-table-column>
-          <el-table-column prop="taskHealth" label="健康" min-width="130" sortable>
-          </el-table-column>
-          <el-table-column prop="taskStatus" label="状态" min-width="130" sortable>
+          <el-table-column prop="taskStatus" label="状态" min-width="150" sortable>
           </el-table-column>
           <el-table-column prop="stagedAt" label="版本" min-width="250" sortable>
             <template scope="scope">
               {{scope.row.stagedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
           </el-table-column>
-          <el-table-column prop="startedAt" label="更新时间" min-width="220" sortable>
+          <el-table-column prop="startedAt" label="更新时间" min-width="250" sortable>
             <template scope="scope">
               {{scope.row.startedAt | moment('YYYY-MM-DD HH:mm:ss')}}
             </template>
@@ -181,7 +186,10 @@
             </el-table-column>
             <el-table-column prop="Acl" label="Acl" min-width="600">
               <template scope="scope">
-                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a>
+                <span v-for="item in scope.row.Acl.split(' ')">
+                  <a target="_blank" :href="aclLink(item)">{{item}}</a> &nbsp;
+                </span>
+<!--                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a> -->
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="450" sortable>
@@ -213,8 +221,9 @@
             <template slot="prepend">path_beg -i </template>
           </el-input>
         </el-form-item>
-        <span>ACL 规则示例 <br/>
-              路径前缀：path_beg -i /app-group/app1 (不能仅为/)</span>
+
+        <span>ACL 规则示例： <br/>
+              <strong>path_beg -i /app-group/app1</strong> (不能仅为/)；如果有多个ACL规则请以<strong>&nbsp;空格&nbsp;</strong>隔开。</span>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -304,6 +313,7 @@
         dialogVisible: false,
         versionAPPInfo: undefined,
         appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
+//        appIdEncoded: window.btoa(this.$route.params.appid)
       }
     },
     computed: {
@@ -329,13 +339,18 @@
             return httpTypes
           } */
 //          let json = state.app.appAcl
-          let value = JSON.parse(state.app.appAcl.data)
-          value.Acl = value.Acl.substring(12, value.Acl.length)
-          httpTypes.push(value)
+          if (state.app.appAcl.data) {
+            let value = JSON.parse(state.app.appAcl.data)
+            value.Acl = value.Acl.substring(12, value.Acl.length)
+            httpTypes.push(value)
+          }
           return httpTypes
         },
         getBamboo (state) {
           return state.app.appAcl.bamboo
+        },
+        getServiceUrl (state) {
+          return state.app.appAcl.serviceUrl
         },
         tasks (state) {
           let arr = state.app.apps.currApp.tasks || []
@@ -370,7 +385,12 @@
           return state.app.apps.queue.queue
         },
         versions (state) {
-          return state.app.apps.appVersions.versions
+          let versions = state.app.apps.appVersions.versions
+          let arrs = [] // 排序后
+          for (let i = 0; i < versions.length; i++) {
+            arrs.push(versions[versions.length - i - 1])
+          }
+          return arrs
         },
         users (state) {
           return state.user.users.users
@@ -398,9 +418,12 @@
         })
         $a.dispatchEvent(evt)
       },
-      extendDialogVisible () {
+      extendApp () {
         this.instancesNums = this.instancesNum
         this.dialogVisible = true
+      },
+      addAclGroups () {
+        this.appForm.Acl += ' ' + this.appForm.Acl
       },
       delAppAcl (parm) {
         let aid = parm.Id
@@ -415,6 +438,7 @@
                 message: '删除成功',
                 type: 'success'
               })
+              this.getAppAcl()
               this.activeName = 'first'
             } else {
               Notification({
@@ -427,25 +451,29 @@
         })
       },
       updateAcl (parm) {
-        var pattern = /^\/*$/
-        var pattern1 = /^(\/){2,}\w+$/
-        if (parm.Acl === '/' || pattern.test(parm.Acl) || pattern1.test(parm.Acl)) {
-          return false
-        } else {
-          this.$refs.appForm.validate((valid) => {
-            if (valid) {
-              this.$store.dispatch(type.UPDATE_APPACL, {Id: parm.Id, Acl: 'path_beg -i ' + parm.Acl}).then(() => {
-                this.$message({
-                  message: '更新成功',
-                  type: 'success'
-                })
-                this.dialog_editAppRule = false
-                this.getAppAcl()
-                this.activeName = 'first'
-              })
-            }
-          })
+        // (\/)[A-Za-z0-9\/]+
+        var truePat = /^\/[/A-Za-z0-9-.]+$/
+        var errPat = /^\/+$/
+        let arrs = parm.Acl.trim().split(' ')
+        for (let arr of arrs) {
+          if (errPat.test(arr) || !truePat.test(arr)) {
+            this.$message.error('无效的ACL规则 ' + arr)
+            return false
+          }
         }
+        this.$refs.appForm.validate((valid) => {
+          if (valid) {
+            this.$store.dispatch(type.UPDATE_APPACL, {Id: parm.Id, Acl: 'path_beg -i ' + parm.Acl}).then(() => {
+              this.$message({
+                message: '更新成功',
+                type: 'success'
+              })
+              this.dialog_editAppRule = false
+              this.getAppAcl()
+              this.activeName = 'first'
+            })
+          }
+        })
       },
       editAppRule (para) {
         this.dialog_editAppRule = true
@@ -566,17 +594,15 @@
       },
       aclLink (parm) {
         let url = ''
-        if (parm.Acl.startsWith('/')) {
-          url = 'http://' + this.getBamboo + parm.Acl
+        if (parm.startsWith('/')) {
+          url = 'http://' + this.getServiceUrl + parm
         } else {
-          url = 'http://' + this.getBamboo + '/' + parm.Acl
+          url = 'http://' + this.getServiceUrl + '/' + parm
         }
         return url
       },
-      getIPAddr (para) {
-        let ip = para.host
-        let port = para.ports
-        return 'http://' + ip + ':' + port
+      getIPAddr (host, port) {
+        return 'http://' + host + ':' + port
       },
       getStderr (id) {
         if (this.containers !== undefined && this.containers[id] !== undefined) {
@@ -667,7 +693,7 @@
         let param = {'aid': window.btoa(this.appInfo.id), 'params': {'instances': this.instancesNums}}
         this.$store.dispatch(type.UPDATE_APP, param).then((data) => {
           if (data.resultCode === '00') {
-            myMessage({type: 'success', message: '扩展成功!'})
+            myMessage({type: 'success', message: '扩展实例中'})
             this.dialogVisible = false
             this.init()
           }
@@ -692,6 +718,7 @@
         this.unhealthy = 0
         this.unknown = 0
         this.getAppInfo()
+        this.getAppVersions()
         this.getAppContainers()
         this.getQueue()
         this.getAppAcl()
@@ -772,10 +799,10 @@
       this.init()
       this.getAppVersions()
       this.getUsers()
-      this.interval = setInterval(() => this.init(), 5000)
+//      this.interval = setInterval(() => this.init(), 5000)
     },
     beforeDestroy: function () {
-      clearInterval(this.interval)
+//      clearInterval(this.interval)
     }
   }
 </script>

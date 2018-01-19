@@ -3,19 +3,17 @@
 
     <el-form :label-position="labelPosition" :model="formName" label-width="85px" ref="formName"
              class="bodybar">
-      <el-form-item label="角色名" prop="name" :rules="[
-          { required: true, message: '请输入角色名', trigger: 'blur' },
+      <el-form-item label="角色名称" prop="name" :rules="[
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
           {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '名称只能包含字母、数字和中文字符', trigger: 'blur'},
-          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' }]">
-        <el-input type="text" v-model="formName.name" placeholder="请输入角色名"></el-input>
-      </el-form-item>
-
-      <el-form-item label="角色描述" prop="remarks">
-        <el-input type="textarea" v-model="formName.remarks" autosize placeholder="请输入角色描述">
-        </el-input>
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
+        <el-col :span="8">
+        <el-input type="text" v-model="formName.name" placeholder="请输入角色名称"></el-input>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="角色资源" prop="roleIds" required>
+        <el-col :span="12">
         <el-tree  v-model="formName.roleIds"
           :data="menusTree"
           :props="props"
@@ -23,12 +21,20 @@
           show-checkbox
           ref="tree">
         </el-tree>
+        </el-col>
       </el-form-item>
 
-      <div class="btn">
+      <el-form-item label="角色标签" prop="remarks">
+        <el-col :span="12">
+        <el-input type="textarea" v-model="formName.remarks" autosize placeholder="请输入角色标签" :maxlength="255">
+        </el-input>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item>
         <el-button @click="cancelForm">取消</el-button>
         <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">创建</el-button>
-      </div>
+      </el-form-item>
 
     </el-form>
 
@@ -97,22 +103,21 @@
    //     console.log(JSON.stringify(ids))
    //      console.log(JSON.stringify(this.roleIds))
         let parm = {sysRole: this.formName, roleIds: JSON.parse(JSON.stringify(ids))}
-     //   console.log(JSON.stringify(parm))
-        if (ids.size !== 0) {
-          this.$refs.formName.validate((valid) => {
-            if (valid) {
+        this.$refs.formName.validate((valid) => {
+          if (valid) {
+            if (ids.size !== 0) {
               this.$store.dispatch(roleType.FETCH_SYS_ROLE_ADD, parm).then((data) => {
                 this.showResult(data, '角色创建成功!', '角色创建出错', () => {
                   this.$router.push({name: '角色管理'})
                 })
               })
             } else {
-              return false
+              this.$message.error('请选择角色资源')
             }
-          })
-        } else {
-          this.$message.error('请选择角色资源')
-        }
+          } else {
+            return false
+          }
+        })
 /*        this.$refs.formName.validate((valid) => {
           if (valid) {
             this.$store.dispatch(roleType.FETCH_SYS_ROLE_ADD, parm).then((data) => {

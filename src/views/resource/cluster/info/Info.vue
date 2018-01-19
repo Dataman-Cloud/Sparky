@@ -2,22 +2,22 @@
   <section>
 
     <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+<!--    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
         <el-form-item>
-          <el-button type="primary" @click="delCluster">删除集群</el-button>
-          <el-button type="primary" @click="getAvailableNodes">添加主机</el-button>
+          <el-button type="primary" v-showBtn="delCluster" @click="delCluster">删除集群</el-button>
+          <el-button type="primary" v-showBtn="addNode" @click="getAvailableNodes">添加主机</el-button>
         </el-form-item>
 
       </el-form>
-    </el-col>
+    </el-col>-->
 
     <el-form label-position="left" inline class="demo-table-expand">
       <el-form-item label="集群名称">
         <span>{{cluster.vClusterLabel }}</span>
       </el-form-item>
       <el-form-item label="创建时间">
-        <span>{{cluster.createdAt | moment("YYYY/MM/DD hh:mm:ss")}}</span>
+        <span>{{cluster.createdAt | moment("YYYY/MM/DD HH:mm:ss")}}</span>
       </el-form-item>
       <el-form-item label="创建者">
         <span>{{cluster.createBy }}</span>
@@ -25,9 +25,9 @@
       <el-form-item label="所属组">
         <span>{{cluster.groupName }}</span>
       </el-form-item>
-      <el-form-item label="更新时间">
-        <span>{{cluster.updatedAt | moment("YYYY/MM/DD hh:mm:ss")}}</span>
-      </el-form-item>
+<!--      <el-form-item label="更新时间">
+        <span>{{cluster.updatedAt | moment("YYYY/MM/DD HH:mm:ss")}}</span>
+      </el-form-item> -->
       <el-form-item label="集群描述">
         <span>{{cluster.description }}</span>
       </el-form-item>
@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column prop="updatedAt" label="注册时间" min-width="150" sortable>
         <template scope="node">
-          {{node.row.registeredTime | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{node.row.registeredTime | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column prop="" label="主机状态" min-width="150" sortable>
@@ -63,7 +63,7 @@
       </el-table-column>
       <el-table-column prop="" label="操作" min-width="100" sortable>
         <template scope="node">
-          <el-button type="danger" size="small" @click="delNode(node.$index, node.row)" v-loading.fullscreen.lock="fullscreenLoading">删除</el-button>
+          <el-button type="danger" size="small" v-showBtn="delNode" @click="delNode(node.$index, node.row)" v-loading.fullscreen.lock="fullscreenLoading">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -126,7 +126,7 @@
             this.fullscreenLoading = false
             if (data.resultCode === '00') {
               this.$message({
-                message: '删除成功',
+                message: '删除中',
                 type: 'success',
                 onClose: this.getInfo()
               })
@@ -149,7 +149,7 @@
           this.$store.dispatch(type.DEL_CLUSTER, this.cluster.id).then((data) => {
             if (data.resultCode === '00') {
               this.$message({
-                message: '删除成功',
+                message: '删除中',
                 type: 'success',
                 onClose: this.goList
               })
@@ -177,7 +177,7 @@
       },
       addNode () {
         if (this.checkNodeIps.length === 0) {
-          this.dialogVisible = false
+          this.$message.error('请选择主机')
           return
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.cluster.id}
@@ -187,7 +187,7 @@
           this.dialogVisible = false
           if (data.resultCode === '00') {
             this.$message({
-              message: '添加成功',
+              message: '添加中',
               type: 'success',
               onClose: this.getInfo()
             })
@@ -205,12 +205,12 @@
       }
     },
     mounted () {
-  //    this.interval = setInterval(this.getInfo, 3000)
+      this.interval = setInterval(this.getInfo, 3000)
       this.getInfo()
-    }
-/*    beforeDestroy: function () {
+    },
+    beforeDestroy: function () {
       clearInterval(this.interval)
-    } */
+    }
   }
 </script>
 

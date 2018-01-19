@@ -9,7 +9,7 @@
           </el-select>
         </el-form-item>
       <el-form-item label="告警规则" required style="display: inline;">
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item  prop="type">
               <el-select v-model="ruleForm.type" @change="onTypeChange">
                 <el-option label="响应时间" value="响应时间"></el-option>
@@ -20,7 +20,7 @@
             </el-form-item>
           </el-col>
        <!-- <el-col class="line" :span="1"></el-col> -->
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item prop="operator">
               <el-select v-model="ruleForm.operator" >
                 <el-option label="大于" value="大于"></el-option>
@@ -29,24 +29,36 @@
             </el-form-item>
           </el-col>
        <!-- <el-col class="line" :span="1"></el-col> -->
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item  prop="setValue">
               <el-input v-model="ruleForm.setValue" placeholder="设置值" ></el-input>
             </el-form-item>
 
           </el-col>
         <el-col :span="1">
-          {{this.setValueUnit}}
+          &nbsp;&nbsp;{{this.setValueUnit}}
         </el-col>
       </el-form-item> <br />
       <el-form-item  label="请求路径" prop="requesturi" v-if="ruleForm.type === '响应时间'">
-        <el-input v-model="ruleForm.requesturi" placeholder="请求路径http://"></el-input>
+        <el-col :span="12">
+        <el-input v-model="ruleForm.requesturi" placeholder="例：http://" :maxlength="200"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item  label="监控周期" prop="monitor_cycle">
-        <el-input v-model="ruleForm.monitor_cycle" placeholder="监控周期（秒）"></el-input>
+        <el-col :span="12">
+        <el-input v-model="ruleForm.monitor_cycle" placeholder="监控周期(秒)"></el-input>
+        </el-col>
+        <el-col :span="1">
+          &nbsp;&nbsp;s
+        </el-col>
       </el-form-item>
       <el-form-item label="阈值"  prop="threshold">
-          <el-input v-model="ruleForm.threshold" placeholder="0"></el-input>
+        <el-col :span="12">
+          <el-input v-model="ruleForm.threshold"></el-input>
+        </el-col>
+        <el-col :span="1">
+          &nbsp;&nbsp;次
+        </el-col>
       </el-form-item>
       <el-form-item label="激活"  prop="status">
         <el-switch on-text="" off-text="" v-model="ruleForm.status"></el-switch>
@@ -61,10 +73,14 @@
         <el-input v-model="ruleForm.min_instance"></el-input>
       </el-form-item>
       <el-form-item  label="最大实例个数" v-if="ruleForm.action === 1" prop="max_instance" >
+        <el-col :span="12">
         <el-input v-model="ruleForm.max_instance"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item  label="步长" prop="step" >
+        <el-col :span="12">
         <el-input v-model="ruleForm.step"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item  label="创建时间" prop="created" v-if="false">
         <el-input v-model="ruleForm.created"></el-input>
@@ -105,8 +121,8 @@
           operator: '',
           setValue: '',
           requesturi: '',
-          monitor_cycle: '',
-          threshold: '',
+          monitor_cycle: 0,
+          threshold: 0,
           status: false,
           action: 1,
           min_instance: 1,
@@ -134,25 +150,28 @@
             { required: true, message: '请选择扩缩状态' }
           ],
           requesturi: [
-            { required: true, message: '请求地址必填' }
+            { required: true, message: '请填写请求地址', trigger: 'blur' },
+            { max: 100, message: '长度不能超过100个字符', trigger: 'blur' }
           ],
           monitor_cycle: [
-            { required: true, message: '请填写监控周期' }
+            { required: true, message: '请填写监控周期' },
+            {pattern: /^[0-9]+$/, message: '监控周期只能是数字', trigger: 'blur'}
           ],
           threshold: [
-            { required: true, message: '阈值必填' }
+            { required: true, message: '请填写阈值' },
+            {pattern: /^[0-9]+$/, message: '阈值只能是数字', trigger: 'blur'}
           ],
           min_instance: [
-            { required: true, message: '最小实例个数必填' },
-            {pattern: /^[0-9]*[1-9][0-9]*$/, message: '最小实例个数只能是正整数', trigger: 'blur'}
+            { required: true, message: '请填写最小实例个数' },
+            {pattern: /^[0-9]+$/, message: '最小实例个数只能是数字', trigger: 'blur'}
           ],
           max_instance: [
-            { required: true, message: '最大实例个数必填' },
-            {pattern: /^[0-9]*[1-9][0-9]*$/, message: '最大实例个数只能是正整数', trigger: 'blur'}
+            { required: true, message: '请填写最大实例个数' },
+            {pattern: /^[0-9]+$/, message: '最大实例数只能是数字', trigger: 'blur'}
           ],
           step: [
-            { required: true, message: '步长必填' },
-            {pattern: /^[0-9]*[1-9][0-9]*$/, message: '步长只能是正整数', trigger: 'blur'}
+            { required: true, message: '请填写步长' },
+            {pattern: /^[1-9]+$/, message: '步长只能是正整数', trigger: 'blur'}
           ]
         }
       }
@@ -177,10 +196,15 @@
             if (data.resultCode === '00') {
               // 显示到页面
               this.ruleForm = data.policy
+              this.ruleForm.app_id = data.policy.appId
+              this.ruleForm.monitor_cycle = data.policy.monitorCycle
+              this.ruleForm.min_instance = data.policy.minInstance
+              this.ruleForm.max_instance = data.policy.maxInstance
+              this.ruleForm.user_name = data.policy.userName
               data.policy.status === 'start' ? this.ruleForm.status = true : this.ruleForm.status = false
             } else {
               Notification.error({
-                title: '查询模版信息出错',
+                title: '查询信息出错',
                 message: JSON.stringify(data.message)
               })
             }

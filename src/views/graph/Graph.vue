@@ -142,7 +142,7 @@
           },
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {d}%'
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
           },
           legend: {},
           label: {
@@ -228,7 +228,8 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              name: '(单位：核)'
             }
           ],
           series: [{
@@ -252,7 +253,7 @@
         this.hostMemChart = echarts.init(hostMemRec, null, {width: 500, height: 400})
         let hostMemOption = {
           backgroundColor: '#fff',
-          title: {text: ' 内存使用情况(GB)', x: 'center'},
+          title: {text: ' 内存使用情况', x: 'center'},
           tooltip: {
             trigger: 'axis'
           },
@@ -269,7 +270,8 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              name: '(单位：GB)'
             }
           ],
           series: [{
@@ -306,6 +308,8 @@
               formatter: '{b}: ({d}%)'
             }
           },
+          color: ['#4dced0', '#53a3da', '#ff7f50', '#87cefa', '#6495ed',
+            '#40e0d0', '#1e90ff', '#7b68ee', '#6b8e23', '#b8860b', '#30e0e0'],
           series: [{
             name: 'CPU使用',
             type: 'pie',
@@ -315,7 +319,7 @@
             width: '50%',
             itemStyle: {
               normal: {
-                color: '#53a3da',
+//                color: '#53a3da',
                 shadowBlur: 100,
                 shadowColor: 'rgba(0, 0, 0, 0.1)'
               },
@@ -364,6 +368,8 @@
               formatter: '{b}: ({d}%)'
             }
           },
+          color: ['#4dced0', '#53a3da', '#ff7f50', '#87cefa', '#6495ed',
+            '#40e0d0', '#1e90ff', '#7b68ee', '#6b8e23', '#b8860b', '#30e0e0'],
           series: [{
             name: '内存使用',
             type: 'pie',
@@ -373,7 +379,7 @@
             width: '50%',
             itemStyle: {
               normal: {
-                color: '#53a3da',
+//                color: '#53a3da',
                 shadowBlur: 100,
                 shadowColor: 'rgba(0, 0, 0, 0.1)'
               },
@@ -425,7 +431,8 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              name: '(单位：核)'
             }
           ],
           series: [{
@@ -451,7 +458,7 @@
         this.memTopTenChart = echarts.init(memRec, null, {width: 500, height: 450})
         let memTopTenOption = {
           backgroundColor: '#fff',
-          title: {text: ' 内存分配使用TOP10(GB)', x: 'center'},
+          title: {text: ' 内存分配使用TOP10', x: 'center'},
           tooltip: {},
           legend: {},
           grid: {y2: 120},
@@ -467,7 +474,8 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              name: '(单位：GB)'
             }
           ],
           series: [{

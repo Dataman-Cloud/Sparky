@@ -3,7 +3,7 @@
     <!-- 正常添加或修改模版的表单 -->
     <el-form :model="ruleForm" v-if="!catalogStackCreateForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" :label-position="labelPosition">
       <div v-if="catalogStackCreate" style="background: #F9FAFC; padding: 10px 0; border-radius: 15px;">
-        <el-form-item label="模板名称"  prop="name" style="width: 400px;" >
+        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
           <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
         </el-form-item>
         <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
@@ -14,7 +14,7 @@
         </el-form-item>
       </div>
       <div v-else>
-        <el-form-item label="模板名称"  prop="name" style="width: 400px;" >
+        <el-form-item label="模版名称"  prop="name" style="width: 400px;" >
           <el-input v-model="ruleForm.name" v-bind:disabled="catalogStackCreate"></el-input>
         </el-form-item>
         <el-form-item label="创建时间" min-width="70" sortable v-if="catalogStackCreate">
@@ -30,17 +30,14 @@
       </el-form-item>
     </base-form>
     <el-form-item>
-      <el-button type="primary" @click="cancelForm('ruleForm')" v-if="!catalogStackCreate">取消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')" v-if="!catalogStackCreate">{{updateOrCreate}}</el-button>
-      <el-button type="primary" @click="cancelForm" v-if="catalogStackCreate">上一步</el-button>
-      <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">下一步</el-button>
-      <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
+      <el-button type="primary" @click="cancelForm" v-if="!catalogStackCreate">取消</el-button>
+      <el-button type="primary" @click="nextBtn('ruleForm')" v-if="!catalogStackCreate">下一步</el-button>
     </el-form-item>
       </el-form>
 
     <el-form :model="cscForm" v-if="catalogStackCreateForm" :rules="cscFormRules" ref="cscForm" label-width="100px" class="demo-ruleForm">
       <div style="background: #EFF2F7; padding: 10px 0; border-radius: 15px;">
-      <el-form-item label="模板名称" style="width: 400px;" >
+      <el-form-item label="模版名称" style="width: 400px;" >
         <el-input v-model="ruleForm.name" v-bind:disabled="true" ></el-input>
       </el-form-item>
       <el-form-item label="创建时间" min-width="70" sortable>
@@ -91,16 +88,14 @@
         <span id="fileUploadErr"></span>
       </el-form-item>
       <el-form-item  v-if="!cscForm.success">
-        <el-button type="primary" @click="cscFormController" v-if="catalogStackCreate">上一步</el-button>
+        <el-button type="primary" @click="lastBtn">返回</el-button>
         <el-button type="primary" @click="cscFormSubmit('cscForm')">发布</el-button>
-        <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
       </el-form-item>
       <el-form-item v-show="cscForm.success">
         <el-form-item label="状态" min-width="70" sortable>发布完成</el-form-item>
       </el-form-item>
       <el-form-item v-show="cscForm.success">
         <el-button type="primary" @click="appList" >查看应用列表</el-button>
-<!--        <el-button type="primary" @click="appInfo" >查看应用详情</el-button> -->
       </el-form-item>
     </el-form>
   </div>
@@ -135,9 +130,9 @@ export default {
       catalogStackCreate: false, // 是否为程序包发布进入
       catalogStackCreateForm: false, // 程序包发布进入后的表单控制
       updateOrCreate: '立即创建', // 创建或更新的文本
-      uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+      uploadFileAction: window.location.protocol + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径 服务器
       uploadHeaders: {'Authorization': store.getters.token}, // 上传文件headers信息
-      // uploadFileAction: '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
+//      uploadFileAction: 'http://localhost:8080' + '/jborg/catalogs/uploadCatalogsStack', // 上传的文件路径
       uploadFile: false, // 是否立即上传
       isRole: false, // 是否有更新该模板的权限
       portIndexVal: 0,
@@ -161,12 +156,6 @@ export default {
         appsGroup: [
           { required: true, message: '请选择应用组', trigger: 'change' }
         ]
-        /*    uploadFile1: [
-              { required: true, message: '请选择上传文件', trigger: 'blue' }
-            ]
-            packageType: [
-              { required: true, message: '请选择包类型', trigger: 'click' }
-            ] */
       },
       rules: appConf.modelFormRule()
     }
@@ -194,7 +183,7 @@ export default {
       },
       setObjModelJSON (state) {
         let appModel = JSON.parse(state.model.model.model.json)
-        // 封装应用模板信息进行显示
+        // 封装应用模版信息进行显示
         this.ruleForm.id = state.model.model.model.id // id
         this.ruleForm.name = state.model.model.model.name // 名称
         this.ruleForm.desc = state.model.model.model.desc // 描述
@@ -495,7 +484,7 @@ export default {
         this.isRole = true
       } else if (group.role === 'member' && this.getUserInfo.id === this.getModelInfo.accountId) { // 为组员但为该模板的创建者
         this.isRole = true
-      } else if (this.getModelInfo.accountsName === 'admin') { // 该模板的创建者为超管
+      } else if (this.getModelInfo.accountsName === 'admin') { // 该模版的创建者为超管
         this.isRole = true
       }
     }
@@ -506,6 +495,14 @@ export default {
     }),
     cancelForm: function () {
       this.$router.go(-1)
+    },
+    lastBtn: function () {
+      this.isUploadFile = false
+      if (this.catalogStackCreateForm === false) {
+        this.catalogStackCreateForm = true
+      } else if (this.catalogStackCreateForm === true) {
+        this.catalogStackCreateForm = false
+      }
     },
     resetForm () {
 //      this.$refs['ruleForm'].resetFields()
@@ -522,18 +519,13 @@ export default {
           if (valid) {
             // 提交文件上传
             this.$refs.upload.submit()
+            this.submitForm('ruleForm')
           }
         })
       } else {
      //   document.getElementById('fileUploadErr').htmlText('请上传文件')
         this.$message.error('还没有上传文件')
       }
-    /*  this.$refs[formName].validate((valid) => {
-        if (valid) {
-          // 提交文件上传
-          this.$refs.upload.submit()
-        }
-      }) */
     },
     handleRemove (file, fileList) {
       this.isUploadFile = false
@@ -654,60 +646,24 @@ export default {
           }
         })
     },
-    submitForm (formName) { // 更新模板
+    nextBtn (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let jsonObj = this.getObjModelJSON
           let health = JSON.parse(jsonObj).healthChecks[0]
           // 有健康检查||选择端口号
-//          console.log(JSON.stringify(health))
           if (health !== undefined) {
             this.portIndexVal = health.portIndex === undefined ? 0 : health.portIndex
           } else {
             this.portsLength = 1
             this.portIndexVal = 0
           }
-//          console.log('portsLength ' + this.portsLength)
-//          console.log('portIndexVal ' + this.portIndexVal)
           if (this.portIndexVal < this.portsLength && this.portIndexVal >= 0) {
-            if (this.updateOrCreate === '立即更新') {
-              //  更新操作
-              let modelInfo = {
-                'name': this.ruleForm.name,
-                'desc': this.ruleForm.desc,
-                'json': jsonObj,
-                'id': this.ruleForm.id
-              }
-              this.$store.dispatch(modelType.FETCH_UPDATA_MODEL, {
-                modelInfo: modelInfo
-              }).then((data) => {
-                if (data.resultCode === '00') {
-                  // 更新成功
-                  this.$message({message: '更新成功', type: 'success'})
-                  this.$router.push({path: '/app/list/appsModel'})
-                } else {
-                  Notification.error({
-                    title: '更新模板出錯',
-                    message: JSON.stringify(data.message)
-                  })
-                }
-              })
-            } else if (this.updateOrCreate === '立即创建') {
-              // 创建操作
-              this.$store.dispatch(modelType.FETCH_CREATE_MODEL, {
-                modelInfo: {'name': this.ruleForm.name, 'json': this.getObjModelJSON, 'desc': this.ruleForm.desc} })
-                .then((data) => {
-                  if (data.resultCode === '00') {
-                    this.$message({message: '创建成功', type: 'success'})
-                    // 跳转回列表
-                    this.$router.push({path: '/app/list/appsModel'})
-                  } else {
-                    Notification.error({
-                      title: '创建应用模板出错',
-                      message: JSON.stringify(data.message)
-                    })
-                  }
-                })
+            // 下一步操作
+            if (this.catalogStackCreateForm === false) {
+              this.catalogStackCreateForm = true
+            } else if (this.catalogStackCreateForm === true) {
+              this.catalogStackCreateForm = false
             }
           } else {
             this.$message.error('健康检查配置错误：无效的端口组索引号')
@@ -717,6 +673,57 @@ export default {
           return false
         }
       })
+    },
+    submitForm () { // 创建模板和APP
+      this.$store.dispatch(modelType.FETCH_CREATE_MODEL, {
+        modelInfo: {'name': this.ruleForm.name, 'json': this.getObjModelJSON, 'desc': this.ruleForm.desc} })
+//        .then((data) => {
+//          if (data.resultCode === '00') {
+//            this.$message({message: '创建成功', type: 'success'})
+//          } else {
+//            Notification.error({
+//              title: '创建应用模板出错',
+//              message: JSON.stringify(data.message)
+//            })
+//          }
+//        })
+/*      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let jsonObj = this.getObjModelJSON
+          let health = JSON.parse(jsonObj).healthChecks[0]
+          // 有健康检查||选择端口号
+          if (health !== undefined && (health.portIndex === null || health.portIndex === undefined)) {
+            this.portsLength = 1
+            this.portIndexVal = 0
+          }
+          if (health === undefined || this.portIndexVal < this.portsLength && this.portIndexVal >= 0) {
+            // 创建操作
+            this.$store.dispatch(modelType.FETCH_CREATE_MODEL, {
+              modelInfo: {'name': this.ruleForm.name, 'json': this.getObjModelJSON, 'desc': this.ruleForm.desc} })
+              .then((data) => {
+                if (data.resultCode === '00') {
+                  this.$message({message: '创建成功', type: 'success'})
+
+                  if (this.catalogStackCreateForm === false) {
+                    this.catalogStackCreateForm = true
+                  } else if (this.catalogStackCreateForm === true) {
+                    this.catalogStackCreateForm = false
+                  }
+                } else {
+                  Notification.error({
+                    title: '创建应用模板出错',
+                    message: JSON.stringify(data.message)
+                  })
+                }
+              })
+          } else {
+            this.$message.error('健康检查配置错误：无效的端口组索引号')
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      }) */
     },
     // 程序包发布表单控制
     cscFormController () {

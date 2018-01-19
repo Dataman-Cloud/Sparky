@@ -17,7 +17,7 @@
 -->
 
           <el-form-item>
-            <el-input v-model="filters.name" placeholder="应用名称" icon="search"></el-input>
+            <el-input v-model="filters.name" placeholder="应用名称" icon="search" :maxlength="25"></el-input>
           </el-form-item>
           <!--
           <el-form-item>
@@ -67,12 +67,12 @@
           </el-row>
         </template>
         <el-table :data="item.apps" v-loading="false" style="width: 100%;" v-if="item.apps.length > 0">
-          <el-table-column prop="id" label="名称" min-width="220" sortable>
+          <el-table-column prop="id" label="应用名称" min-width="220" sortable>
             <template scope="app">
               <router-link :to="{name: '应用实例信息', params: parseId(app.row.id)}">{{app.row.id | getName}}</router-link>
             </template>
           </el-table-column>
-          <el-table-column label="所属" min-width="150" prop="owner">
+          <el-table-column label="所属用户" min-width="150" prop="owner">
           </el-table-column>
 
           <!--add by 2017年8月2日-->
@@ -133,7 +133,7 @@
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                  <router-link :to="{name:'修改镜像',query:{aid:scope.row.id}}">
+                  <router-link :to="{name:'更新应用',query:{aid:scope.row.id}}">
                   <el-button type="primary" icon="edit" size="small">更新</el-button>
                   </router-link>
                   </el-dropdown-item>
@@ -183,7 +183,7 @@
 
 
         <el-table :data="unversion.list" v-loading="false" style="width: 100%;">
-          <el-table-column prop="id" label="名称" min-width="200" sortable>
+          <el-table-column prop="id" label="应用名称" min-width="200" sortable>
             <template scope="app">
               <router-link :to="{name: '应用实例信息', params: parseId(app.row.id)}">{{app.row.id | getName}}</router-link>
             </template>
@@ -252,7 +252,7 @@
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                    <router-link :to="{name:'修改镜像',query:{aid:scope.row.id}}">
+                    <router-link :to="{name:'更新应用',query:{aid:scope.row.id}}">
                       <el-button type="primary" icon="edit" size="small">更新</el-button>
                     </router-link>
                   </el-dropdown-item>
@@ -630,17 +630,39 @@
             let groupName = group[1]
             let appName = group[2]
             let version = paras.labels.CURRENT_VERSION
-            let type = paras.labels.PACKAGE_TYPE
+//            let type = paras.labels.PACKAGE_TYPE
             this.p_form = {
               id: id,
               para: paras,
               groupName: groupName,
               appName: appName,
               PACKAGE_VERSION: version,
-              PACKAGE_TYPE: type
+              PACKAGE_TYPE: this.getType(paras.labels.PACKAGE_TYPE)
             }
             this.dialog_packageEdit = true
           })
+      },
+      // 获取包类型中文名
+      getType (pageType) {
+        let result = ''
+        switch (pageType) {
+          case 'micro':
+            result = '微服务'
+            break
+          case 'dubbo':
+            result = 'Dubbo'
+            break
+          case 'nginx':
+            result = 'Nginx'
+            break
+          case 'tomcat':
+            result = 'Tomcat'
+            break
+          case 'weblogic':
+            result = 'Weblogic'
+            break
+        }
+        return result
       },
       // 更改文件时触发，添加文件、上传成功和上传失败时都会被调用
       uploadChange (file, fileList) {
@@ -852,6 +874,9 @@
           .catch(_ => {
           })
       },
+      appGroupByUserNameList () {
+        this.$store.dispatch(appgroupTypes.FATCH_APPGROUP_BY_USERNAME)
+      },
       //  获取用户列表
       listApp () {
         this.listLoading = true
@@ -926,11 +951,13 @@
             group: params[1],
             name: params[2]
           }
+//          return {appid: id}
         }
       }
     },
     mounted () {
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
+        this.appGroupByUserNameList()
         this.interval = setInterval(this.listApp, 5000)
         this.listApp()
       //  sessionStorage.removeItem('marathonName')

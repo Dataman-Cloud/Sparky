@@ -2,19 +2,24 @@
 <section>
   <el-form :label-position="labelPosition" :model="formName" label-width="85px" ref="formName" class="bodybar">
     <el-form-item label="姓名" prop="name" :rules="[{required: true, message: '请输入姓名', trigger: 'blur'},
-          {max: 25, message: '长度不能超过25个字符', trigger: 'blur' },
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
           {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '名称只能包含字母、数字和中文字符', trigger: 'blur'}]">
+      <el-col :span="8">
       <el-input v-model="formName.name"></el-input>
+      </el-col>
     </el-form-item>
 
     <el-form-item label="邮箱地址" prop="email" :rules="[
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }]">
+      <el-col :span="8">
       <el-input v-model="formName.email"></el-input>
+      </el-col>
     </el-form-item>
 
     <el-form-item label="用户角色" prop="roleId" required>
-      <el-col :span="18">
+      <el-col :span="12">
         <el-radio-group v-model="formName.roleId" v-for="(item, index) in UserRoles" :key="index">
           <el-radio :label="item.id" style="padding-right: 5px;">{{item.name}}</el-radio>
         </el-radio-group>
@@ -22,13 +27,15 @@
     </el-form-item>
 
     <el-form-item label="用户描述" prop="title">
-      <el-input type="textarea" autosize v-model="formName.desc">
+      <el-col :span="12">
+      <el-input type="textarea" autosize v-model="formName.desc" :maxlength="255">
       </el-input>
+      </el-col>
     </el-form-item>
-    <div class="btn">
-      <el-button type="primary" @click="submitForm(formName)" class="btn">更新</el-button>
+    <el-form-item>
       <el-button @click="cancelForm">取消</el-button>
-    </div>
+      <el-button type="primary" @click="submitForm(formName)" class="btn">更新</el-button>
+    </el-form-item>
 
   </el-form>
 
@@ -79,12 +86,19 @@
 //           this.$route.query.user = this.formName.user
 //            this.$route.query.user.email = this.formName.email
 //            this.$route.query.user.desc = this.formName.desc
-            this.$store.dispatch(type.FETCH_USERS_EDIT, user).then(() => {
-              this.$message({
-                message: '更新成功',
-                type: 'success'
-              })
-              this.$router.push({path: '/system/user/list'})
+            this.$store.dispatch(type.FETCH_USERS_EDIT, user).then((data) => {
+              if (data.resultCode === '00') {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success'
+                })
+                this.$router.push({path: '/system/user/list'})
+              } else {
+                this.$message({
+                  message: data.message,
+                  type: 'error'
+                })
+              }
             })
           } else {
             return false
@@ -110,7 +124,6 @@
   }
   .btn {
     text-align: center;
-    margin: 15px;
   }
   .breadcrumb {
     margin: 15px 0;

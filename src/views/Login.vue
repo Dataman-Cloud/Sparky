@@ -6,7 +6,8 @@
      <!--   <img src="../assets/LOGO.svg" alt=""> -->
 <!--     <img src="../assets/pufa.png" alt="" style="background-color: #999;"> -->
         <h2>系统登录</h2>
-        <h3>浦发信用卡容器云平台</h3>
+        <h3>浦发信用卡中心云计算平台</h3>
+        <h4>{{version}}</h4>
       </div>
       <el-form class="dm-login-box" :model="loginForm" :rules="rules" label-width="0" autocomplete="off">
         <el-form-item label="" prop="userName" class="dm-login-label">
@@ -20,6 +21,13 @@
           <el-input class="dm-login-input" v-model="loginForm.password" type="password" placeholder="密码" @keyup.enter.native="login" autofocus="autofocus">
             <template slot="append">
               <img src="../assets/lock.svg" style="width:32px;height:32px" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="" prop="kaptchaCode" style="margin-top: 25px;" v-show="isShow">
+          <el-input class="dm-login-input" v-model="loginForm.kaptchaCode" placeholder="图形验证码" @keyup.enter.native="login" autofocus="autofocus">
+            <template slot="append">
+              <img src="" alt="验证码" title="看不清？换一张试试" style="width:120px;height:50px;cursor:pointer;" id="kaptchaCode" @click="changeKaptcha"/>
             </template>
           </el-input>
         </el-form-item>
@@ -41,14 +49,19 @@
   import router from 'router'
   import store from 'store'
   import Cookies from 'js-cookie'
+  import { DEFAULT_BASE_URL, DM_VERSION } from '@/config'
 
   export default {
     data () {
       return {
         loading: false,
+        isShow: false,
+        version: DM_VERSION,
+        loginUrl: DEFAULT_BASE_URL,
         loginForm: {
           userName: '',
-          password: ''
+          password: '',
+          kaptchaCode: ''
         },
         rules: {
           userName: [
@@ -56,15 +69,44 @@
           ],
           password: [
             { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          kaptchaCode: [
+            { required: true, message: '请输入验证码', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
+      getLoginUrl () {
+        if (this.loginUrl.endsWith('/')) {
+          return this.loginUrl + 'jborg/kaptcha/getkaptchaCode'
+        } else {
+          return this.loginUrl + '/jborg/kaptcha/getkaptchaCode'
+        }
+      },
+      srcUrl () {
+        let $img = document.getElementById('kaptchaCode')
+        $img.src = this.getLoginUrl()
+        return $img
+      },
+      changeKaptcha () {
+        let $img = document.getElementById('kaptchaCode')
+        let url = this.getLoginUrl() + '?' + Math.floor(Math.random() * 100)
+        $img.src = url
+      },
       login (ev) {
         let { dispatch, commit } = this.$store
+        if (this.loginForm.userName.trim() === '' || this.loginForm.password.trim() === '') {
+          this.showResult('01', 'success', '请输入账户或密码！')
+          return false
+        }
+        if (this.isShow && this.loginForm.kaptchaCode.trim() === '') {
+          this.showResult('01', 'success', '请输入验证码！')
+          return false
+        }
         this.loading = true
-        dispatch(LOG_IN, this.loginForm).then(res => {
+        let prams = {'userName': this.loginForm.userName, 'password': window.btoa(this.loginForm.password), 'kaptchaCode': this.loginForm.kaptchaCode}
+        dispatch(LOG_IN, prams).then(res => {
           if (res.resultCode === '00') {
             return dispatch('GenerateRoutes', res.sysResources).then(_ => {
               Cookies.set('token', res.token)
@@ -74,19 +116,23 @@
               router.addRoutes(store.getters.appendRouters)
               this.$router.push({ name: '我的应用' })
             }).catch(error => {
-              this.showResult(error, 'd', 'sa')
+              this.showResult(error, 'success', 'error')
+              this.loginForm.kaptchaCode = ''
               this.loading = false
             })
           } else {
+            this.srcUrl()
             Notification({
               title: '登录失败',
               message: JSON.stringify(res.message),
               type: 'error'
             })
             this.loading = false
+            this.isShow = true
+            this.loginForm.kaptchaCode = ''
           }
         }).catch(error => {
-          this.showResult(error, 'd', 'sa')
+          this.showResult(error, 'success', 'error')
           this.loading = false
         })
       },
@@ -108,6 +154,10 @@
           this.loading = false
         }
       }
+    },
+    mounted () {
+//      this.srcUrl()
+      this.version = DM_VERSION
     }
   }
 </script>
@@ -156,6 +206,14 @@
     text-align: center;
     color: rgba(255, 255, 255, 0.9);
     font-family: pingfontweb, Helvetica Neue, Helvetica, Roboto, Arial, PingFang SC, Hiragino Sans GB, Microsoft Yahei, Microsoft Jhenghei, sans-serif;
+  }
+
+  .dm-login-top>h4 {
+    font-size: 14px;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.0);
+    font-weight: 100;
+    opacity: .7;
+    color: #040b33;
   }
 
   .dm-login-top>h3 {

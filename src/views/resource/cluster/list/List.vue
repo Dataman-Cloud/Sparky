@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="集群名称"></el-input>
+          <el-input v-model="filters.name" placeholder="集群名称"  :maxlength="50"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="">查询</el-button>
@@ -18,7 +18,7 @@
     <!--列表-->
     <el-col :span="24">
       <el-table :data="filterClusters" highlight-current-row v-loading="listLoading">
-        <el-table-column prop="clusterLabel" label="名称" min-width="100" sortable>
+        <el-table-column prop="clusterLabel" label="集群名称" min-width="100" sortable>
           <template scope="cluster">
             <router-link :to="{name: '集群信息', query:{clusterId:cluster.row.id}}">
               {{cluster.row.vClusterLabel }}
@@ -27,11 +27,11 @@
         </el-table-column>
         <el-table-column prop="description" label="描述" min-width="100" sortable>
         </el-table-column>
-        <el-table-column prop="groupName" label="组名称" min-width="100" sortable>
+        <el-table-column prop="groupName" label="所属用户组" min-width="100" sortable>
         </el-table-column>
         <el-table-column prop="createAt" label="创建时间" min-width="100" sortable>
           <template scope="cluster">
-            {{cluster.row.createdAt | moment("YYYY/MM/DD hh:mm:ss")}}
+            {{cluster.row.createdAt | moment("YYYY/MM/DD HH:mm:ss")}}
           </template>
         </el-table-column>
         <el-table-column prop="" label="操作" min-width="200" sortable>
@@ -165,7 +165,11 @@
       // 添加主机
       addNode () {
         if (this.checkNodeIps.length === 0) {
-          this.dialogVisible = false
+          this.$message({
+            message: '请选择主机',
+            type: 'error'
+          })
+//          this.dialogVisible = false
           return
         }
         let params = {method: 'add', nodeIps: this.checkNodeIps, vClusterId: this.vClusterId}

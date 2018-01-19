@@ -25,6 +25,7 @@ const state = {
   },
   appAcl: {
     bamboo: '',
+    serviceUrl: '',
     Config: {},
     Id: '',
     Acl: ''

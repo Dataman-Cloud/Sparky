@@ -13,7 +13,7 @@
       </el-table-column>
       <el-table-column prop="createAt" label="更新时间" min-width="150">
         <template scope="repos">
-          {{repos.row.createAt | moment("YYYY/MM/DD hh:mm:ss")}}
+          {{repos.row.createAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="100">
@@ -24,10 +24,10 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="第三方镜像仓库" :visible.sync="dialog_repoEdit">
+    <el-dialog title="第三方镜像仓库" :visible.sync="dialog_repoEdit" size="tiny">
       <el-form :model="form" ref="form">
         <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
-          {max: 20, message: '长度不能超过20个字符', trigger: 'blur' }]">
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
@@ -158,7 +158,7 @@
 <style scoped>
   .top {
     margin: 20px 0 5px 0 ;
-    text-align: right;
+    text-align: left;
   }
   .bodybar {
     width: 100%;

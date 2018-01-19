@@ -4,7 +4,7 @@
       <el-option v-for="item in this.appgroups" :label="item.id.replace('/','')" :value="item.id.replace('/','')"
                  :key="item.id"></el-option>
     </el-select>
-    <el-button v-showBtn="batchRelease" @click="updateAPPList">更新</el-button>
+    <el-button v-showBtn="batchRelease" @click="batchRelease">更新</el-button>
     <el-table
       highlight-current-row v-loading="loading"
       ref="multipleTable"
@@ -20,7 +20,7 @@
         width="55">
       </el-table-column>
       <el-table-column
-        label="应用"
+        label="应用名称"
         width="200" show-overflow-tooltip>
         <template scope="scope"><a href="javascript:void(0);" @click="appInfoDialog(scope.$index)">{{ scope.row.appInfo.app.id }}</a>
         </template>
@@ -355,7 +355,8 @@
       uploadRemove (file, fileList) {
         console.log('移除')
         console.log(file)
-        this.$refs.multipleTable.toggleRowSelection(this.apps[this.uploadRowIndexObj[file.uid]])
+//        this.$refs.multipleTable.toggleRowSelection(this.apps[this.uploadRowIndexObj[file.uid]])
+        this.$refs.multipleTable.clearSelection(this.apps[this.uploadRowIndexObj[file.uid]])
       },
       // 文件上传时会调用
       uploadProgress (event, file, fileList) {
@@ -464,7 +465,7 @@
 //        console.log(this.uploadAPPS)
       },
       // 批量更新应用
-      updateAPPList () {
+      batchRelease () {
         if (this.uploadAPPS.length > 0) {
           let ua = []
           var pattern = /^[A-Za-z0-9\\.]+$/
@@ -500,9 +501,9 @@
     },
     mounted () {
       // 开启加载动画
-      this.loading = true
+//      this.loading = true
       // 查询应用组
-      this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
+      this.$store.dispatch(appgroupTypes.FATCH_SELF_APPGROUP)
         .then((data) => {
           if (data.resultCode !== '00') {
             Notification.error({
