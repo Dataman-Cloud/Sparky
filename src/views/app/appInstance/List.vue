@@ -176,36 +176,36 @@
 
       </el-tab-pane>
 
-      <el-tab-pane label="转发规则" name="forth">
-        <div style="margin-bottom: 20px;">
-          <el-button type="primary" size="small" @click="bambooBtn">查看bamboo</el-button>
-        <!--  <span style="margin-left: 20px;">{{bamboo}}</span> -->
-        </div>
-        <el-table :data="httpType" highlight-current-row border ref="multipleTable" style="width: 100%">
-            <el-table-column prop="Id" label="Id" min-width="600" >
-            </el-table-column>
-            <el-table-column prop="Acl" label="Acl" min-width="600">
-              <template scope="scope">
-                <span v-for="item in scope.row.Acl.split(' ')">
-                  <a target="_blank" :href="aclLink(item)">{{item}}</a> &nbsp;
-                </span>
-<!--                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a> -->
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" min-width="450" sortable>
-              <template scope="scope">
-                <el-button size="mini" @click="editAppRule(scope.row)">编辑</el-button> &nbsp;
+      <!--<el-tab-pane label="转发规则" name="forth">-->
+        <!--<div style="margin-bottom: 20px;">-->
+          <!--<el-button type="primary" size="small" @click="bambooBtn">查看bamboo</el-button>-->
+        <!--&lt;!&ndash;  <span style="margin-left: 20px;">{{bamboo}}</span> &ndash;&gt;-->
+        <!--</div>-->
+        <!--<el-table :data="httpType" highlight-current-row border ref="multipleTable" style="width: 100%">-->
+            <!--<el-table-column prop="Id" label="Id" min-width="600" >-->
+            <!--</el-table-column>-->
+            <!--<el-table-column prop="Acl" label="Acl" min-width="600">-->
+              <!--<template scope="scope">-->
+                <!--<span v-for="item in scope.row.Acl.split(' ')">-->
+                  <!--<a target="_blank" :href="aclLink(item)">{{item}}</a> &nbsp;-->
+                <!--</span>-->
+<!--&lt;!&ndash;                <a target="_blank" :href="aclLink(scope.row)">{{scope.row.Acl}}</a> &ndash;&gt;-->
+              <!--</template>-->
+            <!--</el-table-column>-->
+            <!--<el-table-column label="操作" min-width="450" sortable>-->
+              <!--<template scope="scope">-->
+                <!--<el-button size="mini" @click="editAppRule(scope.row)">编辑</el-button> &nbsp;-->
 
-                <el-button size="mini" @click="delAppAcl(scope.row)" v-show="scope.row.Acl">删除</el-button>
-              </template>
-            </el-table-column>
-        </el-table>
-        <!--<el-col :span="24" class="toolbar">
-          <el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"
-                         style="float:right;">
-          </el-pagination>
-        </el-col>-->
-      </el-tab-pane>
+                <!--<el-button size="mini" @click="delAppAcl(scope.row)" v-show="scope.row.Acl">删除</el-button>-->
+              <!--</template>-->
+            <!--</el-table-column>-->
+        <!--</el-table>-->
+        <!--&lt;!&ndash;<el-col :span="24" class="toolbar">-->
+          <!--<el-pagination layout="total, prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total"-->
+                         <!--style="float:right;">-->
+          <!--</el-pagination>-->
+        <!--</el-col>&ndash;&gt;-->
+      <!--</el-tab-pane>-->
 
     </el-tabs>
 
@@ -312,8 +312,8 @@
         instancesNums: 0,
         dialogVisible: false,
         versionAPPInfo: undefined,
-        appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
-//        appIdEncoded: window.btoa(this.$route.params.appid)
+        // appIdEncoded: window.btoa('/' + this.$route.params.group + '/' + this.$route.params.name)
+        appIdEncoded: window.btoa(this.$route.params.appid)
       }
     },
     computed: {
@@ -721,7 +721,7 @@
         this.getAppVersions()
         this.getAppContainers()
         this.getQueue()
-        this.getAppAcl()
+        // this.getAppAcl()
 //        if (this.appInfo.labels.HAPROXY_PROTOCOL_TYPE === 'https') {
 //          this.getAppAcl()
 //        }

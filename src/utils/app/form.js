@@ -75,6 +75,29 @@ function transformFormToJson (normalForm, jsonForm) {
   if (normalForm.cmd != null) {
     jsonForm.cmd = normalForm.cmd.trim() === '' ? null : normalForm.cmd.trim()
   }
+  if (normalForm.labels) {
+    if (normalForm.labels.DEFAULT_PACKAGE_VERSION) {
+      jsonForm.labels.DEFAULT_PACKAGE_VERSION = normalForm.labels.DEFAULT_PACKAGE_VERSION
+    }
+    if (normalForm.labels.GROUP_ID) {
+      jsonForm.labels.GROUP_ID = normalForm.labels.GROUP_ID
+    }
+    if (normalForm.labels.LOAD_APPID) {
+      jsonForm.labels.LOAD_APPID = normalForm.labels.LOAD_APPID
+    }
+    if (normalForm.labels.NIXY_REALM) {
+      jsonForm.labels.NIXY_REALM = normalForm.labels.NIXY_REALM
+    }
+    if (normalForm.labels.PACKAGE_VERSION) {
+      jsonForm.labels.PACKAGE_VERSION = normalForm.labels.PACKAGE_VERSION
+    }
+    if (normalForm.labels.USER_ID) {
+      jsonForm.labels.USER_ID = normalForm.labels.USER_ID
+    }
+    if (normalForm.labels.VCLUSTER) {
+      jsonForm.labels.VCLUSTER = normalForm.labels.VCLUSTER
+    }
+  }
   return jsonForm
 }
 
@@ -183,6 +206,7 @@ function transformJsonToForm (appModel, normalForm) {
 //          }
     normalForm.dockerPar.push({key: v['key'], value: v['value']})
   }
+  normalForm.labels = appModel.labels
   return normalForm
 }
 

@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-form label-position="left" inline class="demo-table-expand">
-      <el-form-item label="容器名称">
+      <el-form-item label="容器名称" style="width:100%">
         <span>{{instance.Name }} <el-tag type="primary" v-if="instance.State !== undefined">{{instance.State.Status }} </el-tag></span>
       </el-form-item>
       <el-form-item label="创建时间">

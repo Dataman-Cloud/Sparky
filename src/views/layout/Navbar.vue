@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="logo logo-width"><img src="../../assets/pufa.png" alt=""></div>
+    <div class="logo logo-width"><img src="../../assets/dataman.png" alt=""></div>
     <div class="header-operations">
 <!--      <el-select v-model="selectGroup" placeholder="请选择" class="groupsInfo" @change="switchGroup">
         <el-option

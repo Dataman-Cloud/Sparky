@@ -19,11 +19,11 @@
           <el-form-item>
             <el-input v-model="filters.name" placeholder="应用名称" icon="search" :maxlength="25"></el-input>
           </el-form-item>
-          <el-form-item>
-            <router-link to="../list/catalogStackList">
-              <el-button type="primary"  v-showBtn="addPackage">程序包发布</el-button>
-            </router-link>
-          </el-form-item>
+          <!--<el-form-item>-->
+            <!--<router-link to="../list/catalogStackList">-->
+              <!--<el-button type="primary"  v-showBtn="addPackage">程序包发布</el-button>-->
+            <!--</router-link>-->
+          <!--</el-form-item>-->
           <el-form-item>
             <router-link to="../addImg">
               <el-button type="primary" v-showBtn="addAPP">镜像发布</el-button>
@@ -183,18 +183,18 @@
       :visible.sync="createAppGroupDialogVisisble"
     >
       <el-form :model="addAppGroupForm" ref="addAppGroupForm" :rules="addAppGroupRule">
-        <el-select v-model="addAppGroupForm.groupCreateListVal" placeholder="请选择应用组">
+        <!--<el-select v-model="addAppGroupForm.groupCreateListVal" placeholder="请选择应用组">
           <el-option
             v-for="item in groupCreateList"
             :key="item.value"
             :label="item.label"
             :value="item.value">
           </el-option>
-        </el-select>
+        </el-select>-->
 
-<!--       <el-form-item label="应用组名称" prop="id">
-          <el-input v-model="addAppGroupForm.id" @input="checkForm('addAppGroupForm')"></el-input>
-        </el-form-item> -->
+        <el-form-item label="应用组名称" prop="id">
+          <el-input v-model="addAppGroupForm.groupCreateListVal" @input="checkForm('addAppGroupForm')"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
               <el-button @click="createAppGroupDialogVisisble = false">取 消</el-button>
@@ -774,12 +774,12 @@
       },
       parseId (id) {
         if (id) {
-          let params = id.split('/')
-          return {
-            group: params[1],
-            name: params[2]
-          }
-//          return {appid: id}
+//          let params = id.split('/')
+//          return {
+//            group: params[1],
+//            name: params[2]
+//          }
+          return {appid: id}
         }
       }
     },
