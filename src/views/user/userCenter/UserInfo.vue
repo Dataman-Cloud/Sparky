@@ -29,29 +29,34 @@
       </el-tab-pane>
 
       <el-tab-pane label="密码修改" name="second">
-        <el-form :label-position="labelPosition" :rules="rules" :model="pwdForm" label-width="95px" ref="pwdForm" class="bodybar">
-          <el-form-item label="旧密码" prop="oldPassword" :rules="[
+        <div v-if="!loginName.startsWith('fid_')">
+          <span style="margin: 30px;"><strong>LDAP用户不能在平台修改密码!</strong></span>
+        </div>
+        <div v-else>
+          <el-form :label-position="labelPosition" :rules="rules" :model="pwdForm" label-width="95px" ref="pwdForm" class="bodybar">
+            <el-form-item label="旧密码" prop="oldPassword" :rules="[
             {max: 50, message: '长度不能超过50个字符', trigger: 'blur' },
 				    { required: true, message: '请输入旧密码', trigger: 'blur' }]">
-            <el-col :span="8">
-            <el-input type="password" v-model="pwdForm.oldPassword"  placeholder="请输入旧密码"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="新密码" prop="password">
-            <el-col :span="8">
-            <el-input type="password" v-model="pwdForm.password" placeholder="请输入新密码"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="确认新密码" prop="chkpwd">
-            <el-col :span="8">
-            <el-input type="password" v-model="pwdForm.chkpwd"  placeholder="请重新输入新密码"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item>
-            <el-button @click="cancelForm('pwdForm')">取消</el-button>
-            <el-button type="primary" @click="submitForm('pwdForm')">提交</el-button>
-          </el-form-item>
-        </el-form>
+              <el-col :span="8">
+                <el-input type="password" v-model="pwdForm.oldPassword"  placeholder="请输入旧密码"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="新密码" prop="password">
+              <el-col :span="8">
+                <el-input type="password" v-model="pwdForm.password" placeholder="请输入新密码"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="确认新密码" prop="chkpwd">
+              <el-col :span="8">
+                <el-input type="password" v-model="pwdForm.chkpwd"  placeholder="请重新输入新密码"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="cancelForm('pwdForm')">取消</el-button>
+              <el-button type="primary" @click="submitForm('pwdForm')">提交</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
       </el-tab-pane>
     </el-tabs>
 
@@ -96,6 +101,7 @@
         },
         activeName: 'first',
         labelPosition: 'left',
+        loginName: localStorage.getItem('userName'),
         rules: {
           password: [
             { required: true, validator: validatePass, trigger: 'blur' },

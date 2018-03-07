@@ -40,8 +40,12 @@
 
         <el-col :span="24" v-bind:style="{marginBottom:'10px'}">
           <el-button type="primary" v-on:click="init">刷新</el-button>
-          <el-button type="primary" v-show="selectIds.length" v-on:click="kill">重启实例</el-button>
-          <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">删除实例</el-button>
+          <template v-if="checkBtnReources('restartInstence')">
+            <el-button type="primary" v-show="selectIds.length" v-on:click="kill">重启实例</el-button>
+          </template>
+          <template v-if="checkBtnReources('killInstence')">
+            <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">删除实例</el-button>
+          </template>
         </el-col>
 
         <el-table :data="tasks" highlight-current-row border ref="multipleTable" style="width: 100%"
@@ -261,6 +265,7 @@
   import TimelineItem from '@/components/timeline/timeline-item'
   import * as appTypes from '@/store/app/mutations_types'
   import { Notification } from 'element-ui'
+  import store from '@/store'
 
   export default {
     components: {
@@ -595,9 +600,9 @@
       aclLink (parm) {
         let url = ''
         if (parm.startsWith('/')) {
-          url = 'http://' + this.getServiceUrl + parm
+          url = this.getServiceUrl + parm
         } else {
-          url = 'http://' + this.getServiceUrl + '/' + parm
+          url = this.getServiceUrl + '/' + parm
         }
         return url
       },
@@ -793,6 +798,16 @@
       },
       versionAppUpdate (version) {
         this.$router.push({path: '/app/versionAppUpdate', query: {'aid': this.appInfo.id, 'vid': version}})
+      },
+      checkBtnReources (param) {
+        var ret = false
+        for (var reources of store.getters.sysResources) {
+          if (reources.status === '0' && reources.type === '1' && reources.delFlag === '0' && reources.resourceName === param) {
+            ret = true
+            break
+          }
+        }
+        return ret
       }
     },
     mounted () {

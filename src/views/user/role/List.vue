@@ -7,9 +7,9 @@
     <el-table :data="filterRoles" highlight-current-row v-loading="listLoading" class="bodybar">
       <el-table-column prop="id" label="ID" min-width="40" sortable>
       </el-table-column>
-      <el-table-column prop="name" label="角色名称" min-width="100" sortable>
+      <el-table-column prop="remarks" label="角色名称" min-width="100" sortable>
       </el-table-column>
-      <el-table-column prop="remarks" label="角色标签" min-width="100" sortable>
+      <el-table-column prop="name" label="描述" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" min-width="150">
         <template scope="role">

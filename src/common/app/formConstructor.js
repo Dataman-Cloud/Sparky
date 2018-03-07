@@ -10,7 +10,7 @@ function ruleForm () {
     force: false,
     base: undefined,
     baseOption: [],
-    vcluster: 'default_cluster',
+    vcluster: '',
     master: [],
     group: undefined,
     network: 'BRIDGE',

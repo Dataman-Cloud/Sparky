@@ -11,7 +11,7 @@
       </el-table-column>
       <el-table-column prop="userName" label="用户名" min-width="100">
       </el-table-column>
-      <el-table-column prop="createAt" label="更新时间" min-width="150">
+      <el-table-column prop="createAt" label="创建时间" min-width="150">
         <template scope="repos">
           {{repos.row.createAt | moment("YYYY/MM/DD HH:mm:ss")}}
         </template>
@@ -26,22 +26,30 @@
 
     <el-dialog title="第三方镜像仓库" :visible.sync="dialog_repoEdit" size="tiny">
       <el-form :model="form" ref="form">
-        <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
+        <el-form-item label="名称" prop="name" :rules="[
+          {required: true, message: '请输入名称', trigger: 'blur'},
+          {pattern: /^[A-Za-z0-9]+$/, message: '名称只能包含字母和数字', trigger: 'blur'},
           {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
 
         <el-form-item label="镜像地址" prop="addr" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^\S+$/, message: '地址不能包含空格', trigger: 'blur'},
           {required: true, message: '请输入镜像地址', trigger: 'blur' }]">
           <el-input v-model="form.addr" placeholder="请输入镜像地址"></el-input>
         </el-form-item>
 
         <el-form-item label="用户名" prop="userName" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^[A-Za-z0-9]+$/, message: '用户名只能包含字母和数字', trigger: 'blur'},
           {required: true, message: '请输入用户名', trigger: 'blur' }]">
           <el-input type="text" v-model="form.userName" placeholder="请输入用户名"></el-input>
         </el-form-item>
 
         <el-form-item label="密码" prop="password" :rules="[
+          {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^\S+$/, message: '密码不能包含空格', trigger: 'blur'},
           {required: true, message: '请输入密码', trigger: 'blur' }]">
           <el-input type="password" v-model="form.password"></el-input>
         </el-form-item>

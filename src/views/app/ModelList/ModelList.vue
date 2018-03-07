@@ -29,10 +29,11 @@
       </el-table-column>
       <el-table-column label="操作" min-width="120" show-overflow-tooltip>
         <template scope="scope">
-                <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
+               <!-- <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button> -->
+                <el-button v-showBtn="catalogInfo" type="info" size="mini"  @click="info(scope.$index)">详情</el-button>
                 <el-button v-if="!isCatalogStackCreate" v-showBtn="catalogUpdate" type="success" size="mini" @click="updataAppModel(scope.$index)">更新</el-button>
                 <!-- 当前不为程序包发布，并且该登录用户有操作此模板的权限 -->
-
+          <div v-if="moreBtn()" style="display: inline;">
           <el-dropdown>
             <span class="el-dropdown-link"> <el-button size="mini" style="margin-left: 7px;">更多</el-button></span>
             <el-dropdown-menu slot="dropdown">
@@ -44,6 +45,7 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+          </div>
 
  <!--               <el-button v-if="!isCatalogStackCreate && scope.row.isRole" v-showBtn="catalogDel" type="danger" size="mini" @click="removeModel(scope.$index)">删除</el-button>
                 <el-button v-if="isCatalogStackCreate" v-showBtn="packagePublish" type="success" size="mini" @click="catalogStackCreatePage(scope.$index)">程序包发布</el-button> -->
@@ -79,6 +81,7 @@
   import {LABEL_PREFIX} from '@/config'
   import * as type from '@/store/model/mutations_types'
   import Codemirror from '@/components/jsonEditor/index'
+  import store from 'store'
 
   export default {
     components: {
@@ -179,6 +182,25 @@
       }
     },
     methods: {
+      moreBtn () {
+        let catalogDel = 'catalogDel'
+        let packagePublish = 'packagePublish'
+        let vshow = false
+        if (this.checkBtn(catalogDel) || this.checkBtn(packagePublish)) {
+          vshow = true
+        }
+        return vshow
+      },
+      checkBtn (param) {
+        let show = false
+        for (var reources of store.getters.sysResources) {
+          if (reources.status === '0' && reources.type === '1' && reources.delFlag === '0' && reources.resourceName === param) {
+            show = true
+            break
+          }
+        }
+        return show
+      },
       // 模板详情弹出层
       info (index) {
         this.dialogVisible = true

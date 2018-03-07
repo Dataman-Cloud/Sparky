@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   if (Cookies.get('token')) {
     if (to.path === '/login') {
-      next({name: '全部的应用'})
+      next({name: '全部应用'})
     } else {
       if (!store.getters.permissionRoutes) {
         store.dispatch('GenerateRoutes', store.getters.sysResources).then(_ => {

@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column prop="max_instance" label="最大实例个数" min-width="100" sortable>
       </el-table-column>
-      <el-table-column prop="min_instance" label="最小实例个数" min-width=100" sortable>
+      <el-table-column prop="min_instance" label="最小实例个数" min-width="100" sortable>
       </el-table-column>
       <el-table-column prop="step" label="步长" width="80" sortable>
       </el-table-column>

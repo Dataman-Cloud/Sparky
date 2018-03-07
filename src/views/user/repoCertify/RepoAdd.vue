@@ -1,7 +1,9 @@
 <template>
   <section>
     <el-form :label-position="labelPosition" :model="formName" label-width="120px" ref="formName"  class="bodybar">
-      <el-form-item label="名称" prop="name" :rules="[{required: true, message: '请输入名称', trigger: 'blur'},
+      <el-form-item label="名称" prop="name" :rules="[
+          {required: true, message: '请输入名称', trigger: 'blur'},
+          {pattern: /^[A-Za-z0-9]+$/, message: '名称只能包含字母和数字', trigger: 'blur'},
           {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
         <el-col :span="4">
         <el-input v-model="formName.name" placeholder="请输入名称"></el-input>
@@ -10,6 +12,7 @@
 
       <el-form-item label="镜像仓库地址" prop="addr" :rules="[
           {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^\S+$/, message: '地址不能包含空格', trigger: 'blur'},
           { required: true, message: '请输入镜像仓库地址', trigger: 'blur' }]">
         <el-col :span="8">
         <el-input v-model="formName.addr" placeholder="请输入镜像仓库地址"></el-input>
@@ -18,6 +21,7 @@
 
       <el-form-item label="用户名" prop="userName" :rules="[
           {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^[A-Za-z0-9]+$/, message: '用户名只能包含字母和数字', trigger: 'blur'},
           { required: true, message: '请输入用户名', trigger: 'blur' }]">
         <el-col :span="4">
         <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input>
@@ -26,6 +30,7 @@
 
       <el-form-item label="密码" prop="password" :rules="[
           {max: 100, message: '长度不能超过100个字符', trigger: 'blur' },
+          {pattern: /^\S+$/, message: '密码不能包含空格', trigger: 'blur'},
           { required: true, message: '请输入密码', trigger: 'blur' }]">
         <el-col :span="4">
         <el-input type="password" v-model="formName.password" placeholder="请输入密码"></el-input>

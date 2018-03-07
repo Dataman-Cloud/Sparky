@@ -267,13 +267,18 @@ export default {
             health.intervalSeconds = v.intervalSeconds// 检查间隔
             health.timeoutSeconds = v.timeoutSeconds// 检查超时
             health.maxConsecutiveFailures = v.maxConsecutiveFailures // 最大失败次数
-            if (v.protocol === 'HTTP') {
-              // ---htrp
+            if (v.protocol === 'HTTP' || v.protocol === 'MESOS_HTTP') {
+              // ---http
               health.path = v.path // 选择http协议后的路径
               health.ignoreHttp1xx = v.ignoreHttp1xx // 是否选中了忽略http返回码
               health.healthHttpPathText = true// 选择http协议后表格第一行“路径”标题
               health.healthHttpPathCode = true // 选择http协议后显示表格第二行“路径”
               health.healthHttpCheckBoxCode = true// 选择http协议后显示表格第三行“忽略http返回码”的checkbox元素
+            } else {
+              health.ignoreHttp1xx = false
+              health.healthHttpPathText = false
+              health.healthHttpPathCode = false
+              health.healthHttpCheckBoxCode = false
             }
             // ---端口号
             if (v.hasOwnProperty('ifPortIndex') && v.ifPortIndex === 1) { // 选中了端口组索引后
@@ -724,7 +729,11 @@ export default {
       this.getObjModelJSON
       if (this.portsType === '1' && this.portIndexVal < this.portsLength && this.portIndexVal >= 0) {
         if (this.catalogStackCreateForm === false) {
-          this.catalogStackCreateForm = true
+          this.$refs['ruleForm'].validate((valid) => {
+            if (valid) {
+              this.catalogStackCreateForm = true
+            }
+          })
         } else if (this.catalogStackCreateForm === true) {
           this.catalogStackCreateForm = false
         }

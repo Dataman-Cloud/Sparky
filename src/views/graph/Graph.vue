@@ -162,8 +162,8 @@
         }
         if (this.graphInfo && this.graphInfo.platformResource) {
           option.series[0].data = [
-            {value: (this.graphInfo.platformResource.cpuUtilizationRate) * 100, name: '已使用量'},
-            {value: (1 - this.graphInfo.platformResource.cpuUtilizationRate) * 100, name: '未使用量'}
+            {value: this.graphInfo.platformResource.cpuUsed, name: '已使用量'},
+            {value: this.graphInfo.platformResource.cpuTotal - this.graphInfo.platformResource.cpuUsed, name: '未使用量'}
           ]
         }
         this.cpuChart.setOption(option)
@@ -297,10 +297,10 @@
         this.appGroupChart = echarts.init(appRec, null, {width: 500, height: 400})
         let appOption = {
           backgroundColor: '#fff',
-          title: {text: 'CPU使用情况', x: 'center'},
+          title: {text: 'CPU已使用情况', x: 'center'},
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)'
+            formatter: '{a} <br/>{b} : {d}%' // {a} <br/>{b} : {c} ({d}%)
           },
           legend: {},
           label: {
@@ -357,10 +357,10 @@
         this.appGroupMemChart = echarts.init(appMemRec, null, {width: 500, height: 400})
         let appMemOption = {
           backgroundColor: '#fff',
-          title: {text: '内存使用情况', x: 'center'},
+          title: {text: '内存已使用情况', x: 'center'},
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)'
+            formatter: '{a} <br/>{b} : {d}%'
           },
           legend: {},
           label: {

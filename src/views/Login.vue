@@ -114,6 +114,7 @@
               commit(PUT_SYSRESOURCES, res.sysResources)
               this.loading = false
               router.addRoutes(store.getters.appendRouters)
+              window.localStorage.setItem('userName', this.loginForm.userName)
               this.$router.push({ name: '我的应用' })
             }).catch(error => {
               this.showResult(error, 'success', 'error')
@@ -122,6 +123,7 @@
             })
           } else {
             this.srcUrl()
+            this.changeKaptcha()
             Notification({
               title: '登录失败',
               message: JSON.stringify(res.message),

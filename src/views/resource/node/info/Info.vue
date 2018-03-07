@@ -47,7 +47,7 @@
         <span>{{nodeInfo.IPv4Forwarding ? '是' : '否' }}</span>
       </el-form-item>
       <el-form-item label="Cgroup 驱动">
-        <span>{{nodeInfo.CgroupDriver }}</span>
+        <span>{{nodeInfo.CgroupDriver === undefined ? 'cgroupfs' : nodeInfo.CgroupDriver }}</span>
       </el-form-item>
       <el-form-item label="LoggingDriver">
         <span>{{nodeInfo.LoggingDriver ? '是' : '否' }}</span>

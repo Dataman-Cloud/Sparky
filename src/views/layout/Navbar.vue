@@ -48,7 +48,7 @@ export default {
     return {
       currentMarathon: '',
       fullscreenLoading: false,
-      marathonVal: localStorage.getItem('marathonName'),
+      marathonVal: null,
 //      marathonVal: '',
       sysName: 'DM/OS'
 //       selectGroup: this.$store.state.user.aboutme.currentGroupId
@@ -56,14 +56,16 @@ export default {
   },
   watch: {
     marathonVal (curval, oldval) {
-      window.localStorage.setItem('marathonName', curval)
+      // console.log(window.localStorage.getItem('marathonName'))
       if (this.marathonVal !== null) {
+        window.localStorage.setItem('marathonName', curval)
         // 刷新
-//        this.fullscreenLoading = true
+        this.fullscreenLoading = true
 //        setTimeout(() => {
 //          this.fullscreenLoading = false
 //        }, 1000)
         this.$router.push({ name: '我的应用' })
+        this.fullscreenLoading = false
       }
     }
   },
@@ -77,6 +79,7 @@ export default {
       this.$confirm('确认退出吗?', '提示', {}).then(() => {
         store.dispatch(userType.LOG_OUT).then(data => {
           localStorage.removeItem('marathonName')
+          localStorage.removeItem('userName')
           location.reload()
         })
       }).catch(() => {
@@ -90,7 +93,12 @@ export default {
 //            let val = JSON.stringify(data.data[0])
 //            console.log(data.data[0])
 //            console.log(data.data[0].value)
-            this.marathonVal = data.data[0].value
+            let localval = window.localStorage.getItem('marathonName')
+            if (localval) {
+              this.marathonVal = localval
+            } else {
+              this.marathonVal = data.data[0].value
+            }
           } else {
             // 赋值
             this.marathonVal = ''
@@ -108,7 +116,7 @@ export default {
                 this.$router.push({path: '/app/list/'})
                 /*
                  dispatch(appType.FETCH_APPS, this.selectGroup)
-                 .then(() => this.$router.push({name: '全部的应用'}))
+                 .then(() => this.$router.push({name: '全部应用'}))
                  */
               })
           )

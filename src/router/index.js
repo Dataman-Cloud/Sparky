@@ -44,6 +44,7 @@ const AppInstanList = _import('app/appInstance/List')
 const PolicyList = _import('elastic/policy/List')
 const AddPolicy = _import('elastic/policy/Add')
 const CapabilityList = _import('elastic/history/List')
+const Eslogs = _import('resource/log/eslog')
 
 import * as nodeType from '@/store/node/mutations_types'
 const BatchRelease = _import('app/batchRelease')
@@ -84,12 +85,12 @@ export const asyncRouterMap = [
     path: '/app',
     component: Layout,
     name: '应用',
-    redirect: {name: '全部的应用'},
+    redirect: {name: '全部应用'},
     iconCls: 'fa fa-th-large', // 图标样式class
     children: [
       {
         path: 'list/apps',
-        name: '全部的应用',
+        name: '全部应用',
         component: AppList
       },
       {
@@ -241,6 +242,11 @@ export const asyncRouterMap = [
         path: 'metricsSnapshot',
         name: '资源统计',
         component: MetricsSnapshot
+      },
+      {
+        path: 'eslogs',
+        name: 'ES日志',
+        component: Eslogs
       }
     ]
   },

@@ -104,12 +104,12 @@
                 <!--TO DO-->
                 <ul class="progress">
                   <!--<li v-for="(status, index) in getAppHealth(test3.row).state" :class="status.state" style="width: 10%"></li>-->
-                  <li class="healthy" :style="{width:(test3.row.healthy/test3.row.instances)*100+'%'}"></li>
-                  <li class="unhealthy" :style="{width:(test3.row.unhealthy/test3.row.instances)*100+'%'}"></li>
-                  <li class="unknown" :style="{width:(test3.row.unknown/test3.row.instances)*100+'%'}"></li>
-                  <li class="staged" :style="{width:(test3.row.staged/test3.row.instances)*100+'%'}"></li>
-                  <li class="over-capacity" :style="{width:(test3.row.overcapacity/test3.row.instances)*100+'%'}"></li>
-                  <li class="unscheduled" :style="{width:(test3.row.unscheduled/test3.row.instances)*100+'%'}"></li>
+                  <li class="healthy" :style="{width:(valCheck(test3.row.healthy, test3.row.instances))*100+'%'}"></li>
+                  <li class="unhealthy" :style="{width:(valCheck(test3.row.unhealthy, test3.row.instances))*100+'%'}"></li>
+                  <li class="unknown" :style="{width:(valCheck(test3.row.unknown, test3.row.instances))*100+'%'}"></li>
+                  <li class="staged" :style="{width:(valCheck(test3.row.staged/test3.row.instances))*100+'%'}"></li>
+                  <li class="over-capacity" :style="{width:(valCheck(test3.row.overcapacity/test3.row.instances))*100+'%'}"></li>
+                  <li class="unscheduled" :style="{width:(valCheck(test3.row.unscheduled/test3.row.instances))*100+'%'}"></li>
                 </ul>
               </el-tooltip>
 
@@ -120,6 +120,10 @@
           <el-table-column label="操作" min-width="250">
             <template scope="scope">
               <el-button type="warning" v-showBtn="stopApp" size="mini" @click="stop(scope.row.id)">停止</el-button>
+              <router-link :to="{name: '应用实例信息', params: parseId(scope.row.id)}">
+                <el-button v-showBtn="appInfomation" type="info" size="mini">详情</el-button>
+              </router-link>
+              <div v-if="moreBtn()" style="display: inline;">
               <el-dropdown>
                 <span class="el-dropdown-link"> <el-button size="mini" type="info">更多</el-button></span>
                 <el-dropdown-menu slot="dropdown">
@@ -149,7 +153,7 @@
               <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
                 <el-button v-showBtn="updatePackage" type="info" size="mini" @click="packageEdit(scope.row)">程序包更新</el-button>
               </span>
-
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -406,7 +410,8 @@
                 serchAPPList.push({'apps': list, 'id': v.id, 'healthy': v.healthy})
               }
             }
-            console.log(serchAPPList)
+            // console.log(serchAPPList)
+            this.fullscreenLoading = false
             return serchAPPList
           }
 //          console.log('*********************appgroups=' + JSON.stringify(appgroups))
@@ -447,6 +452,33 @@
       }
     },
     methods: {
+      valCheck (val, val2) {
+        if (val2 > 0) {
+          return val / val2
+        } else {
+          return 0
+        }
+      },
+      moreBtn () {
+        let del = 'delApp'
+        let edit = 'editApp'
+        let extend = 'extendApp'
+        let vshow = false
+        if (this.checkBtn(del) || this.checkBtn(edit) || this.checkBtn(extend)) {
+          vshow = true
+        }
+        return vshow
+      },
+      checkBtn (param) {
+        let show = false
+        for (var reources of store.getters.sysResources) {
+          if (reources.status === '0' && reources.type === '1' && reources.delFlag === '0' && reources.resourceName === param) {
+            show = true
+            break
+          }
+        }
+        return show
+      },
       update (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid && this.$refs.upload.uploadFiles && this.$refs.upload.uploadFiles.length > 0) {

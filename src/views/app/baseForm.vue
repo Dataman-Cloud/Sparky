@@ -38,26 +38,32 @@
     </el-form-item>
     <el-form-item label="容器规格" prop="norms">
       <el-col :span="6" class="height-30 min-width">
-        <label for="">CPUs</label>
-        <el-input-number v-model="ruleForm.cpus" size="small" :min="0.01" :step="0.01" :max="1"></el-input-number>核
+        <el-form-item label="" prop="cpus"  :rules="[
+          {pattern: /^[0-1]+([.]{1}[0-9]{1})?$/, message: 'cpu只能包含一位小数'}]">
+          <label for="">CPUs</label>
+          <el-input-number v-model="ruleForm.cpus" size="small" :min="0.1" :step="0.1" :max="1"></el-input-number>核
+        </el-form-item>
       </el-col>
       <el-col :span="6" class="height-30 min-width">
-        <label for="">内存</label>
+        <el-form-item label="" prop="memory"  :rules="[
+          {pattern: /^[1-9]\d*$/, message: '内存只能是正整数'}]">
+          <label for="">内存</label>
         <el-input-number v-model="ruleForm.memory" size="small" :min="1" :step="1" :max="10240"></el-input-number>MB
+        </el-form-item>
       </el-col>
       <el-col :span="6" class="height-30 min-width">
         <label for="">硬盘</label>
-        <el-input-number v-model="ruleForm.hardDrive" size="small" :min="0" :step="1" :max="10240"></el-input-number>MB
+        <el-input-number v-model="ruleForm.hardDrive" size="small" :min="1" :disabled="true"></el-input-number>MB
       </el-col>
     </el-form-item>
     <el-form-item label="容器个数" prop="dockerNum"
                   style="width: 300px;">
       <el-input v-model.number="ruleForm.dockerNum"></el-input>
-      <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion"></el-checkbox>
+      <el-checkbox label="1容器：1主机" v-model="ruleForm.dockerProportion" name="dockerProportion" :disabled="beChecked"></el-checkbox>
     </el-form-item>
 
-    <el-form-item label="F5 Pool名称" style="width: 400px;">
-      <el-input v-model="ruleForm.f5Pool" :maxlength="maxLength" ></el-input>
+    <el-form-item label="F5 Pool名称" prop="f5Pool" style="width: 400px;">
+      <el-input v-model="ruleForm.f5Pool"></el-input>
     </el-form-item>
 
    <!-- <el-form-item label="负载均衡" prop="NEED_HAPROXY">
@@ -344,6 +350,7 @@
           label: 'http'
         }],
         maxLength: 50,
+        beChecked: false,
         lag: false,
         activeName: 'formModel',
         showCodeMirror: false,
@@ -412,6 +419,11 @@
         this.removeAllPorts()
         let isBridge = this.ruleForm.network === 'BRIDGE'
         this.ruleForm.dockerProportion = !isBridge
+        if (!isBridge) {
+          this.beChecked = true
+        } else {
+          this.beChecked = false
+        }
       },
       addPorts () {
         this._addFormItem(this.ruleForm.ports, appConf.formAppend().ports)

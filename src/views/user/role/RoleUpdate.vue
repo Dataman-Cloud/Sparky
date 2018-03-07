@@ -3,11 +3,10 @@
 
     <el-form :label-position="labelPosition" :model="formName" label-width="85px" ref="formName"
              class="bodybar">
-      <el-form-item label="角色名称" prop="name" :rules="[
-          { required: true, message: '请输入角色名称', trigger: 'blur' },
-          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
-        <el-col :span="8">
-        <el-input v-model="formName.name"></el-input>
+      <el-form-item label="角色名称" prop="remarks">
+        <el-col :span="4">
+          <el-input type="text" v-model="formName.remarks" :disabled="true">
+          </el-input>
         </el-col>
       </el-form-item>
 
@@ -24,10 +23,12 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item label="角色标签" prop="remarks">
-        <el-col :span="12">
-        <el-input type="textarea" v-model="formName.remarks" autosize :maxlength="255">
-        </el-input>
+      <el-form-item label="描述" prop="name" :rules="[
+          { required: true, message: '请输入描述', trigger: 'blur' },
+          {pattern: /^[\u4e00-\u9fa5A-Za-z0-9]+$/, message: '描述只能包含字母、数字和中文字符', trigger: 'blur'},
+          {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
+        <el-col :span="8">
+          <el-input v-model="formName.name"></el-input>
         </el-col>
       </el-form-item>
 

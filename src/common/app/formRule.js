@@ -20,7 +20,10 @@ function baseFormRule () {
     ],
     dockerNum: [
       {required: true, message: '容器个数不能为空'},
-      {pattern: /^[0-9]+$/, message: '容器个数必须为大于等于0的数字', trigger: 'blur'}
+      {pattern: /^[1-9]\d*$/, message: '容器个数必须为正整数', trigger: 'blur'}
+    ],
+    f5Pool: [
+      { max: 50, message: 'f5 Pool名称的长度不能超过50个字符', trigger: 'blur' }
     ]
   }
 }

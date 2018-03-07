@@ -10,7 +10,7 @@
           <el-button type="primary" @click="searchFun">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-showBtn="userAdd" icon="plus" v-on:click="userAdd">用户创建</el-button>
+          <el-button type="primary" v-showBtn="userAdd" icon="plus" v-on:click="userAdd">添加用户</el-button>
         </el-form-item>
       </el-form>
     </el-col>

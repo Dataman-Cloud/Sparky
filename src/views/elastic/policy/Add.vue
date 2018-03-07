@@ -121,8 +121,8 @@
           operator: '',
           setValue: '',
           requesturi: '',
-          monitor_cycle: 0,
-          threshold: 0,
+          monitor_cycle: 1,
+          threshold: 1,
           status: false,
           action: 1,
           min_instance: 1,
@@ -144,34 +144,36 @@
             { required: true, message: '请选择逻辑符' }
           ],
           setValue: [
-            { required: true, message: '请设置值' }
+            { required: true, message: '请设置值' },
+            {pattern: /^[1-9]\d*$/, message: '值只能是正整数', trigger: 'blur'}
           ],
           action: [
             { required: true, message: '请选择扩缩状态' }
           ],
           requesturi: [
             { required: true, message: '请填写请求地址', trigger: 'blur' },
+            {pattern: /^\S+$/, message: '地址不能包含空格', trigger: 'blur'},
             { max: 100, message: '长度不能超过100个字符', trigger: 'blur' }
           ],
           monitor_cycle: [
             { required: true, message: '请填写监控周期' },
-            {pattern: /^[0-9]+$/, message: '监控周期只能是数字', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '监控周期只能是正整数', trigger: 'blur'}
           ],
           threshold: [
             { required: true, message: '请填写阈值' },
-            {pattern: /^[0-9]+$/, message: '阈值只能是数字', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '阈值只能是正整数', trigger: 'blur'}
           ],
           min_instance: [
             { required: true, message: '请填写最小实例个数' },
-            {pattern: /^[0-9]+$/, message: '最小实例个数只能是数字', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '最小实例个数只能是正整数', trigger: 'blur'}
           ],
           max_instance: [
             { required: true, message: '请填写最大实例个数' },
-            {pattern: /^[0-9]+$/, message: '最大实例数只能是数字', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '最大实例数只能是正整数', trigger: 'blur'}
           ],
           step: [
             { required: true, message: '请填写步长' },
-            {pattern: /^[1-9]+$/, message: '步长只能是正整数', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '步长只能是正整数', trigger: 'blur'}
           ]
         }
       }
