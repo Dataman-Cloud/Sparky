@@ -318,7 +318,7 @@ export const asyncRouterMap = [
       {path: 'user/role/add', name: '添加角色', hidden: true, component: RoleAdd},
       {path: 'user/role/edit', name: '编辑角色', hidden: true, component: RoleEdit},
       {path: 'user/edit', name: '用户修改', hidden: true, component: UserEdit},
-      {path: 'user/group', name: '用户组管理', hidden: true, component: UserGroup},
+      {path: 'user/group', name: '用户组管理', hidden: false, component: UserGroup},
       {path: 'user/group/add', name: '添加用户组', hidden: true, component: GroupAdd},
       {path: 'user/group/edit', name: '修改用户组', hidden: true, component: GroupEdit},
       {path: '/system/user/add', name: '用户创建', hidden: true, component: UserAdd},

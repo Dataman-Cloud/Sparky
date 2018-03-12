@@ -8,6 +8,10 @@ export default {
     state.clusters.clusters = payload
     state.clusters.total = state.clusters.clusters.length
   },
+  [type.FETCH_CLUSTERS_BYUSER] (state, payload) {
+    state.clusters.clusters = payload
+    state.clusters.total = state.clusters.clusters.length
+  },
   [type.ADD_CLUSTERS] (state, payload) {
   },
   [type.DEL_CLUSTER] (state, payload) {

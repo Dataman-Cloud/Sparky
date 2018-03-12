@@ -7,7 +7,10 @@ import axios from './http'
 export function listCluster () {
   return axios.get(`/jborg/clusters/`)
 }
-
+// 获取集群列表根据用户
+export function listClusterByUser () {
+  return axios.get(`/jborg/clusters/ByUser`)
+}
 // 添加集群
 export function addCluster (params) {
   return axios.post(`/jborg/clusters/`, params)

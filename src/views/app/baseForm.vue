@@ -360,18 +360,17 @@
     computed: {
       ...mapState({
         node ({node}) {
+          let list = []
           // 已选择集群的话，根据集群筛选主机数据
           if (this.ruleForm.vcluster !== null && this.ruleForm.vcluster !== '' && this.ruleForm.vcluster !== undefined) {
             // 循环对比主机的集群信息
-            let list = []
             for (let v of node.nodes.nodes) {
               if (v.clusterLable === this.ruleForm.vcluster) {
                 list.push(v)
               }
             }
-            return list
           }
-          return node.nodes.nodes
+          return list
         },
         nodeTotal ({node}) {
           return node.nodes.total

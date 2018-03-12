@@ -144,7 +144,7 @@ export default {
     // 查询集群
     dispatch(nodeType.FETCH_ALL_NODE, {})
     // 查询主机
-    dispatch(mutationsType.FETCH_CLUSTERS, {})
+    dispatch(mutationsType.FETCH_CLUSTERS_BYUSER, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
     if (this.$route.path === '/app/versionAppUpdate') {
 //      console.log(1)

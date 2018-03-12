@@ -127,7 +127,7 @@ export default {
     // 查询集群
     dispatch(nodeType.FETCH_ALL_NODE, {})
     // 查询主机
-    dispatch(mutationsType.FETCH_CLUSTERS, {})
+    dispatch(mutationsType.FETCH_CLUSTERS_BYUSER, {})
     dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
     // 根据用户名查询应用组
     this.fetchSelfAppGroups()

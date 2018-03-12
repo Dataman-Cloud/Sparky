@@ -3,6 +3,7 @@
     <el-row class="margin-bottom-20">
       <el-button type="primary" icon="plus" v-showBtn="groupAdd" @click="groupAdd" size="big">新建用户组</el-button>
     </el-row>
+
     <el-row>
     <el-col :span="24">
       <el-collapse accordion @change="expand" :value="'expandedRow'">
@@ -10,7 +11,7 @@
           <template slot="title">
             {{group.name}}
             <div class="float-right">
-              <!-- <el-button size="mini" @click="groupDesc(group)">详情</el-button> -->
+
               <el-button size="mini" v-showBtn="groupEdit" @click.prevent="groupEdit(group)">编辑</el-button>
               <el-button size="mini" v-showBtn="groupDel" @click="groupDel(group)">删除</el-button>
             </div>
@@ -35,10 +36,9 @@
           <el-table  :data="group.clusterss" highlight-current-row style="width: 100%;">
             <el-table-column prop="vClusterLabel" label="名称" min-width="100" style="width: 30%;">
             </el-table-column>
-            <!--         <el-table-column prop="vCluster.groupName" label="组名称" min-width="100" >
-                     </el-table-column>
+
                      <el-table-column prop="vCluster.desc" label="描述" min-width="100" >
-                     </el-table-column>-->
+                     </el-table-column>
             <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 40%;">
               <template scope="cluster">
                 {{cluster.row.createAt | moment("YYYY/MM/DD HH:mm:ss")}}
@@ -50,30 +50,14 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination layout="prev, pager, next" @current-change="handleCurrentClustersChange" :page-size="6" :total="group.clustersNumber"
+          <!--<el-pagination layout="prev, pager, next" @current-change="handleCurrentClustersChange" :page-size="6" :total="group.clustersNumber"
                          style="float:right;">
-          </el-pagination>
+          </el-pagination>-->
           <div>用户</div>
           <el-table  :data="group.userss" highlight-current-row style="width: 100%;">
             <el-table-column prop="userName" label="用户名" min-width="100" style="width: 20%;">
             </el-table-column>
-            <el-table-column prop="role" label="权限" min-width="100" style="width: 25%;">
-              <template scope="scopes">
-                <div v-for="aGroup in scopes.row.accountGroups">
-                  <div v-if="aGroup.role === 'superuser' && group.id === aGroup.groupId"><span style=" font-style:italic;">超级管理员</span>
-                  </div>
-                  <div v-else-if="aGroup.role === 'owner' && group.id === aGroup.groupId"><span style=" font-style:italic;">组管理员</span>
-                  </div>
-                  <div v-else-if="aGroup.role === 'member' && group.id === aGroup.groupId"><span style=" font-style:italic;">组成员</span>
-                  </div>
-                  <div v-else-if="aGroup.role === 'default' && group.id === aGroup.groupId"><span style=" font-style:italic;">LDAP管理员</span>
-                  </div>
-                  <div v-else-if="aGroup.role === 'orther' && group.id === aGroup.groupId"><span style=" font-style:italic;">其他</span>
-                  </div>
-                  <div v-else></div>
-                </div>
-              </template>
-            </el-table-column>
+
             <el-table-column prop="createAt" label="更新时间" min-width="150" style="width: 35%;">
               <template scope="user">
                 {{user.row.createAt | moment("YYYY/MM/DD HH:mm:ss")}}
@@ -86,13 +70,30 @@
 
             </el-table-column>
           </el-table>
-          <el-pagination layout="prev, pager, next" @current-change="handleCurrentUsersChange" :page-size="6" :total="group.usersNumber"
+          <!--<el-pagination layout="prev, pager, next" @current-change="handleCurrentUsersChange" :page-size="6" :total="group.usersNumber"
                          style="float:right;">
-          </el-pagination>
+          </el-pagination>-->
         </el-collapse-item>
       </el-collapse>
     </el-col>
-  </el-row>
+    </el-row>
+
+    <!--列表
+    <el-table :data="filterGroup" highlight-current-row v-loading="listLoading" style="width: 100%;">
+      <el-table-column prop="name" label="名称" min-width="80" sortable>
+      </el-table-column>
+      <el-table-column prop="description" label="描述" min-width="80" sortable>
+      </el-table-column>
+      <el-table-column label="创建人" min-width="80" sortable>
+        <template scope="scope">{{getUserName(scope.row.createrId)}}</template>
+      </el-table-column>
+      <el-table-column label="操作" min-width="80" sortable>
+        <template scope="scope">
+          <el-button size="mini" v-showBtn="groupDel" @click="groupDel(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+
+    </el-table> -->
 
 
     <!--工具条-->
@@ -135,14 +136,14 @@
           </el-select>
         </el-form-item>
         -->
-        <el-form-item label="角色" prop="role">
+        <!--<el-form-item label="角色" prop="role">
           <el-select v-model="userForm.role" placeholder="角色类型">
             <el-option label="组管理员" value="owner"></el-option>
             <el-option label="组成员" value="member"></el-option>
             <el-option label="LDAP管理员" value="default"></el-option>
             <el-option label="其他" value="orther"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialog_addUserToGroup = false">取 消</el-button>
@@ -282,6 +283,15 @@
             return false
           }
         })
+      },
+      getUserName (uid) {
+        var uname = ''
+        for (var u of this.users) {
+          if (u.id === uid) {
+            return u.userName
+          }
+        }
+        return uname
       },
       // 打开添加用户到组的dialog
       addUserToGroup () {

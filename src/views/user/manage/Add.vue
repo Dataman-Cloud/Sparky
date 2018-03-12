@@ -67,7 +67,8 @@
         </el-input>
         </el-col>
       </el-form-item>
-<!--      <el-form-item label="添加用户组">
+
+     <el-form-item label="添加用户组">
         <el-button type="primary" icon="plus" @click="addGroups" size="mini" class="sub-title">添加组</el-button>
       </el-form-item>
       <el-form-item v-for="(group, index) in formName.accountGroups" :title="group" :key="index">
@@ -86,12 +87,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-&lt;!&ndash;
-        <el-select v-model="group.role" placeholder="组中角色" style="margin-left: 30px;" v-if="group.groupId === 1">
+
+        <!--el-select v-model="group.role" placeholder="组中角色" style="margin-left: 30px;" v-if="group.groupId === 1">
           <el-option label="超级管理员" value="superuser"></el-option>
-        </el-select>
-        &ndash;&gt;
-        <el-form-item label="组角色" label-width="50" class="addGroup"
+        </el-select>-->
+
+        <!--<el-form-item label="组角色" label-width="50" class="addGroup"
                       :key="group.index"
                       :prop="'accountGroups.' + index + '.role'"
                       :rules="[
@@ -103,9 +104,11 @@
             <el-option label="LDAP管理员" value="default"></el-option>
             <el-option label="其他" value="orther"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-button type="text" @click="delGroup('group')">删除</el-button>
-      </el-form-item>-->
+      </el-form-item>
+
+
       <el-form-item>
         <el-button @click="cancelForm">取消</el-button>
         <el-button type="primary" @click="submitForm" v-bind:disabled="formName.beDisabled" class="btn">创建</el-button>
@@ -228,10 +231,7 @@
               chkpwd: this.formName.chkpwd,
               roleId: this.formName.roleId,
               title: this.formName.title,
-              accountGroups: [{
-                groupId: '',
-                role: ''
-              }]
+              accountGroups: this.formName.accountGroups
             }
             this.$store.dispatch(type.FETCH_USERS_ADD, params).then((data) => {
               this.showResult(data, '用户创建成功!', '用户创建出错', () => {

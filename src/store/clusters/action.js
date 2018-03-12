@@ -12,6 +12,13 @@ export default {
         return data
       })
   },
+  [type.FETCH_CLUSTERS_BYUSER] (context) {
+    return api.listClusterByUser()
+      .then(data => {
+        context.commit(type.FETCH_CLUSTERS_BYUSER, data.data)
+        return data
+      })
+  },
   [type.ADD_CLUSTERS] (context, playload) {
     return api.addCluster(playload)
   },
