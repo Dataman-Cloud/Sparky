@@ -40,11 +40,13 @@
 
         <el-col :span="24" v-bind:style="{marginBottom:'10px'}">
           <el-button type="primary" v-on:click="init">刷新</el-button>
-          <template v-if="checkBtnReources('restartInstence')">
-            <el-button type="primary" v-show="selectIds.length" v-on:click="kill">重启实例</el-button>
-          </template>
-          <template v-if="checkBtnReources('killInstence')">
-            <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">删除实例</el-button>
+          <template v-if="checkOwner()">
+            <template v-if="checkBtnReources('restartInstence')">
+              <el-button type="primary" v-show="selectIds.length" v-on:click="kill">重启实例</el-button>
+            </template>
+            <template v-if="checkBtnReources('killInstence')">
+              <el-button type="primary" v-show="selectIds.length" v-on:click="killCancel">删除实例</el-button>
+            </template>
           </template>
         </el-col>
 
@@ -407,6 +409,9 @@
         },
         versionsInfo (state) {
           return state.app.apps.appVersionInfo
+        },
+        currUser (state) {
+          return state.user.aboutme
         }
       })
     },
@@ -422,6 +427,9 @@
           cancelable: false
         })
         $a.dispatchEvent(evt)
+      },
+      checkOwner () {
+        return this.currUser.id === 1 || this.appInfo.Labels.USER_ID === this.currUser.id
       },
       extendApp () {
         this.instancesNums = this.instancesNum
