@@ -14,6 +14,7 @@ const state = {
       },
       version: ''
     },
+    listLoading: false,
     currContainers: [],
     queue: [],
     model: {},

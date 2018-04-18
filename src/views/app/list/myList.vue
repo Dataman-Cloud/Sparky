@@ -42,8 +42,8 @@
       <el-col :span="10">应用(正常/总数)</el-col>
       <el-col :span="4">操作</el-col>
     </el-row>
-    <el-collapse accordion v-model="activeSelfGroup">
-     <!-- <div v-if="activeSelfGroup"> -->
+    <el-collapse accordion v-model="activeSelfGroup" v-loading="listLoading" element-loading-text="数据加载中..." element-loading-spinner="el-icon-loading" element-loading-background="rgba(0,0,0,0.5)">
+      <div v-if="appgroups.length > 0">
       <el-collapse-item v-for="item in appgroups" :key="item.id" :name="item.id">
         <template slot="title">
           <el-row style="float: right;width:95%">
@@ -149,11 +149,12 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+              </div>
 
               <span v-if="scope.row.labels.PACKAGE_TYPE !== undefined">
                 <el-button v-showBtn="updatePackage" type="info" size="mini" @click="packageEdit(scope.row)">程序包更新</el-button>
               </span>
-              </div>
+
             </template>
           </el-table-column>
         </el-table>
@@ -166,8 +167,8 @@
         <!--</el-pagination>-->
         <!--</el-col>-->
       </el-collapse-item>
-     <!-- </div> -->
-    <!--  <div v-else style="text-align: center;">暂无数据</div> -->
+      </div>
+      <div v-else style="text-align: center;">暂无数据</div>
     </el-collapse>
 
     <el-dialog
@@ -328,19 +329,9 @@
         currentApp: {},
         instances: 0,
         page: 1,
-        listLoading: false,
+        listLoading: true,
         prefix: LABEL_PREFIX,
         interval: null
-      }
-    },
-    watch: {
-      marathonVal (curval, oldval) {
-//        console.log(88888888888)
-        window.localStorage.setItem('marathonName', curval)
-        this.fullscreenLoading = true
-        setTimeout(() => {
-          this.fullscreenLoading = false
-        }, 500)
       }
     },
     computed: {
@@ -746,6 +737,14 @@
           })
         })
       },
+      listAppNoLoading () {
+        console.log('listAppNoLoading')
+        this.$store.dispatch(type.FETCH_QUEUE).then(() => {
+          this.$store.dispatch(appgroupTypes.FATCH_SELF_APPGROUP).then(() => {
+            this.listLoading = false
+          })
+        })
+      },
       getUserName (userId) {
         return this.userMap.get(parseInt(userId))
       },
@@ -816,10 +815,11 @@
       }
     },
     mounted () {
+      // this.fullscreenLoading = true
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
         this.appGroupByUserNameList()
-        this.interval = setInterval(this.listApp, 5000)
-        this.listApp()
+        this.interval = setInterval(this.listAppNoLoading, 5000)
+        // this.listApp()
       })
     },
     filters: {

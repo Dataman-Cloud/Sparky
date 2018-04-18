@@ -52,7 +52,7 @@
       <el-col :span="10">应用(正常/总数)</el-col>
       <el-col :span="4">操作</el-col>
     </el-row>
-    <el-collapse accordion v-model="activeGroup">
+    <el-collapse accordion v-model="activeGroup" v-loading="listLoading" element-loading-text="数据加载中..." element-loading-spinner="el-icon-loading" element-loading-background="rgba(0,0,0,0.5)">
       <el-collapse-item v-for="item in appgroups" :key="item.id" :name="item.id">
         <template slot="title">
           <el-row style="float: right;width:95%">
@@ -451,7 +451,7 @@
         currentApp: {},
         instances: 0,
         page: 1,
-        listLoading: false,
+        listLoading: true,
         fullscreenLoading: false,
         prefix: LABEL_PREFIX,
         interval: null,
@@ -470,11 +470,11 @@
     watch: {
       marathonVal (curval, oldval) {
 //        console.log(88888888888)
-        window.localStorage.setItem('marathonName', curval)
-        this.fullscreenLoading = true
-        setTimeout(() => {
-          this.fullscreenLoading = false
-        }, 500)
+//        window.localStorage.setItem('marathonName', curval)
+//        this.fullscreenLoading = true
+//        setTimeout(() => {
+//          this.fullscreenLoading = false
+//        }, 500)
       }
     },
     computed: {
@@ -876,7 +876,7 @@
           'aid': window.btoa(this.currentId),
           'params': {'instances': this.instances}
         }).then((data) => {
-          this.showResult(data, '扩展应用中', '扩展应用出错',
+          this.showResult(data, '扩展实例中', '扩展实例出错',
             () => {
               this.listLoading = true
               this.listApp()
@@ -915,12 +915,19 @@
           .catch(_ => {
           })
       },
-      appGroupByUserNameList () {
-        this.$store.dispatch(appgroupTypes.FATCH_APPGROUP_BY_USERNAME)
+      appGroupAllList () {
+        this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP)
       },
       //  获取用户列表
       listApp () {
         this.listLoading = true
+        this.$store.dispatch(type.FETCH_QUEUE).then(() => {
+          this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP).then(() => {
+            this.listLoading = false
+          })
+        })
+      },
+      listAppNoLoading () {
         this.$store.dispatch(type.FETCH_QUEUE).then(() => {
           this.$store.dispatch(appgroupTypes.FATCH_ALL_APPGROUP).then(() => {
             this.listLoading = false
@@ -998,9 +1005,9 @@
     },
     mounted () {
       this.$store.dispatch(userType.FETCH_USERS).then(() => {
-        this.appGroupByUserNameList()
-        this.interval = setInterval(this.listApp, 5000)
-        this.listApp()
+        this.appGroupAllList()
+        this.interval = setInterval(this.listAppNoLoading, 5000)
+//        this.listApp()
       //  sessionStorage.removeItem('marathonName')
      //   localStorage.removeItem('marathonName') // 清除marathonName的值
       })

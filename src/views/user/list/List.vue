@@ -81,7 +81,7 @@
                 <el-button @click="userDel(user.row)"  v-showBtn="userDel" size="mini" style="width: 100%;">删  除</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
-                <el-button @click="resetPwd(user.row)"  v-showBtn="resetPwd" size="mini" style="width: 100%;">修改密码</el-button>
+                <el-button @click="resetPwd(user.row)"  v-showBtn="resetPwd" size="mini" style="width: 100%;">重置密码</el-button>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -96,7 +96,7 @@
       </el-pagination>
     </el-col>
 
-    <el-dialog title="修改密码" :visible.sync="dialog_resetPwd" size="tiny">
+    <el-dialog title="重置密码" :visible.sync="dialog_resetPwd" size="tiny" :before-close="resetform">
       <el-form :model="u_form" :rules="pwdRules" ref="u_form">
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="u_form.password"></el-input>
@@ -107,7 +107,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialog_resetPwd = false">取 消</el-button>
+        <el-button @click="resetform">取 消</el-button>
         <el-button type="primary" @click="update">确 定</el-button>
       </div>
 
@@ -189,7 +189,7 @@
       }
       var validatePass2 = (rule, value, callback) => {
         if (value === '' || value === undefined) {
-          callback(new Error('请再次输入密码'))
+          callback(new Error('请输入确认密码'))
         } else if (value !== this.u_form.password) {
           callback(new Error('两次输入密码不一致!'))
         } else {
@@ -295,6 +295,10 @@
       }),
       searchFun () {
         this.search = true
+      },
+      resetform () {
+        this.$refs['u_form'].resetFields()
+        this.dialog_resetPwd = false
       },
       addGroup () {
         let param = {accountId: this.e_form.accountId, groupId: this.e_form.groupId, role: this.e_form.role}
@@ -439,6 +443,7 @@
                   type: 'success',
                   onClose: this.fetchUsers
                 })
+                this.$refs['u_form'].resetFields()
                 this.dialog_resetPwd = false
               } else {
                 this.$message({

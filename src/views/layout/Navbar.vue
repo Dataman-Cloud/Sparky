@@ -14,7 +14,7 @@
       </el-select> -->
 
      <!-- <span><strong>选择marathon:</strong></span> -->
-      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading" style="width: 280px;">
+      <el-select v-model="marathonVal" placeholder="请选择Marathon" v-loading.fullscreen.lock="fullscreenLoading" style="width: 280px;" @change="changeMarathon">
         <el-option
           v-for="item in marathonList"
           :key="item.value"
@@ -36,9 +36,8 @@
 
 <script>
 import {mapState} from 'vuex'
-import * as user from 'api/user'
+// import * as user from 'api/user'
 import * as userType from 'store/user/mutations_types'
-import * as appType from 'store/app/mutations_types'
 import store from 'store'
 import * as appgroupTypes from 'store/appgroups/mutations_types'
 // import router from 'router'
@@ -49,26 +48,24 @@ export default {
       currentMarathon: '',
       fullscreenLoading: false,
       marathonVal: null,
-//      marathonVal: '',
       sysName: 'DM/OS'
-//       selectGroup: this.$store.state.user.aboutme.currentGroupId
     }
   },
-  watch: {
-    marathonVal (curval, oldval) {
-      // console.log(window.localStorage.getItem('marathonName'))
-      if (this.marathonVal !== null) {
-        window.localStorage.setItem('marathonName', curval)
-        // 刷新
-        this.fullscreenLoading = true
-//        setTimeout(() => {
-//          this.fullscreenLoading = false
-//        }, 1000)
-        this.$router.push({ name: '我的应用' })
-        this.fullscreenLoading = false
-      }
-    }
-  },
+//  watch: {
+//    marathonVal (curval, oldval) {
+//      if (this.marathonVal !== null) {
+//        window.localStorage.setItem('marathonName', curval)
+//        this.$store.dispatch(appgroupTypes.MARATHON_CHANGE_LOADING).then(() => {
+//          if (this.$route.name === '我的应用') {
+//            console.log('------RefreshPage')
+//            // this.$router.push({name: 'RefreshPage', param: {toName: '我的应用'}})
+//          } else {
+//            this.$router.push({name: '我的应用'})
+//          }
+//        })
+//      }
+//    }
+//  },
   methods: {
     // 退出登录
     logout: function () {
@@ -86,13 +83,23 @@ export default {
         //   toLogin()
       })
     },
+    changeMarathon () {
+      console.log('changeMarathon')
+      console.log(this.marathonVal)
+      if (window.localStorage.getItem('marathonName') !== this.marathonVal) {
+        window.localStorage.setItem('marathonName', this.marathonVal)
+        if (this.$route.name === '我的应用') {
+          console.log('------RefreshPage')
+          this.$router.push({name: 'RefreshPage', params: {toName: '我的应用', params: null}})
+        } else {
+          this.$router.push({name: '我的应用'})
+        }
+      }
+    },
     marathonNameVoList () {
       this.$store.dispatch(appgroupTypes.FATCH_MARATHON)
         .then((data) => {
           if (data.resultCode === '00') {
-//            let val = JSON.stringify(data.data[0])
-//            console.log(data.data[0])
-//            console.log(data.data[0].value)
             let localval = window.localStorage.getItem('marathonName')
             if (localval) {
               this.marathonVal = localval
@@ -103,23 +110,6 @@ export default {
             // 赋值
             this.marathonVal = ''
           }
-        })
-    },
-    switchGroup () {
-      let {dispatch} = store
-      user.switchGroup(this.selectGroup)
-        .then(data => {
-          dispatch(userType.PUT_SYSRESOURCES, data.sysResources).then(() =>
-            dispatch(userType.FETCH_ABOUTME)
-              .then(() => {
-                console.log(appType + '--------------')
-                this.$router.push({path: '/app/list/'})
-                /*
-                 dispatch(appType.FETCH_APPS, this.selectGroup)
-                 .then(() => this.$router.push({name: '全部应用'}))
-                 */
-              })
-          )
         })
     }
   },

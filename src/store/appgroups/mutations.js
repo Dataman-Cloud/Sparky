@@ -24,5 +24,8 @@ export default {
   },
   [type.FATCH_MARATHON] (state, payload) {
     state.marathonNameVoList = payload
+  },
+  [type.MARATHON_CHANGE_LOADING] (state, payload) {
+    state.listLoading = true
   }
 }

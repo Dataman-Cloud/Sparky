@@ -95,8 +95,8 @@
         <el-button type="primary" @click="cscFormSubmit('cscForm')">发布</el-button>
         <!--<el-button @click="resetForm('ruleForm')">重置</el-button>-->
       </el-form-item>
-      <el-form-item v-show="cscForm.success">
-        <el-form-item label="状态" min-width="70" sortable>发布完成</el-form-item>
+      <el-form-item v-show="cscForm.success" label="状态">
+        <el-form-item>发布完成</el-form-item>
       </el-form-item>
       <el-form-item v-show="cscForm.success">
         <el-button type="primary" @click="appList" >查看应用列表</el-button>

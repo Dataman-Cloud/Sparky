@@ -7,6 +7,7 @@ const _import = require('./_import_' + process.env.NODE_ENV)
 // so only in production use Lazy Loading
 
 const Login = _import('Login')
+const RefreshPage = _import('refreshPage')
 const Graph = _import('graph/Graph')
 const DCManager = _import('resource/dataCenter/List')
 const DCManagerEdit = _import('resource/dataCenter/DCEdit')
@@ -56,6 +57,12 @@ export const constantRouterMap = [
     path: '/login',
     name: 'Login',
     component: Login,
+    hidden: true
+  },
+  {
+    path: '/RefreshPage',
+    name: 'RefreshPage',
+    component: RefreshPage,
     hidden: true
   }
 /*  {

@@ -70,7 +70,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item  label="最小实例个数" v-if="ruleForm.action === 2" prop="min_instance" >
+        <el-col :span="12">
         <el-input v-model="ruleForm.min_instance"></el-input>
+        </el-col>
       </el-form-item>
       <el-form-item  label="最大实例个数" v-if="ruleForm.action === 1" prop="max_instance" >
         <el-col :span="12">
@@ -79,7 +81,7 @@
       </el-form-item>
       <el-form-item  label="步长" prop="step" >
         <el-col :span="12">
-        <el-input v-model="ruleForm.step"></el-input>
+        <el-input v-model="ruleForm.step" min="1"></el-input>
         </el-col>
       </el-form-item>
       <el-form-item  label="创建时间" prop="created" v-if="false">
@@ -111,6 +113,15 @@
   import {mapState} from 'vuex'
   export default {
     data () {
+      var validStep = (rule, value, callback) => {
+        if (this.ruleForm.action === 1 && value > this.ruleForm.max_instance) {
+          callback(new Error('步长必须小于最大实例数'))
+        } else if (this.ruleForm.action === 2 && value > this.ruleForm.min_instance) {
+          callback(new Error('步长必须小于最小实例数'))
+        } else {
+          callback()
+        }
+      }
       return {
         updateOrCreate: '立即创建',
         setValueUnit: '',
@@ -173,7 +184,8 @@
           ],
           step: [
             { required: true, message: '请填写步长' },
-            {pattern: /^[1-9]\d*$/, message: '步长只能是正整数', trigger: 'blur'}
+            {pattern: /^[1-9]\d*$/, message: '步长只能是正整数', trigger: 'blur'},
+            { validator: validStep, trigger: 'blur' }
           ]
         }
       }

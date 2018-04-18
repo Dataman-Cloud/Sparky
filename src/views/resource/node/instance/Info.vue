@@ -1,13 +1,13 @@
 <template>
   <section>
     <el-form label-position="left" inline class="demo-table-expand">
-      <el-form-item label="容器名称" style="width:100%">
+      <el-form-item label="容器名称" style="width:100%;">
         <span>{{instance.Name }} <el-tag type="primary" v-if="instance.State !== undefined">{{instance.State.Status }} </el-tag></span>
       </el-form-item>
       <el-form-item label="创建时间">
         <span>{{instance.Created | moment("YYYY/MM/DD HH:mm:ss") }}</span>
       </el-form-item>
-      <el-form-item label="驱动">
+      <el-form-item label="驱动类型">
         <span>{{instance.Driver }}</span>
       </el-form-item>
       <el-form-item label="主机名称">
@@ -21,7 +21,7 @@
 
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="基础信息" name="tab1">
-        <el-form label-position="right" inline class="demo-table-expand">
+        <el-form label-position="right"  class="demo-table-expand" label-width="120px">
           <el-form-item label="镜像名称" v-bind:style="bigLable">
             <span v-if="instance.Config !== undefined"  class="contest">{{instance.Config.Image }}</span>
           </el-form-item>
@@ -117,8 +117,9 @@
         showTerminalTab: false,
         instanceId: this.$route.query.instanceId,
         nodeIp: this.$route.query.nodeIp,
+        fromAddress: this.$route.query.fromAddress,
         smallLable: { width: '20%' },
-        bigLable: { width: '80%' },
+        bigLable: { width: '100%' },
         activeName: 'tab1',
         currsse: null,
         cpuChart: null,
@@ -150,12 +151,20 @@
             }
           }
           return arr
+        },
+        currUser (state) {
+          return state.user.aboutme
         }
       })
     },
     methods: {
       getInstance () {
         let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        if (this.$route.query.byName) {
+          param.byName = this.$route.query.byName
+        } else {
+          param.byName = 0
+        }
         // console.log(param)
         return this.$store.dispatch(type.FETCH_NODE_INSTANCE_INFO, param)
       },
@@ -177,7 +186,7 @@
         }
       },
       showLog (tab) {
-        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.instance.Id}
         this.currsse = api.nodeInstanceLogsWS(param)
         // this.currsse = api.nodeInstanceLogsWS(param)
         this.currsse.onopen = function (event) {
@@ -203,7 +212,7 @@
       },
       showState (tab) {
         let self = this
-        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.$route.query.instanceId}
+        let param = {nodeIp: this.$route.query.nodeIp, instanceId: this.instance.Id}
         self.initMonitor()
         this.currsse = api.nodeInstanceStats(param)
         this.currsse.onopen = function (event) {
@@ -427,7 +436,7 @@
 
 <style scoped>
   .contest {
-    margin-left: 40px;
+    margin-left: 10px;
   }
   .demo-table-expand {
     font-size: 0;

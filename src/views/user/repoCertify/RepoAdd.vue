@@ -72,12 +72,19 @@
         this.$refs.formName.validate((valid) => {
           if (valid) {
             console.info(JSON.stringify(this.formName))
-            this.$store.dispatch(type.FETCH_REPO_ADD, this.formName).then(() => {
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              })
-              this.$router.push({path: '/center/user/repoCertify'})
+            this.$store.dispatch(type.FETCH_REPO_ADD, this.formName).then((data) => {
+              if (data.resultCode && data.resultCode === '00') {
+                this.$message({
+                  message: '添加成功',
+                  type: 'success',
+                  onClose: this.cancelForm
+                })
+              } else {
+                this.$message({
+                  message: data.message || '添加失败',
+                  type: 'error'
+                })
+              }
             })
           } else {
             return false

@@ -11,6 +11,7 @@ const state = {
   groupCreateList: [],
   selfGroupCreateList: [],
   total: 0,
+  listLoading: true,
   selfGroups: []
 }
 

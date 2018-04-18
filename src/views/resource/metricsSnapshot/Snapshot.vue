@@ -7,6 +7,9 @@
           <el-table-column prop="type" label="类型" width="180">
           </el-table-column>
           <el-table-column prop="cpu" label="cpu" width="180">
+            <template scope="scope">
+              {{scope.row.cpu }} 核
+            </template>
           </el-table-column>
           <el-table-column prop="mem" label="内存" width="180">
             <template scope="scope">

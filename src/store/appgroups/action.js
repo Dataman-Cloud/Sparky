@@ -41,5 +41,8 @@ export default {
         context.commit(type.FATCH_MARATHON, data.data)
         return data
       })
+  },
+  [type.MARATHON_CHANGE_LOADING] (context) {
+    context.commit(type.MARATHON_CHANGE_LOADING, null)
   }
 }

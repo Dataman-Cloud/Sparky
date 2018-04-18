@@ -134,15 +134,15 @@
           <el-row>
             <a @click="addHealth" class="cursor-pointer">健康检查<i class="el-icon-plus"></i></a>
           </el-row>
-          <template v-for="(h, index) in ruleForm.health">
+
+          <el-form-item v-for="(h, index) in ruleForm.health" :key="index" style="margin-left:-100px; ">
             <el-col :span="24" :key="index" class="margin-top margin-bottom">
               <div class="table-cell">
                 <div class="label">
                   <label for="">协议</label>
                 </div>
                 <div class=" height-30">
-                  <el-select @change="healthProtocolChange(h)" v-model="h.protocol" size="small"
-                             style="width: 150px;">
+                  <el-select @change="healthProtocolChange(h)" v-model="h.protocol" size="small" style="width: 150px;">
                     <el-option label="MESOS_HTTP" value="MESOS_HTTP" ></el-option>
                     <el-option label="MESOS_TCP" value="MESOS_TCP" ></el-option>
                     <el-option label="HTTP" value="HTTP"></el-option>
@@ -209,11 +209,12 @@
                   <label for="">端口类型</label>
                 </div>
                 <div class="height-30">
-                  <el-select @change="healthPortTypeChange(h)" v-model="h.portType" size="small"
-                             style="width: 100px;">
-                    <el-option label="端口组索引" value="1"></el-option>
-                    <el-option label="端口号" value="2"></el-option>
-                  </el-select>
+                  <el-form-item :prop="'health.' + index + '.portType'" :key="h.index"  :rules="[{ required: true, message: '端口类型不能为空' }]">
+                    <el-select  v-model="h.portType" size="small" style="width: 100px;">
+                      <el-option label="端口组索引" value="1" v-if="ruleForm.network==='BRIDGE'"></el-option>
+                      <el-option label="端口号" value="2" v-if="ruleForm.network==='HOST'"></el-option>
+                    </el-select>
+                  </el-form-item>
                 </div>
               </div>
               <div class="table-cell">
@@ -221,10 +222,18 @@
                   <label for="">{{h.portNumOrPortIndexText}}</label>
                 </div>
                 <div class="height-30">
-                  <el-input id="protNum" v-if="h.protNumCode" v-model="h.port" property="端口号" size="small"
-                            style="width:120px"></el-input>
-                  <el-input id="protIndex" v-if="h.portIndexCode" v-model="h.portIndex" property="端口组索引" size="small"
-                            style="width:120px"></el-input>
+                  <el-form-item :prop="'health.' + index + '.port'" :key="h.index" v-if="h.protNumCode" :rules="[
+                                  { required: true, message: '端口号不能为空' },
+                                  {pattern: /^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]{1}|6553[0-5])$/, message: '端口号必需是1~65535的整数', trigger: 'blur'}
+                              ]">
+                      <el-input  v-if="h.protNumCode"  v-model="h.port" property="端口号" size="small" type="number" :max="65535" :min="0" style="width:120px"></el-input>
+                  </el-form-item>
+                  <el-form-item :prop="'health.' + index + '.portIndex'" :key="h.index" v-if="h.portIndexCode" :rules="[
+                                  { required: true, message: '端口组索引不能为空' },
+                                  {pattern: /^([0-9]{1})$/, message: '端口组索引必需是0-9的整数', trigger: 'blur'}
+                              ]">
+                    <el-input v-if="h.portIndexCode"  v-model="h.portIndex" property="端口组索引" size="small" :max="65535" :min="0" type="number" style="width:120px"></el-input>
+                  </el-form-item>
                 </div>
               </div>
               <div class="table-cell">
@@ -239,7 +248,7 @@
                 <el-checkbox label="忽略HTTP返回码100~199" v-model="h.ignoreHttp1xx"></el-checkbox>
               </el-col>
             </el-col>
-          </template>
+          </el-form-item>
         </el-row>
         <el-row>
           <el-row>
@@ -249,23 +258,23 @@
             v-for="(ev, index) in ruleForm.environmentVariables" class="margin-left-100" :key="index">
             <el-row :gutter="12">
               <el-col :span="7">
-                <el-form-item :prop="'environmentVariables.' + index + '.key'"
+                <el-form-item :prop="'environmentVariables.' + index + '.key'" style="width: 300px;"
                               :key="ev.index"
                               :rules="[
                                 { required: true, message: '环境变量的 KEY 个数不能为空' },
                                 { pattern: /^[^\u4e00-\u9fa5]*$/, message: '环境变量的 KEY 不能包含中文' }
                             ]">
-                  <el-input v-model="ev.key" placeholder="key" size="small" style="width: 300px;"></el-input>
+                  <el-input v-model="ev.key" placeholder="key" size="small" ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="7">
-                <el-form-item :prop="'environmentVariables.' + index + '.value'"
+                <el-form-item :prop="'environmentVariables.' + index + '.value'" style="width: 300px;"
                               :key="ev.index"
                               :rules="[
                                 { required: true, message: '环境变量的 VALUE 个数不能为空' },
                                 { pattern: /^[^\u4e00-\u9fa5]*$/, message: '环境变量的 VALUE 不能包含中文' }
                             ]">
-                  <el-input v-model="ev.value" placeholder="value" size="small" style="width: 300px;"></el-input>
+                  <el-input v-model="ev.value" placeholder="value" size="small"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="2">
@@ -423,6 +432,7 @@
         } else {
           this.beChecked = false
         }
+        this.ruleForm.health = []
       },
       addPorts () {
         this._addFormItem(this.ruleForm.ports, appConf.formAppend().ports)
@@ -446,7 +456,19 @@
         this._removeFormItem(this.ruleForm.environmentVariables, item)
       },
       addHealth () {
-        this._addFormItem(this.ruleForm.health, appConf.formAppend().health)
+        var tmp = appConf.formAppend().health
+        if (this.ruleForm.network === 'BRIDGE') {
+          tmp.portType = '1'
+          tmp.portNumOrPortIndexText = '端口组索引'
+          tmp.protNumCode = true
+          tmp.portIndexCode = false
+        } else if (this.ruleForm.network === 'HOST') {
+          tmp.portType = '2'
+          tmp.portNumOrPortIndexText = '端口号'
+          tmp.protNumCode = false
+          tmp.portIndexCode = true
+        }
+        this._addFormItem(this.ruleForm.health, tmp)
       },
       removeHealth (item) {
         this._removeFormItem(this.ruleForm.health, item)
@@ -468,15 +490,15 @@
         //  healthHttpCheckBoxCode,healthHttpPathCode,healthHttpPathText
         healthItem.ignoreHttp1xx = false
       },
-      healthPortTypeChange (healthItem) {
-        // 如果选中了端口类型为“端口组索引”
-        let isSelFirst = healthItem.portType === '1'
-        healthItem.port = undefined // 清空之前填写的端口号
-        healthItem.protNumCode = !isSelFirst // “端口号”的input元素隐藏
-        healthItem.portNumOrPortIndexText = isSelFirst ? '端口组索引' : '端口号' // 文字显示为端口组索引
-        healthItem.portIndexCode = isSelFirst // “端口组索引”的input元素显示
-        healthItem.portIndex = undefined//  清空之前填写的“端口组索引”
-      },
+//      healthPortTypeChange (healthItem) {
+//        // 如果选中了端口类型为“端口组索引”
+//        let isSelFirst = healthItem.portType === '1'
+//        healthItem.port = 0 // 清空之前填写的端口号
+//        healthItem.protNumCode = !isSelFirst // “端口号”的input元素隐藏
+//        healthItem.portNumOrPortIndexText = isSelFirst ? '端口组索引' : '端口号' // 文字显示为端口组索引
+//        healthItem.portIndexCode = isSelFirst // “端口组索引”的input元素显示
+//        healthItem.portIndex = 0 //  清空之前填写的“端口组索引”
+//      },
       // resetForm (formName) {
       //   this.$refs[formName].resetFields()
       // },

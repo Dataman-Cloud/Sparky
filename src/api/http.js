@@ -43,7 +43,7 @@ axios.interceptors.response.use(
         default:
           Notification({
             title: '错误信息',
-            message: JSON.stringify(error.response.data.data),
+            message: JSON.stringify(error.response),
             type: 'error'
           })
       }
@@ -56,7 +56,7 @@ axios.interceptors.response.use(
       })
     }
     // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
-    return Promise.reject(error.response.data)
+    return Promise.reject(error.response)
   })
 
 export default axios

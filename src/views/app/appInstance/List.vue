@@ -57,7 +57,7 @@
           <el-table-column prop="id" label="实例ID" min-width="430" sortable>
             <template scope="scope">
               <router-link
-                :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host }}">
+                :to="{name: '容器信息', path: 'resource/node/instance/info', query:{instanceId: getInstanceId(scope.row.id), nodeIp: scope.row.host, fromAddress: 'app', byName: 1 }}">
                 {{scope.row.id }}
               </router-link> <br />
 
@@ -518,7 +518,7 @@
         try {
           let container = this.containers[taskId]
 //          console.log('222222222222222222222' + JSON.stringify(container))
-          return container.containerId
+          return window.btoa(container.mesosContainerName)
         } catch (err) {
           console.log('**********************' + err)
           return ''
@@ -734,11 +734,9 @@
         this.getAppVersions()
         this.getAppContainers()
         this.getQueue()
-        // this.getAppAcl()
-//        if (this.appInfo.labels.HAPROXY_PROTOCOL_TYPE === 'https') {
-//          this.getAppAcl()
-//        }
-//       this.initSelect()
+      },
+      refreshPage () {
+        this.$router.push({name: 'RefreshPage', params: {toName: '应用实例信息', params: {group: this.$route.params.group, name: this.$route.params.name}}})
       },
       // 根据版本查询应用信息
       expandList (index) {
@@ -767,7 +765,8 @@
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 对比当前的版本信息
-          if (this.versionAPPInfo !== undefined && this.versionAPPInfo.version !== version) {
+          if (this.versionAPPInfo !== undefined) {
+            console.log('come in')
             // 查询该版本的应用信息
             this.$store.dispatch(type.FETCH_APP_VERSION_INFO, {'aid': window.btoa(this.appInfo.id), 'vid': window.btoa(version)})
               .then((data) => {
@@ -787,10 +786,11 @@
                     if (data.resultCode === '00') {
                       this.$message({
                         type: 'success',
-                        message: '部署应用成功!'
-                        //  onClose: this.activeName = 'first'
+                        message: '部署应用成功!',
+                        onClose: this.refreshPage()
                       })
-                      this.activeName = 'first'
+                      // this.activeName = 'first'
+                      // this.init()
                     } else {
                       Notification({
                         title: '部署应用出错',
@@ -820,12 +820,13 @@
     },
     mounted () {
       this.init()
-      this.getAppVersions()
+      // this.getAppVersions()
       this.getUsers()
-//      this.interval = setInterval(() => this.init(), 5000)
+      // console.log(store.getters.sysResources)
+      this.interval = setInterval(() => this.init(), 5000)
     },
     beforeDestroy: function () {
-//      clearInterval(this.interval)
+      clearInterval(this.interval)
     }
   }
 </script>

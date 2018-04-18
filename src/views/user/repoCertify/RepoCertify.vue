@@ -118,13 +118,20 @@
         console.log(JSON.stringify(this.form))
         this.$refs.form.validate((valid) => {
           if (valid) {
-            this.$store.dispatch(type.FETCH_REPO_EDIT, param).then(() => {
-              this.$message({
-                message: '更新成功',
-                type: 'success',
-                onClose: this.listRepo
-              })
-              this.dialog_repoEdit = false
+            this.$store.dispatch(type.FETCH_REPO_EDIT, param).then((data) => {
+              if (data.resultCode && data.resultCode === '00') {
+                this.$message({
+                  message: '更新成功',
+                  type: 'success',
+                  onClose: this.listRepo
+                })
+                this.dialog_repoEdit = false
+              } else {
+                this.$message({
+                  message: data.message || '更新失败',
+                  type: 'error'
+                })
+              }
             })
           } else {
             return false
@@ -138,12 +145,19 @@
           type: 'warning'
         }).then(() => {
           console.info(JSON.stringify(repo))
-          this.$store.dispatch(type.FETCH_REPO_DEL, repo.id).then(() => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              onClose: this.listRepo
-            })
+          this.$store.dispatch(type.FETCH_REPO_DEL, repo.id).then((data) => {
+            if (data.resultCode && data.resultCode === '00') {
+              this.$message({
+                message: '删除成功',
+                type: 'success',
+                onClose: this.listRepo
+              })
+            } else {
+              this.$message({
+                message: data.message || '删除失败',
+                type: 'error'
+              })
+            }
           })
         }).catch(() => {
           this.$message({
@@ -154,7 +168,7 @@
       }
     },
     mounted () {
-      this.listLoading = false
+      this.listLoading = true
       this.listRepo()
         .then(() => {
           this.listLoading = false

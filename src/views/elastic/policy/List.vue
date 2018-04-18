@@ -36,8 +36,14 @@
       <el-table-column prop="threshold" label="阈值" min-width="80" sortable>
       </el-table-column>
       <el-table-column prop="max_instance" label="最大实例个数" min-width="100" sortable>
+        <template scope="scope">
+          {{scope.row.max_instance === 0 ? '-' : scope.row.max_instance}}
+        </template>
       </el-table-column>
       <el-table-column prop="min_instance" label="最小实例个数" min-width="100" sortable>
+        <template scope="scope">
+          {{scope.row.min_instance === 0 ? '-' : scope.row.min_instance}}
+        </template>
       </el-table-column>
       <el-table-column prop="step" label="步长" width="80" sortable>
       </el-table-column>
