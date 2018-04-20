@@ -48,12 +48,13 @@ axios.interceptors.response.use(
           })
       }
     } else {
-      store.dispatch(CLEAR_TOKEN).then(data => {
-        router.replace({
-          name: 'Login',
-          query: {redirect: router.currentRoute.fullPath}
-        })
-      })
+      // store.dispatch(CLEAR_TOKEN).then(data => {
+      //   router.replace({
+      //     name: 'Login',
+      //     query: {redirect: router.currentRoute.fullPath}
+      //   })
+      // })
+      console.log(error)
     }
     // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
     return Promise.reject(error.response)
