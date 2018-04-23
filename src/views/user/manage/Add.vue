@@ -14,7 +14,7 @@
           {max: 50, message: '长度不能超过50个字符', trigger: 'blur' }]">
         <el-col :span="8">
         <el-input placeholder="请输入用户名" v-model="formName.userName">
-          <template slot="prepend">fid_</template>
+          <!--<template slot="prepend">fid_</template>-->
         </el-input>
         </el-col>
        <!-- <el-input type="text" v-model="formName.userName" placeholder="请输入用户名"></el-input> -->
@@ -225,7 +225,7 @@
           if (valid) {
             let params = {
               name: this.formName.name,
-              userName: 'fid_' + this.formName.userName,
+              userName: this.formName.userName,
               email: this.formName.email,
               password: this.formName.password,
               chkpwd: this.formName.chkpwd,

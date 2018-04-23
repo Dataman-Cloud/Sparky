@@ -6,7 +6,7 @@
      <!--   <img src="../assets/LOGO.svg" alt=""> -->
 <!--     <img src="../assets/pufa.png" alt="" style="background-color: #999;"> -->
         <h2>系统登录</h2>
-        <h3>数人云容器云平台</h3>
+        <h3>上证容器云平台</h3>
         <h4>{{version}}</h4>
       </div>
       <el-form class="dm-login-box" :model="loginForm" :rules="rules" label-width="0" autocomplete="off">
