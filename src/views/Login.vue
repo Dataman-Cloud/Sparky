@@ -3,31 +3,35 @@
     <div class="login-bg"></div>
     <div class="dm-con-box">
       <div class="dm-login-top">
-     <!--   <img src="../assets/LOGO.svg" alt=""> -->
-<!--     <img src="../assets/pufa.png" alt="" style="background-color: #999;"> -->
+        <!--   <img src="../assets/LOGO.svg" alt=""> -->
+        <!--     <img src="../assets/pufa.png" alt="" style="background-color: #999;"> -->
         <h2>系统登录</h2>
         <h3>上证容器云平台</h3>
         <h4>{{version}}</h4>
       </div>
       <el-form class="dm-login-box" :model="loginForm" :rules="rules" label-width="0" autocomplete="off">
         <el-form-item label="" prop="userName" class="dm-login-label">
-          <el-input class="dm-login-input" v-model="loginForm.userName" placeholder="用户名" @keyup.enter.native="login" autofocus="autofocus">
+          <el-input class="dm-login-input" v-model="loginForm.userName" placeholder="用户名" @keyup.enter.native="login"
+                    autofocus="autofocus">
             <template slot="append">
-              <img src="../assets/user.svg" style="width:32px;height:32px" />
+              <img src="../assets/user.svg" style="width:32px;height:32px"/>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="" prop="password">
-          <el-input class="dm-login-input" v-model="loginForm.password" type="password" placeholder="密码" @keyup.enter.native="login" autofocus="autofocus">
+          <el-input class="dm-login-input" v-model="loginForm.password" type="password" placeholder="密码"
+                    @keyup.enter.native="login" autofocus="autofocus">
             <template slot="append">
-              <img src="../assets/lock.svg" style="width:32px;height:32px" />
+              <img src="../assets/lock.svg" style="width:32px;height:32px"/>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="" prop="kaptchaCode" style="margin-top: 25px;" v-show="isShow">
-          <el-input class="dm-login-input" v-model="loginForm.kaptchaCode" placeholder="图形验证码" @keyup.enter.native="login" autofocus="autofocus">
+          <el-input class="dm-login-input" v-model="loginForm.kaptchaCode" placeholder="图形验证码"
+                    @keyup.enter.native="login" autofocus="autofocus">
             <template slot="append">
-              <img src="" alt="验证码" title="看不清？换一张试试" style="width:120px;height:50px;cursor:pointer;" id="kaptchaCode" @click="changeKaptcha"/>
+              <img src="" alt="验证码" title="看不清？换一张试试" style="width:120px;height:50px;cursor:pointer;" id="kaptchaCode"
+                   @click="changeKaptcha"/>
             </template>
           </el-input>
         </el-form-item>
@@ -44,12 +48,12 @@
 
 <script>
   // import * as user from 'api/user'
-  import { Notification } from 'element-ui'
-  import { LOG_IN, PUT_TOKEN, PUT_SYSRESOURCES } from 'store/user/mutations_types'
+  import {Notification} from 'element-ui'
+  import {LOG_IN, PUT_TOKEN, PUT_SYSRESOURCES} from 'store/user/mutations_types'
   import router from 'router'
   import store from 'store'
   import Cookies from 'js-cookie'
-  import { DEFAULT_BASE_URL, DM_VERSION } from '@/config'
+  import {DEFAULT_BASE_URL, DM_VERSION} from '@/config'
 
   export default {
     data () {
@@ -65,13 +69,13 @@
         },
         rules: {
           userName: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
+            {required: true, message: '请输入用户名', trigger: 'blur'}
           ],
           password: [
-            { required: true, message: '请输入密码', trigger: 'blur' }
+            {required: true, message: '请输入密码', trigger: 'blur'}
           ],
           kaptchaCode: [
-            { required: true, message: '请输入验证码', trigger: 'blur' }
+            {required: true, message: '请输入验证码', trigger: 'blur'}
           ]
         }
       }
@@ -95,7 +99,7 @@
         $img.src = url
       },
       login (ev) {
-        let { dispatch, commit } = this.$store
+        let {dispatch, commit} = this.$store
         if (this.loginForm.userName.trim() === '' || this.loginForm.password.trim() === '') {
           this.showResult('01', 'success', '请输入账户或密码！')
           return false
@@ -105,7 +109,11 @@
           return false
         }
         this.loading = true
-        let prams = {'userName': this.loginForm.userName, 'password': window.btoa(this.loginForm.password), 'kaptchaCode': this.loginForm.kaptchaCode}
+        let prams = {
+          'userName': this.loginForm.userName,
+          'password': window.btoa(this.loginForm.password),
+          'kaptchaCode': this.loginForm.kaptchaCode
+        }
         dispatch(LOG_IN, prams).then(res => {
           if (res.resultCode === '00') {
             return dispatch('GenerateRoutes', res.sysResources).then(_ => {
@@ -115,7 +123,7 @@
               this.loading = false
               router.addRoutes(store.getters.appendRouters)
               window.localStorage.setItem('userName', this.loginForm.userName)
-              this.$router.push({ name: '我的应用' })
+              this.$router.push({name: '我的应用'})
             }).catch(error => {
               this.showResult(error, 'success', 'error')
               this.loginForm.kaptchaCode = ''
@@ -210,7 +218,7 @@
     font-family: pingfontweb, Helvetica Neue, Helvetica, Roboto, Arial, PingFang SC, Hiragino Sans GB, Microsoft Yahei, Microsoft Jhenghei, sans-serif;
   }
 
-  .dm-login-top>h4 {
+  .dm-login-top > h4 {
     font-size: 14px;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.0);
     font-weight: 100;
@@ -218,7 +226,7 @@
     color: #040b33;
   }
 
-  .dm-login-top>h3 {
+  .dm-login-top > h3 {
     font-size: 18px;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.0);
     font-weight: 100;
@@ -226,7 +234,7 @@
     color: #1aa9e0;
   }
 
-  .dm-login-top>h2 {
+  .dm-login-top > h2 {
     font-weight: 400;
     font-size: 38px;
     color: #333;
@@ -280,13 +288,13 @@
   }
 
   .el-input-group .el-input__inner {
-    border: none!important;
+    border: none !important;
     height: 100%;
   }
 
   .dm-login-input .el-input-group__append {
     border: 0;
-    background: #fff!important;
+    background: #fff !important;
     padding: 8px 0;
   }
 
@@ -298,7 +306,7 @@
 
   .dm-login-box .el-form-item__error:before {
     content: '\E615';
-    font-family: element-icons!important;
+    font-family: element-icons !important;
     speak: none;
     font-style: normal;
     font-weight: 400;
@@ -312,7 +320,7 @@
     margin-right: 3px;
   }
 
-  @media screen and (max-width:1440px) {
+  @media screen and (max-width: 1440px) {
     .dm-login-top {
       margin-top: 55px;
     }
